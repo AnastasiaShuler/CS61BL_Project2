@@ -4,10 +4,36 @@ import java.util.*;
  *  ProofTree
  * 	The ProofTree class implements a binary tree to store the logical expressions of 
  * 	the proof checker.
+ * 	**METHODS**
+ * 		ProofTree() constructs an empty ProofTree.
+ * 		ProofTree(obj) Creates a ProofTree with the given object as the root node.
+ * 		add(obj, parentItem, childSide) Adds a child node to desired parent on the desired side.
+ * 		*addExpression() Adds an expression to the ProofTree.
+ * 		print() Prints the tree in a visual format.
+ * 		printInOrder() Prints the values stored in the tree in an inorder fashion.
+ * 		height(node) Returns the height of a given node.
+ * 
+ *  TreeNode
+ *  The TreeNode class implements tree nodes for the ProofTree class.
+ *  **METHODS**
+ *  	TreeNode(obj) Create a TreeNode with the given object.
+ *  	TreeNode(obj, parent) Creates a TreeNode with the given object and given parent.
+ *  	TreeNode(obj, parent, left, right) Creates a TreeNode with the given object, parent, and children.
+ * 
+ *  ProofTreeIterator
+ *  The ProofTreeIterator class implements the Iterator interface;
+ *  Allows for iteration through the proof tree using a preorder traversal;
+ *  **METHODS**
+ *  	ProofTreeIterator() Initializes an iterator.
+ *  	hasNext() Returns true if there more elements to be traversed.
+ *  	next() Returns the next element in the iteration.
  **/
+
 public class ProofTree {
+	//Class variables
+	private static final String INDENT1 = "    ";
 	//Instance variables
-	TreeNode myRoot;
+	protected TreeNode myRoot;
 	
 	//Constructors
 	/**
@@ -42,9 +68,9 @@ public class ProofTree {
 			if(curr.myItem.equals(parentItem)){
 				TreeNode toAdd = new TreeNode(obj, curr);
 				if(childSide.equals("left")){
-					curr.setLeft(toAdd);
+					curr.myLeft = (toAdd);
 				} else if (childSide.equals("right")){
-					curr.setRight(toAdd);
+					curr.myRight = (toAdd);
 				}
 
 			}
@@ -64,8 +90,8 @@ public class ProofTree {
 		TreeNode child1 = new TreeNode(operand1);
 		TreeNode child2 = new TreeNode(operand2);
 		TreeNode toAdd = new TreeNode(operator, parent, child1, child2);
-		child1.setParent(toAdd);
-		child2.setParent(toAdd);
+		child1.myParent = (toAdd);
+		child2.myParent = (toAdd);
 	}
 	
 	/**
@@ -87,6 +113,64 @@ public class ProofTree {
 		return new PreOrderTreeIterator(x);
 	}
 	
+	/**
+	 *  print() Prints the tree in a visual format
+	 *  Uses the static helper printHelper() and println()
+	 **/
+	public void print(){
+		if(myRoot != null){
+			printHelper(myRoot, 0);
+		}
+	}
+	
+	/**
+	 *  printHelper() The helper method for print().
+	 *  Uses recursion to traverse the tree.
+	 * 
+	 *  @param root The TreeNode where recursion will start.
+	 *  @indent the indent for the given root.
+	 **/
+	private static void printHelper(TreeNode root, int indent){
+		if (root.myRight != null){
+			ProofTree.printHelper(root.myRight, indent+1);
+		}
+		println(root.myItem, indent);
+		if(root.myLeft != null){
+			ProofTree.printHelper(root.myLeft, indent+1);
+		}
+	}
+	
+	/**
+	 *  println() Helper method for print();
+	 *  Provides the appropriate indentation for the print() method.
+	 *  Prints to the screen.
+	 *  
+	 *  @obj Value of the tree to be printed.
+	 *  @indent Indentation of the value to be printed.
+	 **/
+	public static void println(Object obj, int indent){
+		for(int k=0; k <indent; k ++){
+			System.out.print(INDENT1);
+		}
+		System.out.println(obj);
+	}
+	
+	/**
+	 *  height() Returns the height of a given TreeNode in tree.
+	 *  
+	 *  @param x TreeNode to find the height of.
+	 *  @return Height of the given TreeNode.
+	 **/
+	public int height(TreeNode x){
+		if(x == null){
+			return 0;
+		}
+		else{
+			int leftHeight = height(x.myLeft) + 1;
+			int rightHeight = height(x.myRight) + 1;
+			return Math.max(leftHeight, rightHeight);
+		}
+	}
 	
 	/**
 	 *  TreeNode
@@ -147,32 +231,6 @@ public class ProofTree {
 		}
 		
 		//Methods
-		/**
-		 *  setLeft() Sets the left pointer of the TreeNode.
-		 *  
-		 *  @param left TreeNode to set the myLeft pointer to.
-		 **/
-		public void setLeft(TreeNode left){
-			myLeft = left;
-		}
-		
-		/**
-		 *  setRight() Sets the right pointer of the TreeNode.
-		 *  
-		 *  @param right The TreeNode to set the myRight pointer to.
-		 **/
-		public void setRight(TreeNode right){
-			myRight = right;
-		}
-		
-		/**
-		 *  setParent() Sets the parent pointer of the TreeNode.
-		 *  
-		 *  @param parent The TreeNode to set the parent pointer to.
-		 **/
-		public void setParent(TreeNode parent){
-			myParent = parent;
-		}
 	}
 
 	
@@ -210,11 +268,11 @@ public class ProofTree {
 		 **/
 		public TreeNode next(){
 			TreeNode toReturn = nodes.pop();
-			if(toReturn.myLeft != null){
-				nodes.push(toReturn.myLeft);
-			}
 			if(toReturn.myRight != null){
 			nodes.push(toReturn.myRight);
+			}
+			if(toReturn.myLeft != null){
+				nodes.push(toReturn.myLeft);
 			}
 			return toReturn;
 		}
