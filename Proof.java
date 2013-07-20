@@ -1,12 +1,15 @@
 import java.util.*;
 
 public class Proof {
+	LineNumber line = new LineNumber(beginProof, finishProof);
+	boolean beginProof;
+	boolean finishProof;
 
 	public Proof (TheoremSet theorems) {
 	}
 
 	public LineNumber nextLineNumber ( ) {
-		return null;
+		return line.next();
 	}
 
 	public void extendProof (String x) throws IllegalLineException, IllegalInferenceException {
@@ -58,6 +61,7 @@ public class Proof {
 			}
 			
 			else if(parts[0].equals("show")) {
+				beginProof = true;
 				//something about show
 			}
 			
