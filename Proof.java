@@ -1,14 +1,17 @@
+
 import java.util.*;
 
 public class Proof {
 	boolean beginProof;
 	boolean finishProof;
 	LineNumber line;
+	LinkedList<String> proofSoFar;
 
 	public Proof (TheoremSet theorems) {
 		beginProof = true;
 		finishProof = false;
 		LineNumber line = new LineNumber(beginProof, finishProof);
+		LinkedList<String> proofSoFar = new LinkedList<String>();
 	}
 
 	public LineNumber nextLineNumber ( ) {
@@ -76,11 +79,19 @@ public class Proof {
 			else if(parts[0].equals("print")) {
 				
 			}
+			
+			//once you've checked that the syntax and logic is right
+			String formattedLine = line.toString() + x;
+			proofSoFar.push(formattedLine);
 		}
 	}
 
 	public String toString ( ) {
-		return "";
+		String result = "";
+		for(String lineInProof : proofSoFar) {
+			result = result + lineInProof + "\n";
+		}
+		return result;
 	}
 
 	public boolean isComplete ( ) {
