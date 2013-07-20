@@ -1,11 +1,14 @@
 import java.util.*;
 
 public class Proof {
-	LineNumber line = new LineNumber(beginProof, finishProof);
 	boolean beginProof;
 	boolean finishProof;
+	LineNumber line;
 
 	public Proof (TheoremSet theorems) {
+		beginProof = true;
+		finishProof = false;
+		LineNumber line = new LineNumber(beginProof, finishProof);
 	}
 
 	public LineNumber nextLineNumber ( ) {
