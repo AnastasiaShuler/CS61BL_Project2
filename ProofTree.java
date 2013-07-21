@@ -173,6 +173,77 @@ public class ProofTree {
 	}
 	
 	/**
+	 *  createATree() Creates a ProofTree from a given string.
+	 *  Unchecked Prerequisite: The given string is a valid expression 
+	 *  
+	 *  @param proof String expression to be turned into a tree.
+	 *  @return result ProofTree of the given expression.
+	 **/
+	public static ProofTree createATree(String proof){
+		ProofTree result = new ProofTree();
+		result.myRoot = result.createATreeHelper(proof);
+		return result;
+	}
+	
+	/**
+	 *  createATreeHelper() Helper method for createATree().
+	 *  Recursively creates an expression tree from the given proof.
+	 *  
+	 *  @param proof Legal string for constructing the tree.
+	 *  @return TreeNode Root of the created subtree.
+	 **/
+	private TreeNode createATreeHelper(String proof){
+	        String opnd1 = "";
+	        String opnd2 = "";
+	        String op = "";
+	    if (proof.charAt (0) != '('){
+	    	if(proof.charAt(0) == '~'){
+        		op = proof.substring(0, 1); //Store the ~ as the operator
+        		opnd1 = " "; 
+        		opnd2 = proof.substring(1);
+    	        TreeNode left = createATreeHelper(opnd1); //create left subtree using first operand
+    	        TreeNode right = createATreeHelper(opnd2); //create right subtree using second operand
+    	        return new TreeNode(op, left, right); //return a subtree with operator as the root
+	    	}
+	    	//proof contains no more parens and is only a single variable/integer
+	    	return new TreeNode(proof);
+	    } else {
+	        // proof is a parenthesized expression.
+	        int nesting = 0; //Used to check for nested expressions
+	        int opPos = 0; //Used to keep track of the main operator
+	        //Strip off beginning/ending parens
+	        for (int k=1; k<proof.length()-1; k++) {
+	        	if(proof.charAt(k) == ')'){
+	        		nesting --; //Decrements the nesting count for ')'
+	        		k++;
+	        	}
+	        	if(proof.charAt(k) == '('){
+	        		nesting ++ ; //increments the nesting count for'('
+	        		continue;
+	        	}
+	        	//Stores location of the operator if it is not in a nested expression
+	        	if(nesting == 0 && (proof.charAt(k) == '&' || proof.charAt(k) == '|')){
+	        		opPos = k;
+			        opnd1 = proof.substring (1, opPos); //creates the first operand token
+			        opnd2 = proof.substring (opPos+1, proof.length()-1); //creates the second operand token
+			        op = proof.substring (opPos, opPos+1); //creates the operator token
+	        		break;
+	        	}
+	        	if(nesting == 0 && proof.charAt(k) == '='){
+	        		op = proof.substring(k, k+2);
+	        		opnd1 = proof.substring(1,k);
+	        		opnd2 = proof.substring(k+2, proof.length() -1);
+	        		break;
+	        	}
+	        }
+	        //create the subtrees
+	        TreeNode left = createATreeHelper(opnd1); //create left subtree using first operand
+	        TreeNode right = createATreeHelper(opnd2); //create right subtree using second operand
+	        return new TreeNode(op, left, right); //return a subtree with operator as the root
+	       }
+	}
+	
+	/**
 	 *  TreeNode
 	 *  The TreeNode class implements tree nodes for the ProofTree class.
 	 *  Instances contain:
@@ -214,6 +285,19 @@ public class ProofTree {
 			myRight = null;
 		}
 		
+		/**
+		 *  TreeNode() Initiates a TreeNode with pointers to left and right children
+		 *  
+		 *  @param item Object to be stored in the node
+		 *  @param left The left child of the new TreeNode.
+		 *  @param right The right child of the new TreeNode.
+		 **/
+		public TreeNode(Object item, TreeNode left, TreeNode right){
+			myItem = item;
+			myParent = null;
+			myLeft = left;
+			myRight = right;
+		}
 		/**
 		 *  TreeNode() initiates a tree node with pointers to myItem, myParent,
 		 *    myLeft, and myRight.
