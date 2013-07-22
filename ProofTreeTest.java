@@ -1,5 +1,12 @@
-import static org.junit.Assert.*;
+/**
+ *  Created By:
+ *  	Anastasia Shuler
+ *  	Iris Jang
+ *  	Ji-hern Baek
+ *  	Katherine Chao
+ **/
 
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class ProofTreeTest {
@@ -9,10 +16,12 @@ public class ProofTreeTest {
 	 *  testInit() Tests the constructor for the ProofTree class.
 	 **/
 	public void testInit() {
+		//Test the 0 argument constructor
 		ProofTree tree = new ProofTree();
 		String s = tree.printInOrder(tree.myRoot);
 		assertEquals("", s);
 		
+		//Test the 1 argument constructor
 		tree = new ProofTree(1);
 		s = tree.printInOrder(tree.myRoot);
 		assertEquals("1 ", s);
@@ -27,13 +36,13 @@ public class ProofTreeTest {
 		tree.add(2,1, "left");
 		tree.add(3,1, "right");
 		String s = tree.printInOrder(tree.myRoot);
-		assertEquals("2 1 3 ", s);
+		assertEquals("2 1 3 ", s); 			//check a tree of depth 2
 		tree.add(4,2,"left");
 		tree.add(5,2,"right");
 		tree.add(6,3,"left");
 		tree.add(7,3,"right");
 		s = tree.printInOrder(tree.myRoot);
-		assertEquals("4 2 5 1 6 3 7 ", s);
+		assertEquals("4 2 5 1 6 3 7 ", s); 	//check a tree of depth 3
 	}
 	
 	/**
@@ -41,36 +50,41 @@ public class ProofTreeTest {
 	 **/
 	@Test
 	public void testPrintInOrder(){
-		ProofTree tree = new ProofTree('a');
 		//Test a one-node tree
+		ProofTree tree = new ProofTree('a');
 		String s = tree.printInOrder(tree.myRoot);
 		assertEquals("a ", s);
+		//Test balanced 3-node tree
 		tree.add('b', 'a', "left");
 		tree.add('c', 'a', "right");
-		//Test balanced 3-node tree
 		s = tree.printInOrder(tree.myRoot);
 		assertEquals("b a c ", s);
+		
+		//Test a balanced tree of depth=3
 		tree.add('d', 'b', "left");
 		tree.add('e', 'b', "right");
 		tree.add('f', 'c', "left");
 		tree.add('g', 'c', "right");
-		//Test a balanced tree of depth=3
 		s = tree.printInOrder(tree.myRoot);
 		assertEquals("d b e a f c g ", s);
-		tree.add('h', 'd', "left");
+		
 		//Test unbalanced tree;
+		tree.add('h', 'd', "left");
 		s = tree.printInOrder(tree.myRoot);
 		assertEquals("h d b e a f c g ", s);
-		tree.add('i', 'g', "right");
+		
 		//Test unbalanced tree;
+		tree.add('i', 'g', "right");
 		s = tree.printInOrder(tree.myRoot);
 		assertEquals("h d b e a f c g i ", s);
-		tree.add('j', 'f', "left");
+		
 		//Test random single child in middle
+		tree.add('j', 'f', "left");
 		s = tree.printInOrder(tree.myRoot);
 		assertEquals("h d b e a j f c g i ", s);
-		tree = new ProofTree();
+		
 		//Tests an emptyp tree;
+		tree = new ProofTree();
 		s = tree.printInOrder(tree.myRoot);
 		assertEquals("", s);
 	}
@@ -80,12 +94,14 @@ public class ProofTreeTest {
 	 **/
 	@Test
 	public void testCreateATree(){
+		//Test simplest expression
 		String expr = "(a=>a)";
 		ProofTree t = ProofTree.createATree(expr);
 		System.out.println("Tree for (a=>a)");
 		t.print();
 		System.out.println();
 		System.out.println();
+		//Test more complex expression: has ~ operator
 		expr =  "(p=>(~p=>q))";
 		t = ProofTree.createATree(expr);
 		System.out.println("Tree for (p=>(~p=>1))");
@@ -94,6 +110,7 @@ public class ProofTreeTest {
 		System.out.println(t.printInOrder(t.myRoot));
 		System.out.println();
 		System.out.println();
+		//test more complex expression: has & and |
 		expr = "(((p&q)=>a)=>(b|c))";
 		t = ProofTree.createATree(expr);
 		System.out.println("Tree for (((p&q)=>a)=>(b|c))");
@@ -101,9 +118,10 @@ public class ProofTreeTest {
 		System.out.println();
 		System.out.println();
 		System.out.println();
-		expr = "((a=>q)=>((b=>q)=>((a|b)=>q)))";
+		//Test most complex expression: has ~, &, and |
+		expr = "((~a=>q)=>((b=>q)=>((a|b)=>q)))";
 		t = ProofTree.createATree(expr);
-		System.out.println("Tree for ((a=>q)=>((b=>q)=>((a|b)=>q)))");
+		System.out.println("Tree for ((~a=>q)=>((b=>q)=>((a|b)=>q)))");
 		t.print();
 				
 	}
