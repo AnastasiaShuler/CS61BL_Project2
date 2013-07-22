@@ -8,7 +8,7 @@ import java.util.*;
  * 		ProofTree() constructs an empty ProofTree.
  * 		ProofTree(obj) Creates a ProofTree with the given object as the root node.
  * 		add(obj, parentItem, childSide) Adds a child node to desired parent on the desired side.
- * 		*addExpression() Adds an expression to the ProofTree.
+ * 		contains(obj) Searches the tree for a given value.
  * 		print() Prints the tree in a visual format.
  * 		printInOrder() Prints the values stored in the tree in an inorder fashion.
  * 		height(node) Returns the height of a given node.
@@ -26,8 +26,8 @@ import java.util.*;
  *  Allows for iteration through the proof tree using a preorder traversal;
  *  **METHODS**
  *  	ProofTreeIterator() Initializes an iterator.
- *  	hasNext() Returns true if there more elements to be traversed.
- *  	next() Returns the next element in the iteration.
+ *  	hasNext() Returns true if there more TreeNodes to be traversed.
+ *  	next() Returns the next TreeNode in the iteration.
  **/
 
 public class ProofTree {
@@ -80,24 +80,36 @@ public class ProofTree {
 	}
 	
 	/**
-	 *  addExpression() Adds an expression to the ProofTree.
+	 *  contains() Searches the tree for a given Object;
+	 *  Returns true if the given value is found in the ProofTree.
 	 *  
-	 *  @param operand1 The first operand of the expression.
-	 *  @param operand2 The second operand of the expression.
-	 *  @param operator The operator for the expression.
-	 *  @param parent The parent node for the expression.
+	 *  @param obj Object to search for in the tree.
+	 *  @return found Boolean; true if given value is found in tree.
 	 **/
-	public void addExpression(Object operand1, Object operand2, Object operator, TreeNode parent){
-		TreeNode child1 = new TreeNode(operand1);
-		TreeNode child2 = new TreeNode(operand2);
-		TreeNode toAdd = new TreeNode(operator, parent, child1, child2);
-		child1.myParent = (toAdd);
-		child2.myParent = (toAdd);
+	public boolean contains(Object obj){
+		//Set up tree iterator
+		Iterator<TreeNode> iter = this.preOrderIterator();
+		//iterate and check each node for correct value
+		while(iter.hasNext()){
+			if(iter.next().myItem.equals(obj)) return true;
+		}
+		return false;
+	}
+	
+	/**
+	 *  preOrderIterator() Creates a new preorder iterator.
+	 * 	
+	 * 	@param root TreeNode where to Iterator will start.
+	 *  @return A preOrderIterator for the given ProofTree. 
+	 **/
+	public Iterator<TreeNode> preOrderIterator(){
+		return new PreOrderTreeIterator(myRoot);
 	}
 	
 	/**
 	 *  printInOrder() Prints the ProofTree using an inOrder traversal.
 	 *  The result is of the form "b a c d ";
+	 *  NOTE: does not print parenthesis
 	 *  
 	 *  @param x TreeNode to start the traversal from.
 	 *  @return s String containing the inOrder traversal.
@@ -316,7 +328,7 @@ public class ProofTree {
 
 	
 	/**
-	 *  ProofTreeIterator implements Iterator<TreeNode>
+	 *  PreOrderTreeIterator implements Iterator<TreeNode>
 	 *  Creates an iterator for a ProofTree. Implements a PreOrder traversal.
 	 **/
 	public class PreOrderTreeIterator implements Iterator<TreeNode>{
