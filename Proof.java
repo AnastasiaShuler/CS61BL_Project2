@@ -1,4 +1,3 @@
-
 import java.util.*;
 
 public class Proof {
@@ -22,26 +21,25 @@ public class Proof {
 		String[] parts = x.split(" ");
 		Stack charStack = new Stack();
 		
-		for(int i=0; i < parts.length; i++) {
+		for (int i=0; i < parts.length; i++) {
 			if(parts[i].charAt(0) == '(' || parts[i].charAt(0) == '~') { //new expression
-				Expression myExpression = new Expression(parts[i]);
-				if (parts[i].charAt(0) == '(') {
-					//push an opening paren onto stack
-					charStack.push(parts[i].charAt(0));
-				}
-				if (parts[i].charAt(0) == ')') {
-					//push closing paren off stack
-					charStack.pop();
+				Expression myExpression = new Expression(parts[i]);	
+			for (int c = 0; c < x.length(); c++) {
+					if (parts[i].charAt(c) == '(') {
+						//push an opening paren onto stack
+						charStack.push(parts[i].charAt(0));
+					}
+					if (parts[i].charAt(c) == ')') {
+						//push closing paren off stack
+						charStack.pop();
+					}
 				}
 			}
-			
-			//concerns: how to check if parens are in right place? probably through the tree
-
-			if (charStack.empty() == false) {
-				//if string had same number of parens, stack should be empty at end
-				//(same number of parens pushed on and popped off)
-				throw new IllegalLineException("Your parentheses do not match up.");
-			}
+		if (!charStack.isEmpty()) {
+			//if string had same number of parens, stack should be empty at end
+			//(same number of parens pushed on and popped off)
+			throw IllegalLineException("Your parentheses do not match up.");
+		}
 			
 			//evaluating inferences
 			else if(parts[0].equals("mp")) {
