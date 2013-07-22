@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Expression {
 	ArrayList <String> parsed = new ArrayList <String> ();
-	
+
 	//sends to our binary tree?
 	public Expression(String x) {
 		int length = x.length();
@@ -15,7 +15,6 @@ public class Expression {
 			//catches index out of bounds scenario
 				if (x.substring(i, i+2).equals("=>")){
 					parsed.add("=>");
-					i++;
 				}
 			} else if(x.charAt(i) == '|') {
 	        	parsed.add("|");
@@ -26,29 +25,10 @@ public class Expression {
 	        }
 	    }
 	}
-}
 	
-	/*public Expression(String x) {
-		 for (int i = x.length() - 1; i >= 0; --i) {
-	         if (x.substring(i, i+2) == "=>") {
-	             //detects implies =>
-	         }
-	         else if(x.charAt(i) == '~') {
-	        	 //detects not ~
-	         }
-	         
-	         else if(x.charAt(i) == '|') {
-	        	 //detects or |
-	         }
-	         else if(x.charAt(i) == '&') {
-	        	 //detects and &
-	         }
-	         else if(x.charAt(i) == '(') {
-	        	 //use recursion to create a new Expression object
-	         }
-	         else {
-	        	 //detects a character
-	         }
-	    }
+	public void printThis(){
+		for (int k = 0; k < parsed.size(); k++){
+			System.out.print(parsed.get(k) + " ");
+		}
 	}
-}*/
+}
