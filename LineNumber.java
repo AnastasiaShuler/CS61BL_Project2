@@ -30,6 +30,7 @@ public class LineNumber {
 			Integer newNum = numbers.get(numbers.size()-1) + 1;
 			numbers.set(numbers.size()-1, newNum);
 		}
+		return this;
 	}
 	
 	public String toString() {
