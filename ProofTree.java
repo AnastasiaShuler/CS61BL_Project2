@@ -12,6 +12,7 @@ import java.util.*;
  * 		print() Prints the tree in a visual format.
  * 		printInOrder() Prints the values stored in the tree in an inorder fashion.
  * 		height(node) Returns the height of a given node.
+ * 		createATree(expression) Creates a ProofTree of the given expression.
  * 
  *  TreeNode
  *  The TreeNode class implements tree nodes for the ProofTree class.
@@ -193,40 +194,36 @@ public class ProofTree {
 	 *  @return TreeNode Root of the created subtree.
 	 **/
 	private TreeNode createATreeHelper(String proof){
-	        String opnd1 = "";
-	        String opnd2 = "";
-	        String op = "";
+        String opnd1 = "";
+        String opnd2 = "";
+        String op = "";
+        //if empty string, return empty node
+        if(proof.equals("")){
+        	return new TreeNode(proof);
+        }
+        //if first character is not '(', it's either a '~' or a variable
 	    if (proof.charAt (0) != '('){
-	    	if(proof.charAt(0) == '~'){
-        		op = proof.substring(0, 1); //Store the ~ as the operator
-        		opnd1 = " "; 
-        		opnd2 = proof.substring(1);
-    	        TreeNode left = createATreeHelper(opnd1); //create left subtree using first operand
-    	        TreeNode right = createATreeHelper(opnd2); //create right subtree using second operand
-    	        return new TreeNode(op, left, right); //return a subtree with operator as the root
-	    	}
-	    	//proof contains no more parens and is only a single variable/integer
-	    	return new TreeNode(proof);
+	    	if(proof.charAt(0) != '~') return new TreeNode(proof);
+    		op = proof.substring(0, 1); //Store the ~ as the operator
+    		opnd2 = proof.substring(1); //Store the remainder of the expression as right child
 	    } else {
 	        // proof is a parenthesized expression.
-	        int nesting = 0; //Used to check for nested expressions
-	        int opPos = 0; //Used to keep track of the main operator
-	        //Strip off beginning/ending parens
+	        int nesting = 0; 	//Used to check for nested expressions
+	        //Strip off beginning/ending parenthesis
 	        for (int k=1; k<proof.length()-1; k++) {
 	        	if(proof.charAt(k) == ')'){
 	        		nesting --; //Decrements the nesting count for ')'
-	        		k++;
+	        		k++; //Increments k to the next character
 	        	}
 	        	if(proof.charAt(k) == '('){
 	        		nesting ++ ; //increments the nesting count for'('
-	        		continue;
+	        		continue; //jumps to top of loop
 	        	}
-	        	//Stores location of the operator if it is not in a nested expression
+	        	//Check for binary operators
 	        	if(nesting == 0 && (proof.charAt(k) == '&' || proof.charAt(k) == '|')){
-	        		opPos = k;
-			        opnd1 = proof.substring (1, opPos); //creates the first operand token
-			        opnd2 = proof.substring (opPos+1, proof.length()-1); //creates the second operand token
-			        op = proof.substring (opPos, opPos+1); //creates the operator token
+			        opnd1 = proof.substring (1, k); //creates the first operand token
+			        opnd2 = proof.substring (k+1, proof.length()-1); //creates the second operand token
+			        op = proof.substring (k, k+1); //creates the operator token
 	        		break;
 	        	}
 	        	if(nesting == 0 && proof.charAt(k) == '='){
@@ -236,11 +233,11 @@ public class ProofTree {
 	        		break;
 	        	}
 	        }
-	        //create the subtrees
-	        TreeNode left = createATreeHelper(opnd1); //create left subtree using first operand
-	        TreeNode right = createATreeHelper(opnd2); //create right subtree using second operand
-	        return new TreeNode(op, left, right); //return a subtree with operator as the root
-	       }
+       }
+        //create the subtrees
+        TreeNode left = createATreeHelper(opnd1); //create left subtree using first operand
+        TreeNode right = createATreeHelper(opnd2); //create right subtree using second operand
+        return new TreeNode(op, left, right); //return a subtree with operator as the root
 	}
 	
 	/**
