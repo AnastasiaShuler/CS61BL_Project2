@@ -25,10 +25,4 @@ public class Expression {
 	        }
 	    }
 	}
-	
-	public void printThis(){
-		for (int k = 0; k < parsed.size(); k++){
-			System.out.print(parsed.get(k) + " ");
-		}
-	}
 }
