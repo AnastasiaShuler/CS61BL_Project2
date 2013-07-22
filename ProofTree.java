@@ -5,8 +5,8 @@
  * 	Katherine Chao
  * 	Ji-hern Baek
  **/
-import java.util.*;
 
+import java.util.*;
 /**
  *  ProofTree
  * 	The ProofTree class implements a binary tree to store the logical expressions of 
