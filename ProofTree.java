@@ -1,4 +1,10 @@
-CreatedBy Anastasia Shuler
+/**
+ *  Authored By:
+ * 	Anastasia Shuler
+ * 	Iris Jang
+ * 	Katherine Chao
+ * 	Ji-hern Baek
+ **/
 import java.util.*;
 
 /**
