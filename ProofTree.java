@@ -20,6 +20,12 @@ import java.util.*;
  * 		printInOrder() Prints the values stored in the tree in an inorder fashion.
  * 		height(node) Returns the height of a given node.
  * 		createATree(expression) Creates a ProofTree of the given expression.
+ * 		equals() Returns true if two ProofTree objects are equal.
+ * 		isEqual() Returns true if two ProofTree subtrees are equal.
+ *		**checkLeft() Checks to see if left subtree matches argument.
+ *		**checkRight() Checks to see if right subtree matches argument.
+ *		**rightIs() Returns a string of the right subtree.
+ *		**leftIs() Returns a string of the left subtree.
  * 
  *  TreeNode
  *  The TreeNode class implements tree nodes for the ProofTree class.
@@ -260,7 +266,7 @@ public class ProofTree {
 	}
 	
 	/**
-	 *  isEqual() checks two ProofTree objects for equality.
+	 *  equals() checks two ProofTree objects for equality.
 	 *  Two ProofTrees are equal if:
 	 *  	The value contained by their roots are equal
 	 *  	Their left subtrees are equal
@@ -310,6 +316,49 @@ public class ProofTree {
 		}
 		return !(left == false || right == false); 
 	}
+	
+	/**
+	 *  checkLeft() Checks if left subtree is equivalent to argument.
+	 *  
+	 *  @param t ProofTree to check left subtree against.
+	 *  @return Boolean Result of the check.
+	 **/
+	public boolean checkLeft(ProofTree t){
+		return ProofTree.isEqual(myRoot.myLeft, t.myRoot);
+	}
+	
+	/**
+	 *  checkRight() Checks if the right subtree is equivalent to argument.
+	 *  
+	 *  @param t ProofTree to check right subtree against.
+	 *  @return Boolean Result of the check.
+	 **/
+	public boolean checkRight(ProofTree t){
+		return ProofTree.isEqual(myRoot.myRight, t.myRoot);
+	}
+	
+	/**
+	 *  leftIs() Returns inorder traversal of the left subtree.
+	 *	
+	 *	@return String Inorder traversal of the left subtree.  
+	 **/
+	public String leftIs(){
+		return printInOrder(myRoot.myLeft);
+	}
+	
+	/**
+	 *  rightIs() Returns inorder traversal of the right subtree.
+	 *  
+	 *  @return String Inorder traversal of the right subtree.
+	 **/
+	public String rightIs(){
+		return printInOrder(myRoot.myRight);
+	}
+	
+	
+	
+	
+	
 	
 	/**
 	 *  TreeNode

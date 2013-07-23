@@ -33,7 +33,6 @@ public class ProofSoFar{
 		return mainNums.get(mainLine-1).find(lineNum);
 	}
 	
-<<<<<<< HEAD
 	public String toString(){
 		int mainNum = 0;
 		String result = "";
@@ -44,10 +43,7 @@ public class ProofSoFar{
 		return result;
 	}
 	
-	private static class ProofLineList{
-=======
 	public static class ProofLineList{
->>>>>>> 808b2eb20d409fac429b322de19dda27d691237c
 		private ProofNode myHead;
 		private ProofNode myTail;
 		
@@ -112,13 +108,8 @@ public class ProofSoFar{
 		
 	}
 	
-<<<<<<< HEAD
 	private static class ProofNode{
 		protected String myLineNumber;
-=======
-	public static class ProofNode{
-		protected String myLineNumer;
->>>>>>> 808b2eb20d409fac429b322de19dda27d691237c
 		protected String myString;
 		protected Expression myExpression;
 		protected ProofNode next;

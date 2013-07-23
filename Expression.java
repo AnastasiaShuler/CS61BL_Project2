@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 public class Expression {
 	ProofTree myTree;
 	String myString;
@@ -21,6 +20,7 @@ public class Expression {
 	 *  Overrides the equals() method.
 	 *  Returns true if:
 	 *  	the myTree variables are equivalent 
+	 *  	the myString variables are equivalent
 	 *   
 	 *  @param object Object to check for equality
 	 *  @return boolean Result of the equality check.
@@ -30,8 +30,12 @@ public class Expression {
 			return false;	//returns false if obj is not an Expression object
 		}
 		//Return the equality of the trees;
-		//Trees have been chosen over strings b/c of parentheses
-		return myTree.equals(((Expression) obj).myTree);
+		boolean tree = myTree.equals(((Expression) obj).myTree);
+		//Returns the equality of the strings;
+		boolean string = myString.equals(((Expression) obj).myString);
+		//Returns false if either tree or string is false
+		return !(tree == false || string == false);
+		
 	}
 	
 	/*
@@ -136,7 +140,6 @@ public class Expression {
 			}
 		}
 		return true;
->>>>>>> 808b2eb20d409fac429b322de19dda27d691237c
 	}
 	*/
 }
