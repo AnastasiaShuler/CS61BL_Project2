@@ -1,7 +1,15 @@
-
 import java.util.ArrayList;
-import java.util.LinkedList;
 
+/**
+ *  ProofSoFar
+ *  Data structure to hold the proof as it accumulates as a result of user input.
+ *  Structured as an ArrayList of specialty LinkedLists
+ *  **METHODS**
+ *  	add(lineNum, s) Adds new node containing line number and string s
+ *  	find(lineNum) Returns the string associated to lineNum.
+ *  	toString() Returns the enumeration of all elements in the structure.
+ *  	
+ **/
 public class ProofSoFar{
 	ArrayList<ProofLineList> mainNums;
 	
@@ -10,13 +18,11 @@ public class ProofSoFar{
 	}
 	
 	public void add(String lineNum, String s){
-		System.out.println(lineNum);
 		if(lineNum.length() == 1){
 			int line = Integer.parseInt(lineNum);
 			mainNums.add(new ProofLineList(lineNum, s));
 		} else{
 			int line = Integer.parseInt(lineNum.substring(0,1));
-			System.out.println(line);
 			mainNums.get(line-1).add(lineNum, s);
 		}
 		
@@ -25,6 +31,16 @@ public class ProofSoFar{
 	public String find(String lineNum){
 		int mainLine = Integer.parseInt(lineNum.substring(0,1));
 		return mainNums.get(mainLine-1).find(lineNum);
+	}
+	
+	public String toString(){
+		int mainNum = 0;
+		String result = "";
+		while(mainNum < mainNums.size()){
+			result += mainNums.get(mainNum).toString();
+			mainNum ++;
+		}
+		return result;
 	}
 	
 	private static class ProofLineList{
@@ -54,7 +70,7 @@ public class ProofSoFar{
 		public String find(String lineNum){
 			ProofNode curr = myHead;
 			while(curr != null){
-				if(curr.myLineNumer.equals(lineNum)){
+				if(curr.myLineNumber.equals(lineNum)){
 					return curr.myString;
 				} else
 					curr=curr.next;
@@ -62,27 +78,38 @@ public class ProofSoFar{
 			return null;
 		}
 		
+		public String toString(){
+			String result = "";
+			ProofNode curr = myHead;
+			while(curr != null){
+				System.out.println("Current result is " + result);
+				result += curr.myLineNumber + "    " + curr.myString + "\n";
+				curr = curr.next;
+			}
+			return result;
+		}
+		
 	}
 	
 	private static class ProofNode{
-		protected String myLineNumer;
+		protected String myLineNumber;
 		protected String myString;
 		protected ProofNode next;
 		
 		public ProofNode(){
-			myLineNumer = null;
+			myLineNumber = null;
 			myString = null;
 			next = null;
 		}
 		
 		public ProofNode(String lineNum, String s){
-			myLineNumer = lineNum;
+			myLineNumber = lineNum;
 			myString = s;
 			next = null;
 		}
 		
 		public ProofNode(String lineNum, String s, ProofNode n){
-			myLineNumer = lineNum;
+			myLineNumber = lineNum;
 			myString = s;
 			next = n;
 		}

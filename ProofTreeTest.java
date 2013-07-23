@@ -156,4 +156,32 @@ public class ProofTreeTest {
 		assertFalse(t.contains("f"));	//check for a value not in the tree
 	}
 	
+	@Test
+	public void testEquals(){
+		String expr = "(a=>b)";
+		ProofTree t1 = ProofTree.createATree(expr);
+		ProofTree t2 = ProofTree.createATree(expr);
+		assertEquals(t1, t2);
+		assertEquals(t2, t1);
+		
+		expr = "((a|b)=>((~c&d)|b))";
+		t1 = ProofTree.createATree(expr);
+		t2 = ProofTree.createATree(expr);
+		assertEquals(t1, t2);
+		assertEquals(t2, t1);
+		
+		t1 = new ProofTree();
+		t2 = new ProofTree();
+		assertEquals(t1, t2);
+		
+		t2 = ProofTree.createATree(expr);
+		assertFalse(t1.equals(t2));
+		assertFalse(t2.equals(t1));
+		
+		expr = "(a=>b)";
+		t1 = ProofTree.createATree(expr);
+		assertFalse(t1.equals(t2));
+		assertFalse(t2.equals(t1));
+	}
+	
 }

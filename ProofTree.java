@@ -260,6 +260,58 @@ public class ProofTree {
 	}
 	
 	/**
+	 *  isEqual() checks two ProofTree objects for equality.
+	 *  Two ProofTrees are equal if:
+	 *  	The value contained by their roots are equal
+	 *  	Their left subtrees are equal
+	 *  	Their right subtrees are equal
+	 *  
+	 *  @param obj ProofTree object to check for equality.
+	 *  @return boolean Result of the equality check.
+	 **/
+	@Override
+	public boolean equals(Object obj){
+		if(!(obj instanceof ProofTree)){
+			return false;	//Returns false if obj is not a ProofTree
+		}
+		ProofTree checkTree = (ProofTree) obj;
+		//Return true for two empty ProofTrees
+		if(this.myRoot == null){
+			return (checkTree).myRoot == null;
+		} else{
+			if(checkTree.myRoot == null) return false;
+		}
+		//Call the helper method isEqual to determine equality of two trees
+		return ProofTree.isEqual(this.myRoot, checkTree.myRoot);
+	}
+	
+	/**
+	 *  isEqual() Checks two ProofTree objects for equality.
+	 *  Helper method for equals() method.
+	 *  Recursively determines the equality of two trees.
+	 *  
+	 *  @param root TreeNode of ProofTree 1
+	 *  @param rootToCheck TreeNode of ProofTree 2
+	 *  @return boolean Result of the equality check.
+	 **/
+	public static boolean isEqual(TreeNode root, TreeNode rootToCheck){
+		if(!(root.myItem.equals(rootToCheck.myItem))){
+			return false;
+		}
+		boolean left = true;
+		boolean right = true;
+		if(root.myLeft != null){
+			if(rootToCheck.myLeft == null) return false;
+			left = ProofTree.isEqual(root.myLeft, rootToCheck.myLeft);
+		}
+		if(root.myRight != null){
+			if(rootToCheck.myRight == null) return false;
+			right = ProofTree.isEqual(root.myRight, rootToCheck.myRight);
+		}
+		return !(left == false || right == false); 
+	}
+	
+	/**
 	 *  TreeNode
 	 *  The TreeNode class implements tree nodes for the ProofTree class.
 	 *  Instances contain:

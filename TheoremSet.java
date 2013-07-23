@@ -1,5 +1,3 @@
-public class TheoremSet {
-
 import java.util.*;
 
 public class TheoremSet {

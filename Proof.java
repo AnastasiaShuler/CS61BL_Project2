@@ -38,7 +38,7 @@ public class Proof {
 		if (!charStack.isEmpty()) {
 			//if string had same number of parens, stack should be empty at end
 			//(same number of parens pushed on and popped off)
-			throw IllegalLineException("Your parentheses do not match up.");
+			//throw IllegalLineException("Your parentheses do not match up.");
 		}
 			
 			//evaluating inferences
