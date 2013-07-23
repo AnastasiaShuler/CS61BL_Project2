@@ -33,6 +33,7 @@ public class ProofSoFar{
 		return mainNums.get(mainLine-1).find(lineNum);
 	}
 	
+<<<<<<< HEAD
 	public String toString(){
 		int mainNum = 0;
 		String result = "";
@@ -44,6 +45,9 @@ public class ProofSoFar{
 	}
 	
 	private static class ProofLineList{
+=======
+	public static class ProofLineList{
+>>>>>>> 808b2eb20d409fac429b322de19dda27d691237c
 		private ProofNode myHead;
 		private ProofNode myTail;
 		
@@ -54,6 +58,15 @@ public class ProofSoFar{
 		
 		public ProofLineList(String lineNum, String s){
 			myHead = new ProofNode(lineNum, s);
+			myTail = last();
+		}
+		
+		public ProofNode getmyHead() {
+			return myHead;
+		}
+		
+		public ProofNode getmyTail() {
+			return myTail;
 		}
 		
 		public void add(String lineNum, String s){
@@ -65,6 +78,14 @@ public class ProofSoFar{
 				myTail = myHead;
 			}
 			
+		}
+		
+		private ProofNode last() {
+			ProofNode pointer = myHead;
+			while(pointer.next != null) {
+				pointer = pointer.next;
+			}
+			return pointer;
 		}
 		
 		public String find(String lineNum){
@@ -91,27 +112,61 @@ public class ProofSoFar{
 		
 	}
 	
+<<<<<<< HEAD
 	private static class ProofNode{
 		protected String myLineNumber;
+=======
+	public static class ProofNode{
+		protected String myLineNumer;
+>>>>>>> 808b2eb20d409fac429b322de19dda27d691237c
 		protected String myString;
+		protected Expression myExpression;
 		protected ProofNode next;
 		
 		public ProofNode(){
 			myLineNumber = null;
 			myString = null;
 			next = null;
+			myExpression = null;
 		}
 		
 		public ProofNode(String lineNum, String s){
 			myLineNumber = lineNum;
 			myString = s;
 			next = null;
+			myExpression = findexpr(s);
 		}
 		
 		public ProofNode(String lineNum, String s, ProofNode n){
 			myLineNumber = lineNum;
 			myString = s;
 			next = n;
+			myExpression = findexpr(s);
+		}
+		
+		public ProofNode getNext() {
+			return next;
+		}
+		
+		public Expression findexpr(String s) {
+			String[] parts = s.split(" ");
+			String firstWord = parts[0]; //get the first word
+			int index = 0;
+			if(firstWord == "show" || firstWord == "assume") { //the expression always follows directly after these 2 words
+				index = 1;
+			}
+			if(firstWord == "mp" || firstWord =="mt" || firstWord =="co") { //the expression is always 3 spaces away
+				index = 3;
+			}
+			if(firstWord == "ic" || firstWord == "repeat") {
+				index = 2;
+			}
+			// TO DO: detect a theorem name and set index to 1
+			return new Expression(parts[index]);
+		}
+		
+		public Expression getExpression() {
+			return myExpression;
 		}
 	}
 	

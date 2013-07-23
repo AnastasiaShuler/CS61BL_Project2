@@ -4,13 +4,13 @@ public class Proof {
 	boolean beginProof;
 	boolean finishProof;
 	LineNumber line;
-	LinkedList<String> proofSoFar;
+	ProofSoFar soFar;
 
 	public Proof (TheoremSet theorems) {
 		beginProof = true;
 		finishProof = false;
-		LineNumber line = new LineNumber(beginProof, finishProof);
-		LinkedList<String> proofSoFar = new LinkedList<String>();
+		line = new LineNumber(beginProof, finishProof);
+		soFar = new ProofSoFar();
 	}
 
 	public LineNumber nextLineNumber ( ) {
@@ -79,20 +79,29 @@ public class Proof {
 			}
 			
 			//once you've checked that the syntax and logic is right
-			String formattedLine = line.toString() + x;
-			proofSoFar.push(formattedLine);
+			soFar.add(line.toString(), x);
 		}
 	}
 
 	public String toString ( ) {
 		String result = "";
-		for(String lineInProof : proofSoFar) {
+		for(String lineInProof : soFar) {
 			result = result + lineInProof + "\n";
 		}
 		return result;
 	}
 
 	public boolean isComplete ( ) {
-		return true;
+		if(soFar.mainNums.size() == 1 && soFar.mainNums.get(0).getmyHead().getNext() == null) { //only one line of proof has been done
+			return false;
+		}
+		else {
+			Expression startExpression = soFar.mainNums.get(0).getmyHead().getExpression();
+			Expression endExpression = soFar.mainNums.get(soFar.mainNums.size()-1).last().getExpression();
+			if(startExpression.equals(endExpression)) {
+				return true;
+			}
+			else return false;
+		}
 	}
 }
