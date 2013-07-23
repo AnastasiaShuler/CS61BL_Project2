@@ -1,5 +1,3 @@
-package project2;
-
 import java.util.*;
 
 
@@ -7,9 +5,6 @@ public class Expression {
 	//check if theorem name, or if a reason, etc. create an arraylist, if it's any of those words like "show" etc. return true;
 	boolean valid; 	
 	Stack <Object >charStack = new Stack <Object> ();
-	//String [] keyWords = {"mp", "mt", "ic", "ct", "show", "assume"};
-	//better to use arraylist? how do we access this and add theorem names later?
-	//will have to do arraylist
 	ArrayList <String> keyWords = new ArrayList <String> ();
 	
 	public Expression (String x){
@@ -18,6 +13,8 @@ public class Expression {
 		} else {
 			valid = false;
 		}
+		
+		//find better way to fill in this ArrayList
 		keyWords.add("mp");
 		keyWords.add("mt");
 		keyWords.add("ic");
