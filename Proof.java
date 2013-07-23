@@ -92,6 +92,16 @@ public class Proof {
 	}
 
 	public boolean isComplete ( ) {
-		return true;
+		if(soFar.mainNums.size() == 1 && soFar.mainNums.get(0).getmyTail() == null) { //only one line of proof has been done
+			return false;
+		}
+		else {
+			Expression startExpression = soFar.mainNums.get(0).getmyHead().getExpression();
+			Expression endExpression = soFar.mainNums.get(soFar.mainNums.size()-1).last().getExpression();
+			if(startExpression.equals(endExpression)) {
+				return true;
+			}
+			else return false;
+		}
 	}
 }
