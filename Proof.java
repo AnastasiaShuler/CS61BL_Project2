@@ -92,7 +92,7 @@ public class Proof {
 	}
 
 	public boolean isComplete ( ) {
-		if(soFar.mainNums.size() == 1 && soFar.mainNums.get(0).getmyTail() == null) { //only one line of proof has been done
+		if(soFar.mainNums.size() == 1 && soFar.mainNums.get(0).getmyHead().getNext() == null) { //only one line of proof has been done
 			return false;
 		}
 		else {
