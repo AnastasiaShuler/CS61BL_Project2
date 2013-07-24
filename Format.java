@@ -1,0 +1,65 @@
+
+public class Format {
+  
+	public Format() {
+		
+	}
+
+	public boolean checkFormat (String [ ] parts) {
+		
+		if (parts.length > 1) {
+			/*
+			 * if there are more than one
+			 */
+			if (!parts[0].equals("mp") || !parts[0].equals("co") || 
+				!parts[0].equals("ic") || !parts[0].equals("show") || 
+				!parts[0].equals("assume") || !parts[0].equals("TheoremName")) {
+				return false;
+			}
+			
+			if (parts[0].equals("mp") || parts[0].equals("co")) {
+				/*
+				 * These two keywords should have the same format of
+				 * "mp/co" [line number] [line number] [expression],
+				 * so we can compound these into one check
+				 */
+				if (parts.length != 4) {
+					return false;
+				/*	
+				 * Initially, I wanted to check the validity of each 
+				 * section of the user input; however, I don't know if
+				 * this is practical/possible.
+				 * 
+				 * parts[1] != VALID LINE NUMBER
+				 || parts[2] != VALID LINE NUMBER
+				 || parts[3] != VALID EXPRESSION) 
+					return false;*/
+				}
+			}
+			
+			if (parts[0].equals("ic")) {
+				if (parts.length != 3) {
+					return false;
+				}
+			}
+			
+			if (parts[0].equals("show") 
+			 || parts[0].equals("assume")
+			 || parts[0].equals("Theorem name") /*either check for 
+			 existing theorem, or for just a string*/) {
+				if (parts.length != 2) {
+					return false;
+				}
+			}
+			
+			else {
+				if (parts.length != 1) {
+					return false;
+				}
+			}
+
+		}
+		
+		return true;
+	}
+}
