@@ -124,6 +124,10 @@ public class ProofTreeTest {
 		t = ProofTree.createATree(expr);
 		System.out.println("Tree for ((~a=>q)=>((b=>q)=>((a|b)=>q)))");
 		t.print();
+		
+		expr = "a";
+		t = ProofTree.createATree(expr);
+		t.print();
 				
 	}
 	
@@ -199,6 +203,14 @@ public class ProofTreeTest {
 		System.out.println("This is my output " + t1.printInOrder(t1.myRoot));
 	}
 	
+	@Test
+	public void testCheckRight(){
+		ProofTree t1 = ProofTree.createATree("~(a|b)");
+		t1.print();
+		ProofTree t2 = ProofTree.createATree("(a|b)");
+		t2.print();
+		assertTrue(t1.checkRight(t2));
+	}
 	@Test
 	public void testCheckRoot(){
 		ProofTree t1 = ProofTree.createATree("~q");

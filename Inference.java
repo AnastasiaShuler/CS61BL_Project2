@@ -66,10 +66,8 @@ public class Inference {
 		String inference = text[3];
 		//get() returns expression objects
 		ProofTree E2 = psf.get(line1).myTree;
-		E2.print();
 		ProofTree E1 = psf.get(line2).myTree;
 		if(!(E2.checkRoot("~"))){
-			System.out.println("I failed cuz root wasn't ~");
 			return false;
 		}
 		//get right subtree of E2; will be everything but ~
@@ -89,14 +87,42 @@ public class Inference {
 	 *  To be legal:
 	 *  	First reference must be to E2.
 	 *  	Inference must be E1=>E2 for any E1
-	 *  @param line LineNumber of the reference.
 	 *  
+	 *  @param input String of user input that calls the ic() method
+	 *  @param psf ProofSoFar object
+	 *  @return Boolen Result of the check
 	 **/
-	public static void ic() {
+	public static boolean ic(String input, ProofSoFar psf) {
+		String[] text = input.split("\\s");
+		//text[0] contains "ic"
+		String line = text[1];
+		String inference = text[2];
+		String E1 = psf.get(line).myString;
+		ProofTree t1 = ProofTree.createATree(inference);
+		String right = t1.rightIs();
+		return E1.equals(right);
 		
 	}
 	
-	public static void co() {
+	/**
+	 *  co() Checks that a co inference is legal.
+	 *  To be legal:
+	 *  	First reference must be to E.
+	 *  	Second reference must be to ~E.
+	 *  	Inference can be anything.
+	 *  
+	 *  @param input String of user input that calls the co() method.
+	 *  @return Boolean Result of the check.
+	 **/
+	public static boolean co(String input, ProofSoFar psf){
+		String[] text = input.split("\\s");
+		//text[0] contains "co"
+		String line1 = text[1];
+		String line2 = text[2];
+		String inference = text[3];
+		ProofTree E1 = psf.get(line1).myTree;
+		ProofTree E2 = psf.get(line2).myTree;
+		return E1.checkRight(E2);
 		
 	}
 }
