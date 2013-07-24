@@ -1,91 +1,93 @@
 import java.util.*;
 
+/**
+ *  Proof
+ **/
 public class Proof {
+	//instance variables
 	boolean beginProof;
 	boolean finishProof;
 	LineNumber line;
 	ArrayList<Step> soFar;
+	static ProofSoFar psf;	//Static because we only want one Hashtable
+	
 
 	public Proof (TheoremSet theorems) {
+		//Need to figure out what to do with theorems
 		beginProof = true;
 		finishProof = false;
 		line = new LineNumber(beginProof, finishProof);
 		soFar = new ArrayList<Step>();
+		psf = new ProofSoFar();
 	}
 
-	public LineNumber nextLineNumber ( ) {
+	public String nextLineNumber(){
 		return line.next();
 	}
-
-	public void extendProof (String x) { // throws IllegalLineException, IllegalInferenceException { ***COMMENTED OUT TO TEST***
-		String[] parts = x.split(" ");
-		Stack charStack = new Stack();
-		
-		for (int i=0; i < parts.length; i++) {
-			if(parts[i].charAt(0) == '(' || parts[i].charAt(0) == '~') { //new expression
-				Expression myExpression = new Expression(parts[i]);	
-			for (int c = 0; c < parts[i].length(); c++) {
-					if (parts[i].charAt(c) == '(') {
-						//push an opening paren onto stack
-						charStack.push(parts[i].charAt(0));
-					}
-					if (parts[i].charAt(c) == ')') {
-						//push closing paren off stack
-						charStack.pop();
-					}
-				}
-			}
-		if (!charStack.isEmpty()) {
-			//if string had same number of parens, stack should be empty at end
-			//(same number of parens pushed on and popped off)
-			//throw IllegalLineException("Your parentheses do not match up.");
+	
+	public void extendProof (String x) throws IllegalLineException, IllegalInferenceException {
+		ParenCheck pc = new ParenCheck();
+		if(!(pc.checkParens(x))){
+			throw new IllegalLineException("Your parenthesis don't match up");
 		}
-			
-		/* **********COMMMENTED OUT TO TEST *************
+		//Another call to a syntax checker
+		
+		String[] parts = x.split("\\s"); //Split the input around spaces
 			//evaluating inferences
-			else if(parts[0].equals("mp")) {
+			if(parts[0].equals("mp")) {
 				// something about modus ponens
-				Inference.mp();
+				Inference.mp(x, psf);
 			}
 			else if(parts[0].equals("mt")) {
 				// somethin about modus tollens
-				Inference.mt();
+				Inference.mt(x, psf);
 			}
 			else if(parts[0].equals("ic")) {
 				// something about implied construction
-				Inference.ic();
+				Inference.ic(x, psf);
 			}
 			else if(parts[0].equals("co")) {
 				// something about contradiction
-				Inference.co();
+				Inference.co(x, psf);
 			}
-			*/
 			
 			//evaluating reasons
-			else if(parts[0].equals("assume")) {
-				//something about assume
+			if(parts[0].equals("assume")) {
+				String nextLine = line.getCurrent();
+				psf.add(nextLine, new Expression(parts[1]));
 			}
 			
 			else if(parts[0].equals("show")) {
 				beginProof = true;
-				line.setbeginProof(beginProof);
-				//something about show
+				line.setBeginProof(beginProof);
+				String lineNum = line.getCurrent();
+				psf.add(lineNum, new Expression(parts[1]));
 			}
 			
 			//misc stuff
 			else if(parts[0].equals("repeat")) {
 				//something about repeat
+				String lineNum = line.getCurrent();
+				Expression expr = psf.get(parts[1]);
+				psf.add(lineNum, expr);
+				
 			}
 			
 			else if(parts[0].equals("print")) {
-				System.out.println(toString());
+				String lineNum = line.getCurrent();
+				psf.add(lineNum, new Expression(parts[0]));
+				//System.out.println(toString());
 			}
 			
+			/*
 			//once you've checked that the syntax and logic is right, 
 			//add the step to the array of steps completed so far
 			Step newStep = new Step(line.next(), x);
 			soFar.add(newStep);
-		}
+			*/
+			
+			//You've passed all of the tests. be Printed.
+			System.out.println(x);
 	}
 
 
@@ -110,6 +112,7 @@ public class Proof {
 
 	}
 	
+	/*
 	public static void main(String[] args) {
 		Proof test = new Proof(null);
 		test.extendProof("show (p=>q)");
@@ -118,8 +121,11 @@ public class Proof {
 		test.extendProof("assume ((p=>q)=>q)");
 		test.extendProof("print");
 	}
+	*/
 
 	public boolean isComplete ( ) {
+		return false;
+		/*
 		if(soFar.size() == 1 && soFar.get(0) == null && soFar.get(1) == null) { //only one line of proof has been done
 			return false;
 		}
@@ -131,5 +137,7 @@ public class Proof {
 			}
 			else return false;
 		}
+		*/
 	}
+	
 }

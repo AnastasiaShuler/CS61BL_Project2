@@ -1,4 +1,7 @@
 
+/**
+ *  Step
+ **/
 public class Step {
   private LineNumber lineNum;
 	private String input;

@@ -1,0 +1,5 @@
+show (q=>q)
+print
+assume q
+ic 1.1 (q=>q)
+print

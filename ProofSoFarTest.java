@@ -7,6 +7,7 @@ public class ProofSoFarTest {
 
 	@Test
 	public void testAdd() {
+		/*
 		ProofSoFar psf = new ProofSoFar();
 		psf.add("1", "1");
 		assertEquals("1", psf.find("1"));
@@ -18,7 +19,6 @@ public class ProofSoFarTest {
 		assertEquals("1", psf.find("1"));
 		
 		
-		/*
 		psf = new ProofSoFar();
 		psf.add("1", "a");
 		assertEquals("a", psf.find("1"));

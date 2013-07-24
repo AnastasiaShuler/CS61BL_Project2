@@ -53,7 +53,6 @@ public class ProofChecker {
         }
         ProofChecker checker = new ProofChecker (args);
         Proof soFar = new Proof (checker.myTheorems);
-            
         boolean done = false;
         while (!done) {
             System.out.print (soFar.nextLineNumber ( ) + "\t");
