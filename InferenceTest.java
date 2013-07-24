@@ -49,6 +49,14 @@ public class InferenceTest {
 		Expression E4 = new Expression("(b=>q)");
 		psf.add("3.1", E4);
 		assertTrue(Inference.mt(input, psf));
+		
+		
+		input = "mt 2 3.2.2 ~(p=>q)";
+		Expression E5 = new Expression("((p=>q)=>q)");
+		Expression E6 = new Expression("~q");
+		psf.add("2", E5);
+		psf.add("3.2.2", E6);
+		assertTrue(Inference.mt(input, psf));
 	}
 	
 	@Test

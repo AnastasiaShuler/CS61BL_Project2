@@ -1,5 +1,14 @@
-show (q=>q)
-print
-assume q
-ic 1.1 (q=>q)
-print
+show (((p=>q)=>q)=>((q=>p)=>p))
+assume ((p=>q)=>q)
+show ((q=>p)=>p)
+assume (q=>p)
+show p
+assume ~p
+mt 3.2.1 3.1 ~q
+mt 2 3.2.2 ~(p=>q)
+show (p=>q)
+assume p
+co 3.2.4.1 3.2.1 (p=>q)
+co 3.2.4 3.2.3 p
+ic 3.2 ((q=>p)=>p)
+ic 3 (((p=>q)=>q)=>((q=>p)=>p))

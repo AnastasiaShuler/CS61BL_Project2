@@ -72,6 +72,8 @@ public class Inference {
 		String line1 = text[1];					//Get lineNumber 1
 		String line2 = text[2];					//Get lineNumber 2
 		String inference = text[3];				//Get inference string
+		inference = inference.replaceAll("\\(", "");
+		inference = inference.replaceAll("\\)", "");
 		ProofTree E2 = psf.get(line1).myTree;	//Get the tree of line1
 		ProofTree E1 = psf.get(line2).myTree;	//Get the tree of line2
 		//Check that E1 or E2 has a root of '~'

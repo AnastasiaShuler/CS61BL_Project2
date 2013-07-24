@@ -10,6 +10,7 @@ public class LineNumber {
 	private ArrayList<Integer> numbers;
 	private boolean beginProof;
 	private boolean finishProof;
+	private boolean justStarting;
 	
 	/**
 	 *  LineNumer Initiates a new LineNumber object.
@@ -22,6 +23,7 @@ public class LineNumber {
 		this.beginProof = beginProof;
 		this.finishProof = finishProof;
 		numbers = new ArrayList<Integer>();
+		justStarting = true;
 	}
 	
 	/**
@@ -48,7 +50,12 @@ public class LineNumber {
 	 *  @return LineNumber the LineNumber object
 	 **/
 	public String next() {
-		if(beginProof){
+		if(justStarting){
+			numbers.add(1);
+			justStarting = false;
+			beginProof = false;
+		}
+		else if(beginProof){
 			numbers.add(1);
 			beginProof = false;
 		}
@@ -71,6 +78,16 @@ public class LineNumber {
 	 **/
 	public String getCurrent(){
 		return this.toString();
+	}
+	
+	/**
+	 *  size() returns the size of the line object
+	 *  ie: How many sub numberings are active
+	 *  
+	 *  @return int Size of LineNumber
+	 **/
+	public int size(){
+		return numbers.size();
 	}
 	
 	/**
