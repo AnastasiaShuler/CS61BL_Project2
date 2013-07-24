@@ -1,6 +1,8 @@
+import java.util.Stack;
 
 public class Format {
 
+	Stack charStack = new Stack ();
 
 	/*
 	 * This class checks user input for overall validity. 
@@ -76,8 +78,9 @@ public class Format {
 	}
 	
 	public boolean expressionValidityHelper(String expr){
+		//DO WE NEED THIS NULL CHECK?!!!!!!!!!!!
 		if (expr == null || expr.length() == 0){
-			//checks a null input
+			//checks an empty input
 			return false;
 			
 		} else if (expr.length() == 1){
@@ -97,11 +100,114 @@ public class Format {
 				}
 		
 		} else {
-			if (expr.charAt(0) != '(' || expr.charAt(0) != '~'){
+
+			//checks if expression has an opening parenthesis at the second to last index or the very end 
+			if (expr.charAt(expr.length() - 1) == '(' || expr.charAt(expr.length() - 2) == '('){
 				return false;
-			} else {
-				return true;
 			}
+			
+			//checks if expression has a closing parenthesis in the first or second index
+			if (expr.charAt(0) == ')' || expr.charAt(1) == ')'){
+				return false;
+			}
+			
+			for (int k = 0; k < expr.length(); k++){
+				//checks that we don't have a the following: ()
+				if (expr.charAt(k) == '(' && (k + 1 < expr.length() && expr.charAt(k+1) == ')')){
+					return false;
+				}
+				
+				//checks that all parentheses are matched
+				if (expr.charAt(k) == '('){
+					charStack.push(expr.charAt(k));
+				} else if (expr.charAt(k) == ')'){
+					charStack.pop();
+				}	
+				
+				if (k == expr.length() - 1 && !expr.isEmpty()){
+					return false;
+				}
+				
+			
+				//checks conditions when you encounter variables
+				if (Character.isLetter(expr.charAt(k))){
+					if (k-1 >= 0){
+						//the possible predecessors of a variable include: ~, (, =>
+						if (expr.charAt(k-1) != '~' || expr.charAt(k-1) != '(' 
+								|| (k-2 < 0 || (expr.charAt(k-1) != '>' && expr.charAt(k-2) != '='))){
+							return false;
+						}
+					}
+					
+					if (k+1 < expr.length()){
+						if ((k+2 >= expr.length() || (expr.charAt(k+1) != '=' && expr.charAt(k+2) != '>'))
+								|| expr.charAt(k+1) != ')'){
+							return false;
+						}
+					}
+				}
+				
+				//checks conditions when you encounter '&'
+				if (expr.charAt(k) == '&'){
+					if (k-1 >= 0){
+						if (Character.isLetter(expr.charAt(k-1)) == false || expr.charAt(k-1) != ')'){
+							return false;
+						}
+					}
+					
+					if (k+1 < expr.length()){
+						if (expr.charAt(k+1) != '(' || Character.isLetter(expr.charAt(k+1)) == false){
+							return false;
+						}
+					}
+				}
+				
+				//checks conditions when you encounter '|'
+				if (expr.charAt(k) == '|'){
+					if (k-1 >= 0){
+						if (Character.isLetter(expr.charAt(k-1)) == false || expr.charAt(k-1) != ')'){
+							return false;
+						}
+					}
+					
+					if (k+1 < expr.length()){
+						if (expr.charAt(k+1) != '(' || Character.isLetter(expr.charAt(k+1)) == false){
+							return false;
+						}
+					}
+				}
+				
+				//checks condition when you encounter '~'
+				if (expr.charAt(k) == '~'){
+					if (k-1 >= 0){
+						if (expr.charAt(k-1) != '(' || expr.charAt(k-1) != '&' || expr.charAt(k-1) != '|'){
+							return false;
+						}
+					}
+					
+					if (k+1 < expr.length()){
+						if (expr.charAt(k+1) != '~' || Character.isLetter(expr.charAt(k+1)) == false){
+							return false;
+						}
+					}
+				}
+				
+				//checks condition when you encounter '=>'
+				if (k+1 < expr.length() && (expr.charAt(k) == '=' && expr.charAt(k+1) == '>')){
+					if (k-1 >= 0){
+						if (expr.charAt(k-1) != ')' || Character.isLetter(expr.charAt(k+1)) == false){
+							return false;
+						}
+					}
+					
+					if (k+2 < expr.length()){
+						if (expr.charAt(k+2) != '(' || Character.isLetter(expr.charAt(k+2)) == false){
+							return false;
+						}
+					}
+				}
+			}
+			return true;
 		}
 	}
-
+}
