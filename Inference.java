@@ -22,19 +22,28 @@ public class Inference {
 	 *	@return Boolean True if the inference is valid.
 	 **/
 	public static boolean mp(String input, ProofSoFar psf){
-		String[] text = input.split("\\s");
-		//text[0] will be mp;
-		String line1 = text[1];
-		String line2 = text[2];
-		String inference = text[3];
 		//Input is of the form: mp [line#] [line#] [inference]
-		//get will return an Expression object
-		ProofTree E1 = psf.get(line1).myTree;
-		ProofTree E2 = psf.get(line2).myTree;
+		String[] text = input.split("\\s");	//Split the input along spaces
+		//text[0] will be mp;
+		String line1 = text[1];				//Get LineNumber 1
+		String line2 = text[2];				//Get LineNumber 2
+		String inference = text[3];			//Get inference
+		System.out.println("line1: " + line1 +"\nline2: " + line2 + "\ninference: " + inference);
+		ProofTree E1 = psf.get(line1).myTree;	//get the tree of line1
+		psf.get(line2);
+		ProofTree E2 = psf.get(line2).myTree;	//get the tree of line2
 		//Check that E1 is a single expression
 		//Check that E2 is of the form (E1=>E2)
 		if(!(E1.checkLeft(E2))){
-			return false;
+			if(!(E2.checkLeft(E1))){
+				System.out.println("I failed because my right side wasn't right");
+				return false;
+			} else{
+				//Switch the two expressions
+				ProofTree temp = E1;
+				E1 = E2;
+				E2 = temp;
+			}
 		}
 		String checkE2 = E2.printInOrder(E2.myRoot);
 		//will need to pull ()'s off of E2
@@ -42,6 +51,7 @@ public class Inference {
 		inference = inference.replaceAll("\\)", "");
 		String checkInference = E1.rightIs();
 		if(!(checkInference.equals(inference))){
+			System.out.println("I failed because my inference doesn't match");
 			return false;
 		}
 		return true;
@@ -59,24 +69,45 @@ public class Inference {
 	 *  @return Boolean Result of the check.
 	 **/
 	public static boolean mt(String input, ProofSoFar psf){
-		String[] text = input.split("\\s");
+		String[] text = input.split("\\s");		//Split the input along spaces
 		//text[0] will be "mt"
-		String line1 = text[1];
-		String line2 = text[2];
-		String inference = text[3];
-		//get() returns expression objects
-		ProofTree E2 = psf.get(line1).myTree;
-		ProofTree E1 = psf.get(line2).myTree;
+		String line1 = text[1];					//Get lineNumber 1
+		String line2 = text[2];					//Get lineNumber 2
+		String inference = text[3];				//Get inference string
+		System.out.println("line1 is: " + line1);
+		System.out.println("line2 is: " + line2);
+		System.out.println("inference is: " + inference);
+		ProofTree E2 = psf.get(line1).myTree;	//Get the tree of line1
+		ProofTree E1 = psf.get(line2).myTree;	//Get the tree of line2
+		System.out.println("E1 is");
+		E1.print();
+		System.out.println("E2 is");
+		E2.print();
+		//Check that E1 or E2 has a root of '~'
 		if(!(E2.checkRoot("~"))){
-			return false;
+			if(!(E1.checkRoot("~"))){
+				//Neither root was '~'; invalid usage
+				System.out.println("I've failed because neither root is ~");
+				return false;
+			}else{
+				//Switch the two inputs
+				System.out.println("I should have gotten in here");
+				ProofTree temp = E1;
+				E1 = E2;
+				E2 = temp;
+			}
 		}
 		//get right subtree of E2; will be everything but ~
 		//Check that right s.t. of E2 is same as right s.t. of E1
+		//Satisfies E2 and E1=>E2
 		if(!(E2.checkRightST(E1))){
+			System.out.println("I've failed here :(");
 			return false;
 		}
 		String checkE1 = E1.leftIs();
+		checkE1 = "~"+checkE1;
 		if(!(checkE1.equals(inference))){
+			System.out.println("this is where i fail");
 			return false;
 		}
 		return true;
