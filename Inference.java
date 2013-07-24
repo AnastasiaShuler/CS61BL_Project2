@@ -28,7 +28,6 @@ public class Inference {
 		String line1 = text[1];				//Get LineNumber 1
 		String line2 = text[2];				//Get LineNumber 2
 		String inference = text[3];			//Get inference
-		System.out.println("line1: " + line1 +"\nline2: " + line2 + "\ninference: " + inference);
 		ProofTree E1 = psf.get(line1).myTree;	//get the tree of line1
 		psf.get(line2);
 		ProofTree E2 = psf.get(line2).myTree;	//get the tree of line2
@@ -36,7 +35,6 @@ public class Inference {
 		//Check that E2 is of the form (E1=>E2)
 		if(!(E1.checkLeft(E2))){
 			if(!(E2.checkLeft(E1))){
-				System.out.println("I failed because my right side wasn't right");
 				return false;
 			} else{
 				//Switch the two expressions
@@ -74,24 +72,15 @@ public class Inference {
 		String line1 = text[1];					//Get lineNumber 1
 		String line2 = text[2];					//Get lineNumber 2
 		String inference = text[3];				//Get inference string
-		System.out.println("line1 is: " + line1);
-		System.out.println("line2 is: " + line2);
-		System.out.println("inference is: " + inference);
 		ProofTree E2 = psf.get(line1).myTree;	//Get the tree of line1
 		ProofTree E1 = psf.get(line2).myTree;	//Get the tree of line2
-		System.out.println("E1 is");
-		E1.print();
-		System.out.println("E2 is");
-		E2.print();
 		//Check that E1 or E2 has a root of '~'
 		if(!(E2.checkRoot("~"))){
 			if(!(E1.checkRoot("~"))){
 				//Neither root was '~'; invalid usage
-				System.out.println("I've failed because neither root is ~");
 				return false;
 			}else{
 				//Switch the two inputs
-				System.out.println("I should have gotten in here");
 				ProofTree temp = E1;
 				E1 = E2;
 				E2 = temp;
@@ -101,13 +90,11 @@ public class Inference {
 		//Check that right s.t. of E2 is same as right s.t. of E1
 		//Satisfies E2 and E1=>E2
 		if(!(E2.checkRightST(E1))){
-			System.out.println("I've failed here :(");
 			return false;
 		}
 		String checkE1 = E1.leftIs();
 		checkE1 = "~"+checkE1;
 		if(!(checkE1.equals(inference))){
-			System.out.println("this is where i fail");
 			return false;
 		}
 		return true;
@@ -124,15 +111,18 @@ public class Inference {
 	 *  @return Boolen Result of the check
 	 **/
 	public static boolean ic(String input, ProofSoFar psf) {
-		String[] text = input.split("\\s");
+		String[] text = input.split("\\s");	//Split along spaces
 		//text[0] contains "ic"
-		String line = text[1];
-		String inference = text[2];
-		String E1 = psf.get(line).myString;
+		String line = text[1];				//Get LineNumber
+		String inference = text[2];			//Get inference
+		String E1 = psf.get(line).myString;	//Get string of line
+		E1 = E1.replaceAll("\\)", "");
+		E1 = E1.replaceAll("\\(", "");		//Remove the () from E1
+		//Create a tree of inference
 		ProofTree t1 = ProofTree.createATree(inference);
-		String right = t1.rightIs();
-		return E1.equals(right);
-		
+		String right = t1.rightIs();		//right is a string of _only_ the right subtree
+		//return true if E1 is the same as the right side of the inference.
+		return E1.equals(right);			
 	}
 	
 	/**
@@ -146,13 +136,26 @@ public class Inference {
 	 *  @return Boolean Result of the check.
 	 **/
 	public static boolean co(String input, ProofSoFar psf){
-		String[] text = input.split("\\s");
+		String[] text = input.split("\\s");	//Split along spaces
 		//text[0] contains "co"
-		String line1 = text[1];
-		String line2 = text[2];
-		String inference = text[3];
+		String line1 = text[1];				//Get the first lineNumber
+		String line2 = text[2];				//Get the second lineNumber
+		String inference = text[3];			//get the inference
 		ProofTree E1 = psf.get(line1).myTree;
 		ProofTree E2 = psf.get(line2).myTree;
+		//Check to make sure one tree have a root of ~
+		if(!(E1.checkRoot("~"))){
+			if(!(E2.checkRoot("~"))){
+				//neither tree has a root of ~
+				return false;
+			}
+			//Switch the two inputs
+			ProofTree temp = E1;
+			E1 = E2;
+			E2 = temp;
+		}
+		//Check to make sure the right sides of the tree are the same
+		//Will check that two expressions are of the form E and ~E
 		return E1.checkRight(E2);
 		
 	}

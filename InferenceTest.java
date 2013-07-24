@@ -18,8 +18,6 @@ public class InferenceTest {
 		input = "mp 3.2.2.3 3.2.2.5 ~(a|b)";
 		Expression E3 = new Expression("~b");
 		Expression E4 = new Expression("(~b=>~(a|b))");
-		E3.myTree.print();
-		E4.myTree.print();
 		psf.add("3.2.2.3", E3);
 		psf.add("3.2.2.5", E4);
 		assertTrue(Inference.mp(input,psf));
@@ -40,9 +38,6 @@ public class InferenceTest {
 		String s= "mt 3.2.2.1 2 ~a";
 		Expression E3 = new Expression("~q");
 		psf.add("3.2.2.1", E3);
-		E3.myTree.print();
-		E2.myTree.print();
-		System.out.println("Start here");
 		assertTrue(Inference.mt(s, psf));
 		
 		input  = "mt 3.2.2.1 2 a";
@@ -93,7 +88,7 @@ public class InferenceTest {
 		assertTrue(Inference.co(input, psf));
 		
 		input = "co 3.2.2.6 4 a";
-		psf.add("4", new Expression("(a|b)"));
+		psf.add("4", new Expression("(a=>b)"));
 		//Should fail because I just made it up
 		assertFalse(Inference.co(input, psf));
 		
