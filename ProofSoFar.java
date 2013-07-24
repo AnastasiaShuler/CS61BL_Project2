@@ -1,16 +1,29 @@
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 /**
  *  ProofSoFar
  *  Data structure to hold the proof as it accumulates as a result of user input.
- *  Structured as an ArrayList of specialty LinkedLists
+ *  Its a Hashtable
  *  **METHODS**
- *  	add(lineNum, s) Adds new node containing line number and string s
- *  	find(lineNum) Returns the string associated to lineNum.
- *  	toString() Returns the enumeration of all elements in the structure.
- *  	
+ *  	add(lineNum, expr) Adds new node containing line number and string s
+ *  	get(lineNum) Returns the string associated to lineNum.
  **/
 public class ProofSoFar{
+	Hashtable<String,Expression> exprs;
+	
+	public ProofSoFar(){
+		exprs = new Hashtable<String, Expression>();
+	}
+	
+	public void add(String line, Expression expr){
+		exprs.put(line, expr);
+	}
+	
+	public Expression get(String line){
+		return exprs.get(line);
+	}
+	/*
 	ArrayList<ProofLineList> mainNums;
 	
 	public ProofSoFar(){
@@ -160,5 +173,6 @@ public class ProofSoFar{
 			return myExpression;
 		}
 	}
+	*/
 	
 }

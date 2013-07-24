@@ -22,8 +22,10 @@ import java.util.*;
  * 		createATree(expression) Creates a ProofTree of the given expression.
  * 		equals() Returns true if two ProofTree objects are equal.
  * 		isEqual() Returns true if two ProofTree subtrees are equal.
+ * 		**checkRoot() Checks if root is equivelent to argument.
  *		**checkLeft() Checks to see if left subtree matches argument.
  *		**checkRight() Checks to see if right subtree matches argument.
+ *		**checkRightST() Checks right subtrees for equality.
  *		**rightIs() Returns a string of the right subtree.
  *		**leftIs() Returns a string of the left subtree.
  * 
@@ -318,6 +320,16 @@ public class ProofTree {
 	}
 	
 	/**
+	 *  checkRoot() Checks the root for equality with the argument
+	 *  
+	 *  @param Object Object to check equality with.
+	 *  @return Boolean Result of the check.
+	 **/
+	public boolean checkRoot(Object obj){
+		return myRoot.equals(obj);
+	}
+	
+	/**
 	 *  checkLeft() Checks if left subtree is equivalent to argument.
 	 *  
 	 *  @param t ProofTree to check left subtree against.
@@ -335,6 +347,16 @@ public class ProofTree {
 	 **/
 	public boolean checkRight(ProofTree t){
 		return ProofTree.isEqual(myRoot.myRight, t.myRoot);
+	}
+	
+	/**
+	 *  checkRightST() checks to see if two right subtrees are equal.
+	 *  
+	 *  @param t ProofTree to check for right s.t. equality.
+	 *  @return Boolean Result of the check.
+	 **/
+	public boolean checkRightST(ProofTree t){
+		return ProofTree.isEqual(myRoot.myRight, t.myRoot.myRight);
 	}
 	
 	/**
