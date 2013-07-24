@@ -33,12 +33,15 @@ public class Inference {
 		ProofTree E2 = psf.get(line2).myTree;
 		//Check that E1 is a single expression
 		//Check that E2 is of the form (E1=>E2)
-		if(!(E2.checkLeft(E1))){
+		if(!(E1.checkLeft(E2))){
 			return false;
 		}
-		String checkE2 = E2.rightIs();
+		String checkE2 = E2.printInOrder(E2.myRoot);
 		//will need to pull ()'s off of E2
-		if(!(checkE2.equals(E2))){
+		inference = inference.replaceAll("\\(", "");
+		inference = inference.replaceAll("\\)", "");
+		String checkInference = E1.rightIs();
+		if(!(checkInference.equals(inference))){
 			return false;
 		}
 		return true;
@@ -63,8 +66,10 @@ public class Inference {
 		String inference = text[3];
 		//get() returns expression objects
 		ProofTree E2 = psf.get(line1).myTree;
+		E2.print();
 		ProofTree E1 = psf.get(line2).myTree;
 		if(!(E2.checkRoot("~"))){
+			System.out.println("I failed cuz root wasn't ~");
 			return false;
 		}
 		//get right subtree of E2; will be everything but ~
@@ -73,7 +78,6 @@ public class Inference {
 			return false;
 		}
 		String checkE1 = E1.leftIs();
-		checkE1 = "~ " + checkE1;
 		if(!(checkE1.equals(inference))){
 			return false;
 		}

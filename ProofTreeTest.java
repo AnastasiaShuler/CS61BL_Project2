@@ -7,6 +7,7 @@
  **/
 
 import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 public class ProofTreeTest {
@@ -24,7 +25,7 @@ public class ProofTreeTest {
 		//Test the 1 argument constructor
 		tree = new ProofTree(1);
 		s = tree.printInOrder(tree.myRoot);
-		assertEquals("1 ", s);
+		assertEquals("1", s);
 	}
 	
 	/**
@@ -36,13 +37,13 @@ public class ProofTreeTest {
 		tree.add(2,1, "left");
 		tree.add(3,1, "right");
 		String s = tree.printInOrder(tree.myRoot);
-		assertEquals("2 1 3 ", s); 			//check a tree of depth 2
+		assertEquals("213", s); 			//check a tree of depth 2
 		tree.add(4,2,"left");
 		tree.add(5,2,"right");
 		tree.add(6,3,"left");
 		tree.add(7,3,"right");
 		s = tree.printInOrder(tree.myRoot);
-		assertEquals("4 2 5 1 6 3 7 ", s); 	//check a tree of depth 3
+		assertEquals("4251637", s); 	//check a tree of depth 3
 	}
 	
 	/**
@@ -53,12 +54,12 @@ public class ProofTreeTest {
 		//Test a one-node tree
 		ProofTree tree = new ProofTree('a');
 		String s = tree.printInOrder(tree.myRoot);
-		assertEquals("a ", s);
+		assertEquals("a", s);
 		//Test balanced 3-node tree
 		tree.add('b', 'a', "left");
 		tree.add('c', 'a', "right");
 		s = tree.printInOrder(tree.myRoot);
-		assertEquals("b a c ", s);
+		assertEquals("bac", s);
 		
 		//Test a balanced tree of depth=3
 		tree.add('d', 'b', "left");
@@ -66,22 +67,22 @@ public class ProofTreeTest {
 		tree.add('f', 'c', "left");
 		tree.add('g', 'c', "right");
 		s = tree.printInOrder(tree.myRoot);
-		assertEquals("d b e a f c g ", s);
+		assertEquals("dbeafcg", s);
 		
 		//Test unbalanced tree;
 		tree.add('h', 'd', "left");
 		s = tree.printInOrder(tree.myRoot);
-		assertEquals("h d b e a f c g ", s);
+		assertEquals("hdbeafcg", s);
 		
 		//Test unbalanced tree;
 		tree.add('i', 'g', "right");
 		s = tree.printInOrder(tree.myRoot);
-		assertEquals("h d b e a f c g i ", s);
+		assertEquals("hdbeafcgi", s);
 		
 		//Test random single child in middle
 		tree.add('j', 'f', "left");
 		s = tree.printInOrder(tree.myRoot);
-		assertEquals("h d b e a j f c g i ", s);
+		assertEquals("hdbeajfcgi", s);
 		
 		//Tests an emptyp tree;
 		tree = new ProofTree();
@@ -130,7 +131,7 @@ public class ProofTreeTest {
 	 *  testContains() Tests the contains() method of the ProofTree class.
 	 **/
 	@Test
-	public void testContaions(){
+	public void testContains(){
 		ProofTree t = new ProofTree('A');
 		t.add('B', 'A', "left");
 		t.add('C', 'A', "right");
@@ -139,7 +140,7 @@ public class ProofTreeTest {
 		t.add('F', 'C', "left");
 		t.add('G', 'C', "right");
 		String s = t.printInOrder(t.myRoot);
-		assertEquals("D B E A F C G ", s);
+		assertEquals("DBEAFCG", s);
 		assertTrue(t.contains('G'));	//check for deepest right child
 		assertTrue(t.contains('A'));	//check for root
 		assertTrue(t.contains('F'));	//check for left child
@@ -182,6 +183,35 @@ public class ProofTreeTest {
 		t1 = ProofTree.createATree(expr);
 		assertFalse(t1.equals(t2));
 		assertFalse(t2.equals(t1));
+	}
+	
+	@Test
+	public void testCheckLeft(){
+		ProofTree t1 = ProofTree.createATree("(~a=>(~b=>~(b|b)))");
+		t1.print();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		ProofTree t2 = ProofTree.createATree("~a");
+		t2.print();
+		assertTrue(t1.checkLeft(t2));
+		System.out.println("This is my output " + t2.printInOrder(t2.myRoot));
+		System.out.println("This is my output " + t1.printInOrder(t1.myRoot));
+	}
+	
+	@Test
+	public void testCheckRoot(){
+		ProofTree t1 = ProofTree.createATree("~q");
+		t1.print();
+		assertTrue(t1.checkRoot("~"));
+		
+	}
+	
+	@Test
+	public void testCheckRightST(){
+		ProofTree t1 = ProofTree.createATree("~q");
+		ProofTree t2 = ProofTree.createATree("(a=>q)");
+		assertTrue(t1.checkRightST(t2));
 	}
 	
 }

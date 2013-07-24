@@ -123,7 +123,7 @@ public class ProofTree {
 	
 	/**
 	 *  printInOrder() Prints the ProofTree using an inOrder traversal.
-	 *  The result is of the form "b a c d ";
+	 *  The result is of the form "bacd";
 	 *  NOTE: does not print parenthesis
 	 *  
 	 *  @param x TreeNode to start the traversal from.
@@ -132,7 +132,7 @@ public class ProofTree {
 	public String printInOrder(TreeNode x){
 		String s = "";
 		if(x != null){
-			s += printInOrder(x.myLeft) + x.myItem + " " + printInOrder(x.myRight) ;
+			s += printInOrder(x.myLeft) + x.myItem + "" + printInOrder(x.myRight) ;
 		}
 		return s ;
 	}
@@ -326,7 +326,7 @@ public class ProofTree {
 	 *  @return Boolean Result of the check.
 	 **/
 	public boolean checkRoot(Object obj){
-		return myRoot.equals(obj);
+		return myRoot.myItem.equals(obj);
 	}
 	
 	/**
