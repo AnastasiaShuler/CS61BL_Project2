@@ -1,7 +1,14 @@
 import junit.framework.TestCase;
 
 public class FormatTest extends TestCase {
-  public void testKeywords () {
+	
+	public void testSingleExprs() {
+		Format a = new Format();
+		String [] ex1 = new String[] {"(p=>q)"};
+		assertTrue(a.checkFormat(ex1));
+	}
+	
+	public void testKeywords () {
 		Format a = new Format();
 		String [] ex1 = new String [] {"mp", "2.1.3", "2.3.3", "(p=>q)"};
 		assertTrue(a.checkFormat(ex1));
@@ -24,7 +31,8 @@ public class FormatTest extends TestCase {
 		String [] ex3 = new String [] {"Beavis", "(p=>q)"};
 		assertFalse(b.checkFormat(ex3));
 		String [] ex4 = new String [] {"Beavis(p=>q)"};
-		assertFalse(b.checkFormat(ex4));
+		//technically not true, but since only one part, this case is checked by Expression.
+		assertTrue(b.checkFormat(ex4));
 	}
 	
 	public void testTheoremName() {
