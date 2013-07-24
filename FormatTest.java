@@ -43,11 +43,18 @@ public class FormatTest extends TestCase {
 	
 	public void testCheckExpressions(){
 		Format check = new Format();
-		
+		//checks empty input
+		Expression a = new Expression("");
+		assertFalse(check.expressionValidity(a));
 		//checks null input
-		//Expression a = new Expression(null);
-		//assertFalse(check.expressionValidity(a));
-		
+		try{
+			Expression nullTry = new Expression(null);
+			assertFalse(check.expressionValidity(nullTry));
+			//aware that the assertFalse is not necessary 
+			//because the error emerges when null is input into Expression object
+		} catch (NullPointerException e){
+			System.out.println("Expression cannot be null.");
+		}
 		//checks expression with a length of one
 		Expression b = new Expression("p");
 		assertTrue(check.expressionValidity(b));
@@ -68,9 +75,16 @@ public class FormatTest extends TestCase {
 		assertFalse(check.expressionValidity(h));
 		Expression i = new Expression ("t~");
 		assertFalse(check.expressionValidity(i));
-		Expression j = new Expression ("(p=>q)");
-		assertTrue(check.expressionValidity(j));
 		
+		//checking larger expressions
+		Expression one = new Expression ("(p=>q)");
+		assertTrue(check.expressionValidity(one));
+		Expression two = new Expression("(q=>q)");
+		assertTrue(check.expressionValidity(two));
+		Expression three = new Expression("(~(p=>q)");
+		assertTrue(check.expressionValidity(three));
+		//Expression two = new Expression ("");
+		//assertTrue(check.expressionValidity(two));
 	}
 	
 }
