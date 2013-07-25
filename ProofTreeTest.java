@@ -231,29 +231,61 @@ public class ProofTreeTest {
 		
 		ProofTree t1 = new ProofTree();
 		ProofTree t2 = new ProofTree();
-		assertTrue(t1.isSimilar(t2));
+		try{
+			assertTrue(t1.isSimilar(t2));
+		} catch (IllegalInferenceException exc){
+			fail();
+		}
 		
 		t1 = ProofTree.createATree("(q=>q)");
 		t2 = ProofTree.createATree("(q=>q)");
-		assertTrue(t1.isSimilar(t2));
+		try{
+			assertTrue(t1.isSimilar(t2));
+		} catch (IllegalInferenceException exc){
+			fail();
+		}	
 		
 		t2 = ProofTree.createATree("((a|b)=>(a|b))");
-		assertTrue(t1.isSimilar(t2));
+		try{
+			assertTrue(t1.isSimilar(t2));
+		} catch(IllegalInferenceException exc){
+			fail();
+		}
 		
 		t2 = ProofTree.createATree("((q=>q)=>(q=>q))");
 		t2.print();
-		assertTrue(t1.isSimilar(t2));
+		try{
+			assertTrue(t1.isSimilar(t2));
+		} catch(IllegalInferenceException exc){
+			fail();
+		}
 		
 		t2 = ProofTree.createATree("(a=>(q=>q))");
-		assertFalse(t1.isSimilar(t2));
+		try{
+			assertFalse(t1.isSimilar(t2));
+			assertFalse(true);
+		} catch(IllegalInferenceException exc){
+			System.out.println(exc.getMessage());
+			assertTrue(true);
+		}
 		
 		t1 = ProofTree.createATree("(~p=>(~q=>~(p|q)))");
 		t2 = ProofTree.createATree("(~a=>(~b=>~(a|b)))");
-		assertTrue(t1.isSimilar(t2));
+		try{
+			assertTrue(t1.isSimilar(t2));
+		} catch(IllegalInferenceException exc){
+			fail();
+		}
 		
 		t1 = ProofTree.createATree("(b=>q)");
 		t2 = ProofTree.createATree("(z=>z)");
-		assertFalse(t1.isSimilar(t2));
+		try{
+			assertFalse(t1.isSimilar(t2));
+			assertFalse(true);
+		} catch(IllegalInferenceException exc){
+			System.out.println(exc.getMessage());
+			assertTrue(true);
+		}
 		
 		
 	}

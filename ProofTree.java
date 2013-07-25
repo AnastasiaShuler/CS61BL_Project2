@@ -7,22 +7,19 @@
  **/
 
 import java.util.*;
+
 /**
  *  ProofTree
  * 	The ProofTree class implements a binary tree to store the logical expressions of 
  * 	the proof checker.
  * 	**METHODS**
  * 		ProofTree() constructs an empty ProofTree.
- * 		ProofTree(obj) Creates a ProofTree with the given object as the root node.
- * 		add(obj, parentItem, childSide) Adds a child node to desired parent on the desired side.
- * 		contains(obj) Searches the tree for a given value.
  * 		print() Prints the tree in a visual format.
  * 		printInOrder() Prints the values stored in the tree in an inorder fashion.
- * 		height(node) Returns the height of a given node.
  * 		createATree(expression) Creates a ProofTree of the given expression.
  * 		equals() Returns true if two ProofTree objects are equal.
  * 		isEqual() Returns true if two ProofTree subtrees are equal.
- * 		checkRoot() Checks if root is equivelent to argument.
+ * 		checkRoot() Checks if root is equivalent to argument.
  *		checkLeft() Checks to see if left subtree matches argument.
  *		checkRight() Checks to see if right subtree matches argument.
  *		checkRightST() Checks right subtrees for equality.
@@ -35,7 +32,8 @@ import java.util.*;
  *  **METHODS**
  *  	TreeNode(obj) Create a TreeNode with the given object.
  *  	TreeNode(obj, parent) Creates a TreeNode with the given object and given parent.
- *  	TreeNode(obj, parent, left, right) Creates a TreeNode with the given object, parent, and children.
+ *  	TreeNode(obj, parent, left, right) Creates a TreeNode with the given object,
+ *  		 parent, and children.
  * 
  *  ProofTreeIterator
  *  The ProofTreeIterator class implements the Iterator interface;
@@ -60,58 +58,7 @@ public class ProofTree {
 		myRoot = null;
 	}
 	
-	/**
-	 *  ProofTree() Initializes a new ProofTree with one node.
-	 *  
-	 *  @param obj Object to be added to the tree.
-	 **/
-	public ProofTree(Object obj){
-		myRoot = new TreeNode(obj);
-	}
-	
 	//Methods
-	/**
-	 *  add() Adds a single node to the ProofTree.
-	 *  Behavior for a non-existing parent node is currently undefined
-	 *  
-	 *  @param obj Object to be added to the ProofTree.
-	 *  @param parentItem Parent of the node to be added.
-	 *  @param childSide String (either "left" or "right").
-	 **/
-	public void add(Object obj, Object parentItem, String childSide){
-		Iterator<TreeNode> iter = ProofTreeIterator(myRoot);
-		while(iter.hasNext()){
-			TreeNode curr = iter.next();
-			if(curr.myItem.equals(parentItem)){
-				TreeNode toAdd = new TreeNode(obj, curr);
-				if(childSide.equals("left")){
-					curr.myLeft = (toAdd);
-				} else if (childSide.equals("right")){
-					curr.myRight = (toAdd);
-				}
-
-			}
-		}
-		//Element has not been found in the tree; throw an exception??
-	}
-	
-	/**
-	 *  contains() Searches the tree for a given Object;
-	 *  Returns true if the given value is found in the ProofTree.
-	 *  
-	 *  @param obj Object to search for in the tree.
-	 *  @return found Boolean; true if given value is found in tree.
-	 **/
-	public boolean contains(Object obj){
-		//Set up tree iterator
-		Iterator<TreeNode> iter = this.preOrderIterator();
-		//iterate and check each node for correct value
-		while(iter.hasNext()){
-			if(iter.next().myItem.equals(obj)) return true;
-		}
-		return false;
-	}
-	
 	/**
 	 *  preOrderIterator() Creates a new preorder iterator.
 	 * 	
@@ -182,23 +129,6 @@ public class ProofTree {
 			System.out.print(INDENT1);
 		}
 		System.out.println(obj);
-	}
-	
-	/**
-	 *  height() Returns the height of a given TreeNode in tree.
-	 *  
-	 *  @param x TreeNode to find the height of.
-	 *  @return Height of the given TreeNode.
-	 **/
-	public int height(TreeNode x){
-		if(x == null){
-			return 0;
-		}
-		else{
-			int leftHeight = height(x.myLeft) + 1;
-			int rightHeight = height(x.myRight) + 1;
-			return Math.max(leftHeight, rightHeight);
-		}
 	}
 	
 	/**
@@ -390,18 +320,21 @@ public class ProofTree {
 	 *  @param t ProofTree to check for similarity
 	 *  @return Boolean Result of the similarity check.
 	 **/
-	public boolean isSimilar(ProofTree t){
+	public boolean isSimilar(ProofTree t) throws IllegalInferenceException{
 		Hashtable<String, String> ht= new Hashtable<String, String>();
 		boolean result = isSimilarHelper(myRoot, t.myRoot, ht, t);
 		if(!result) return false;
 		//Need to check that each value in hashtable is different
 		//ie: a->b and c->b is an invalid relationship
-		Collection<String> vals = ht.values();
-		Object[] values = vals.toArray();
-		for(int i=0; i<values.length; i++){
-			for(int j=i+1; j<values.length; j++){
-				if(values[i].equals(values[j])){
-					return false;
+		Set<String> keySet = ht.keySet();
+		Object[] keys= keySet.toArray();
+		for(int i=0; i<keys.length; i++){
+			for(int j=i+1; j<keys.length; j++){
+				if(ht.get(keys[i]).equals(ht.get(keys[j]))){
+					//Two keys have the same value
+					//Throw exception: *** Bad theorem application : a=b, c=b
+					throw new IllegalInferenceException("*** Bad theorem application: "  + 
+							keys[i] + "=" + ht.get(keys[i]) + ", " + keys[j] + "=" + ht.get(keys[j]));
 				}
 			}
 		}
@@ -418,34 +351,29 @@ public class ProofTree {
 	 *  @param t ProofTree to check for similarity
 	 *  @return boolean Result of the comparison.
 	 **/
-	public static boolean isSimilarHelper(TreeNode thrmRoot, TreeNode inputRoot, Hashtable<String, String> relations, ProofTree t){
+	public static boolean isSimilarHelper(TreeNode thrmRoot, TreeNode inputRoot, Hashtable<String, String> relations, ProofTree t)
+		throws IllegalInferenceException{
 		if(thrmRoot == null){
 			if(inputRoot == null){
-				System.out.println("Shouldn't print first");
 				return true;
 			}
-			System.out.println("Failing because roots didn't match");
 			return false;
 		}
 		if(thrmRoot.myLeft != null && thrmRoot.myRight != null){
-			System.out.println("This should print");
 			if(!(thrmRoot.myItem.equals(inputRoot.myItem))){
-				System.out.println("I'm failing here");
 				return false;
 			}
 		} else{
 			String key = (String) thrmRoot.myItem;
 			String value = t.printInOrder(inputRoot);
-			System.out.println("the key is: " + key + "\nthe value is: " + value);
 			if(relations.get(key) == null){
-				System.out.println("I added the pair to the table");
 				//Key is not already in the table
 				relations.put(key, value);
 			} else{
-				String check =relations.get(key);
+				String check = relations.get(key);
 				if (!(check.equals(value))){
-					System.out.println("I fail here");
-					return false;
+					throw new IllegalInferenceException("*** Bad theorem application: " + 
+							key + "=" + relations.get(key) + "," + key + "=" + value);
 				}
 			}
 		}
@@ -461,9 +389,9 @@ public class ProofTree {
 			return false;
 		} else
 		return true;
-	}
+	} 
 	
-	
+	//End of ProofTree methods
 	
 	/**
 	 *  TreeNode
@@ -585,7 +513,7 @@ public class ProofTree {
 		
 		/**
 		 *  remove() Removes the current element from the tree.
-		 *  Will not implement (at least for now).
+		 *  Not supported.
 		 **/
 		public void remove(){
 			//May or may not implement.

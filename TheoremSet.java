@@ -14,7 +14,7 @@ public class TheoremSet {
 	}
 	
 	
-	public boolean theoremChecker(String thrmName, String input){
+	public boolean theoremChecker(String thrmName, String input) throws IllegalInferenceException{
 		Expression thrm = new Expression(thrmName);
 		Expression check = new Expression(input);
 		return thrm.myTree.isSimilar(check.myTree);
