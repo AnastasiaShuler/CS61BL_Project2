@@ -40,4 +40,54 @@ public class FormatTest extends TestCase {
 		String [] ex1 = new String [] {"patsy", "(~p=>q)"};
 		assertTrue(c.checkFormat(ex1));
 	}
+<<<<<<< HEAD
+=======
+	
+	public void testCheckExpressions(){
+		Format check = new Format();
+		//checks empty input
+		Expression a = new Expression("");
+		assertFalse(check.expressionValidity(a));
+		//checks null input
+		try{
+			Expression nullTry = new Expression(null);
+			assertFalse(check.expressionValidity(nullTry));
+			//aware that the assertFalse is not necessary 
+			//because the error emerges when null is input into Expression object
+		} catch (NullPointerException e){
+			System.out.println("Expression cannot be null.");
+		}
+		//checks expression with a length of one
+		Expression b = new Expression("p");
+		assertTrue(check.expressionValidity(b));
+		//expressions with a length of one can only be variables
+		Expression c = new Expression("8");
+		assertFalse(check.expressionValidity(c));
+		//checks expression with a length of 2
+		Expression d = new Expression ("~p");
+		assertTrue(check.expressionValidity(d));
+		//expressions with a length of 2 can only be in the format: '~variable'
+		Expression e = new Expression ("89");
+		assertFalse(check.expressionValidity(e));
+		Expression f = new Expression ("~8");
+		assertFalse(check.expressionValidity(f));
+		Expression g = new Expression("~~");
+		assertFalse(check.expressionValidity(g));
+		Expression h = new Expression("8t");
+		assertFalse(check.expressionValidity(h));
+		Expression i = new Expression ("t~");
+		assertFalse(check.expressionValidity(i));
+		
+		//checking larger expressions
+		Expression one = new Expression ("(p=>q)");
+		assertTrue(check.expressionValidity(one));
+		Expression two = new Expression("(q=>q)");
+		assertTrue(check.expressionValidity(two));
+		Expression three = new Expression("(~(p=>q)");
+		assertTrue(check.expressionValidity(three));
+		//Expression two = new Expression ("");
+		//assertTrue(check.expressionValidity(two));
+	}
+	
+>>>>>>> a3130b935956f222a994261bfe0718da7f7c050f
 }
