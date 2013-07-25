@@ -1,1 +1,1 @@
-an (a|b)=>c
+not-or-creation (~p=>(~q=>~(p|q)))

@@ -80,14 +80,38 @@ public class LineNumber {
 		return this.toString();
 	}
 	
+	public String getPrevious(){
+		String result = "";
+		if(numbers.size() != 1){
+			result = "" + numbers.get(0);
+			for(int i=1; i<numbers.size() - 1; i++){
+				result = result + "." + numbers.get(i);
+			}
+			int last = numbers.get(numbers.size()-1);
+			if(last != 1){
+				result += "." + (last-1);
+			}
+		} else{
+			result += ((numbers.get(numbers.size()-1))-1);
+		}
+		return result;
+	}
 	/**
 	 *  size() returns the size of the line object
-	 *  ie: How many sub numberings are active
 	 *  
 	 *  @return int Size of LineNumber
 	 **/
 	public int size(){
 		return numbers.size();
+	}
+	
+	/**
+	 *  prev() Decrements the line number;
+	 **/
+	public String prev(){
+		Integer newNum = numbers.get(numbers.size()-1) - 1;
+		numbers.set(numbers.size()-1, newNum);
+		return this.toString();
 	}
 	
 	/**

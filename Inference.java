@@ -1,4 +1,5 @@
 
+import java.util.Hashtable;
 /**
  *  Inference
  *  Contains methods to check the validity of inferences
@@ -18,10 +19,10 @@ public class Inference {
 	 *  	Inference must be E2.
 	 *	
 	 *	@param input The user input that calls the mp() method.
-	 *	@param psf ProofSoFar object.
+	 *	@param psf Hashtable<String,Expression> object.
 	 *	@return Boolean True if the inference is valid.
 	 **/
-	public static boolean mp(String input, ProofSoFar psf){
+	public static boolean mp(String input, Hashtable<String, Expression> psf){
 		//Input is of the form: mp [line#] [line#] [inference]
 		String[] text = input.split("\\s");	//Split the input along spaces
 		//text[0] will be mp;
@@ -63,10 +64,10 @@ public class Inference {
 	 *  	Inference must be ~E1
 	 *  
 	 *  @param input The user input that calls the mt() method.
-	 *  @param psf ProofSoFar object.
+	 *  @param psf Hashtable<String,Expression> object.
 	 *  @return Boolean Result of the check.
 	 **/
-	public static boolean mt(String input, ProofSoFar psf){
+	public static boolean mt(String input, Hashtable<String, Expression> psf){
 		String[] text = input.split("\\s");		//Split the input along spaces
 		//text[0] will be "mt"
 		String line1 = text[1];					//Get lineNumber 1
@@ -109,10 +110,10 @@ public class Inference {
 	 *  	Inference must be E1=>E2 for any E1
 	 *  
 	 *  @param input String of user input that calls the ic() method
-	 *  @param psf ProofSoFar object
+	 *  @param psf Hashtable<String,Expression> object
 	 *  @return Boolen Result of the check
 	 **/
-	public static boolean ic(String input, ProofSoFar psf) {
+	public static boolean ic(String input, Hashtable<String, Expression> psf) {
 		String[] text = input.split("\\s");	//Split along spaces
 		//text[0] contains "ic"
 		String line = text[1];				//Get LineNumber
@@ -137,7 +138,7 @@ public class Inference {
 	 *  @param input String of user input that calls the co() method.
 	 *  @return Boolean Result of the check.
 	 **/
-	public static boolean co(String input, ProofSoFar psf){
+	public static boolean co(String input, Hashtable<String, Expression> psf){
 		String[] text = input.split("\\s");	//Split along spaces
 		//text[0] contains "co"
 		String line1 = text[1];				//Get the first lineNumber
@@ -160,5 +161,28 @@ public class Inference {
 		//Will check that two expressions are of the form E and ~E
 		return E1.checkRight(E2);
 		
+	}
+	
+	public static boolean assume(String input, String previousLine, Hashtable<String, Expression> exprs) 
+				throws IllegalInferenceException{
+		String[] usrInput = previousLine.split("\\s");
+		if(!(usrInput[0].equals("show"))){
+			throw new IllegalInferenceException("*** Can only assume after a 'show' statement");
+		}
+		//The expression from the show statement
+		String[] check = input.split("\\s");
+		String assumption = check[1];
+		Expression expr = new Expression(usrInput[1]);
+		assumption = assumption.replaceAll("\\(", "");
+		assumption = assumption.replaceAll("\\)", "");		//Extract assumption without parens
+		String possAssum = "";
+		possAssum = expr.myTree.leftIs();
+		if(!(possAssum.equals(assumption))){
+			possAssum = "~" + usrInput[1];
+			if(!(possAssum.equals(assumption))){
+				throw new IllegalInferenceException("*** Illegal assumption");
+			}
+		}
+		return true;
 	}
 }

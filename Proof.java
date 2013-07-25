@@ -5,12 +5,11 @@ import java.util.*;
  **/
 public class Proof {
 	//instance variables
-	boolean beginProof;
-	boolean finishProof;
+	boolean beginProof, finishProof, firstShow;
 	LineNumber line;
 	ArrayList<Step> soFar;
-	static ProofSoFar psf;	//Static because we only want one Hashtable
-	boolean firstShow;
+	Hashtable<String, Expression> exprs;
+	Hashtable<String, String> inputs;
 	TheoremSet myTheorems;
 	
 
@@ -19,8 +18,8 @@ public class Proof {
 		beginProof = true;
 		finishProof = false;
 		line = new LineNumber(beginProof, finishProof);
-		soFar = new ArrayList<Step>();
-		psf = new ProofSoFar();
+		inputs = new Hashtable<String, String>();
+		exprs = new Hashtable<String, Expression>();
 		firstShow = true;
 		myTheorems = theorems;
 	}
@@ -31,7 +30,10 @@ public class Proof {
 	}
 	
 	public void extendProof (String x) throws IllegalLineException, IllegalInferenceException {
+		//This will replace all groups of spaces with a single space
+		//String after = before.trim().replaceAll(" +", " ");
 		System.out.println(x);
+		inputs.put(line.getCurrent(), x);
 		ParenCheck pc = new ParenCheck();
 		if(!(pc.checkParens(x))){
 			throw new IllegalLineException("Your parenthesis don't match up");
@@ -42,21 +44,29 @@ public class Proof {
 		//evaluating inferences
 		Boolean  validAssumption= true;
 		if(parts[0].equals("mp")) { // something about modus ponens
-			validAssumption = Inference.mp(x, psf);
+			validAssumption = Inference.mp(x, exprs);
 		}
 		else if(parts[0].equals("mt")) {
-			validAssumption= Inference.mt(x, psf);
+			validAssumption= Inference.mt(x, exprs);
 		}
 		else if(parts[0].equals("ic")) {
-			validAssumption= Inference.ic(x, psf);
+			validAssumption= Inference.ic(x, exprs);
 		}
 		else if(parts[0].equals("co")) {
-			validAssumption = Inference.co(x, psf);
+			validAssumption = Inference.co(x, exprs);
 		}
 		//evaluating reasons
 		else if(parts[0].equals("assume")) {
-			String nextLine = line.getCurrent();
-			psf.add(nextLine, new Expression(parts[1]));
+			String prevLine = line.getPrevious();	//get previous line number
+			String previousLine = inputs.get(prevLine);	//get previous line input
+			try{
+				Inference.assume(x, previousLine,exprs);
+			} catch(IllegalInferenceException exc){
+				line.prev();	//Need to decrement the line number;
+				//Now throw the exception again
+				throw new IllegalInferenceException(exc.getMessage());
+			}
+			exprs.put(line.getCurrent(), new Expression(parts[1]));
 		}
 		else if(parts[0].equals("show")) {
 			if(firstShow){
@@ -67,18 +77,18 @@ public class Proof {
 			}
 			line.setBeginProof(beginProof);
 			String lineNum = line.getCurrent();
-			psf.add(lineNum, new Expression(parts[1]));
+			exprs.put(lineNum, new Expression(parts[1]));
 		}
 		//misc stuff
 		else if(parts[0].equals("repeat")) {
 			//something about repeat
 			String lineNum = line.getCurrent();
-			Expression expr = psf.get(parts[1]);
-			psf.add(lineNum, expr);
+			Expression expr = exprs.get(parts[1]);
+			exprs.put(lineNum, expr);
 		}
 		else if(parts[0].equals("print")) {
 			String lineNum = line.getCurrent();
-			psf.add(lineNum, new Expression(parts[0]));
+			exprs.put(lineNum, new Expression(parts[0]));
 			//System.out.println(toString());
 		}
 		else{
@@ -86,10 +96,11 @@ public class Proof {
 			//myTheorems.get(theoremName);
 		}
 		if(validAssumption){
-			psf.add(line.getCurrent(), new Expression(parts[parts.length -1]));
+			exprs.put(line.getCurrent(), new Expression(parts[parts.length -1]));
 			
 		} else{
-			throw new IllegalInferenceException("*** Invalid Assumption");
+			line.prev();
+			throw new IllegalInferenceException("*** Bad inference");
 		}
 			
 			/*
@@ -142,8 +153,8 @@ public class Proof {
 		else if(line.size() == 1){
 			
 			//Check that the it matches the first line.
-			String check = psf.get("1").myString;
-			String input = psf.get(line.getCurrent()).myString;
+			String check = exprs.get("1").myString;
+			String input = exprs.get(line.getCurrent()).myString;
 			return (check.equals(input));
 			
 		} else{
@@ -151,8 +162,8 @@ public class Proof {
 			//number of subproofs
 			String currentLine = line.getCurrent();
 			String checkLine = currentLine.substring(0, currentLine.length() -2);
-			String input = psf.get(currentLine).myString;
-			String check = psf.get(checkLine).myString;
+			String input = exprs.get(currentLine).myString;
+			String check = exprs.get(checkLine).myString;
 			 if(check.equals(input)){
 				 line.setFinishProof(true);
 			 }
