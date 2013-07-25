@@ -1,7 +1,5 @@
-
 public class Format {
-
-
+	
 	/*
 	 * This class checks user input for overall validity. 
 	 * For example, input beginning with "mp" must have
@@ -9,14 +7,14 @@ public class Format {
 	 */
 
 	public boolean checkFormat (String [ ] parts) {
-
+		
 		if (parts.length == 1) {
 			/*
 			 * if only 1 "part," then let it be checked by Expression.
 			 */
 			return true;
 		}
-
+		
 		if (parts.length > 1) {
 			/*
 			 * if there are more than one parts in an expression, 
@@ -27,7 +25,7 @@ public class Format {
 				parts[0].equals("assume")) { /* || !parts[0].equals("TheoremName" how to handle cases of theorem names?*/
 				return true;
 			}
-
+			
 			if (parts[0].equals("mp") || parts[0].equals("co")) {
 				/*
 				 * These two keywords should have the same format of
@@ -47,13 +45,13 @@ public class Format {
 					return false;*/
 				}
 			}
-
+			
 			if (parts[0].equals("ic")) {
 				if (parts.length == 3) {
 					return true;
 				}
 			}
-
+			
 			if (parts[0].equals("show") 
 			 || parts[0].equals("assume")
 			 /*|| parts[0].equals("Theorem name") either check for 
@@ -65,43 +63,4 @@ public class Format {
 		}
 		return false;
 	}
-
-		
-	public boolean expressionValidity (Expression e){
-		if (expressionValidityHelper(e.myString)){
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public boolean expressionValidityHelper(String expr){
-		if (expr == null || expr.length() == 0){
-			//checks a null input
-			return false;
-			
-		} else if (expr.length() == 1){
-			//if an expression has a length of 1, the only valid expression is a single variable
-			if (Character.isLetter(expr.charAt(0))){
-				return true;
-			} else {
-			return false;
-			}
-			
-		} else if (expr.length() == 2){
-			//if an expression has a length of 2, the only valid expression is ~variable
-			if (expr.charAt(0) == '~' && Character.isLetter(expr.charAt(1))){
-				return true;
-			} else {
-			return false;
-				}
-		
-		} else {
-			if (expr.charAt(0) != '(' || expr.charAt(0) != '~'){
-				return false;
-			} else {
-				return true;
-			}
-		}
-	}
-
+}

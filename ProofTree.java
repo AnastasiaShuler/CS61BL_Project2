@@ -22,12 +22,13 @@ import java.util.*;
  * 		createATree(expression) Creates a ProofTree of the given expression.
  * 		equals() Returns true if two ProofTree objects are equal.
  * 		isEqual() Returns true if two ProofTree subtrees are equal.
- * 		**checkRoot() Checks if root is equivelent to argument.
- *		**checkLeft() Checks to see if left subtree matches argument.
- *		**checkRight() Checks to see if right subtree matches argument.
- *		**checkRightST() Checks right subtrees for equality.
- *		**rightIs() Returns a string of the right subtree.
- *		**leftIs() Returns a string of the left subtree.
+ * 		checkRoot() Checks if root is equivelent to argument.
+ *		checkLeft() Checks to see if left subtree matches argument.
+ *		checkRight() Checks to see if right subtree matches argument.
+ *		checkRightST() Checks right subtrees for equality.
+ *		rightIs() Returns a string of the right subtree.
+ *		leftIs() Returns a string of the left subtree.
+ *		isSimilar(ProofTree) Checks to see if two proofTrees are similar.
  * 
  *  TreeNode
  *  The TreeNode class implements tree nodes for the ProofTree class.
@@ -377,8 +378,90 @@ public class ProofTree {
 		return printInOrder(myRoot.myRight);
 	}
 	
+	/**
+	 *  isSimlar() Checks for similarity between two trees.
+	 *  Similar trees are defined as:
+	 *  	all non-leaf nodes are identical
+	 *  		-same value
+	 *  		-same path from root
+	 *  	all leaf nodes correspond between the trees
+	 *  	(ie: everywhere tree 1 has node a, tree 2 has node b)
+	 *  
+	 *  @param t ProofTree to check for similarity
+	 *  @return Boolean Result of the similarity check.
+	 **/
+	public boolean isSimilar(ProofTree t){
+		Hashtable<String, String> ht= new Hashtable<String, String>();
+		boolean result = isSimilarHelper(myRoot, t.myRoot, ht, t);
+		if(!result) return false;
+		//Need to check that each value in hashtable is different
+		//ie: a->b and c->b is an invalid relationship
+		Collection<String> vals = ht.values();
+		Object[] values = vals.toArray();
+		for(int i=0; i<values.length; i++){
+			for(int j=i+1; j<values.length; j++){
+				if(values[i].equals(values[j])){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 	
-	
+	/**
+	 *  isSimilarHelper() Checks for similarity between two trees;
+	 *  Recursively checks for similarity between two trees.
+	 *  
+	 *  @param thrmRoot Root of the theorem subtree
+	 *  @param inputRoot Root of the input subtree
+	 *  @param relations Hash table of root correspondances
+	 *  @param t ProofTree to check for similarity
+	 *  @return boolean Result of the comparison.
+	 **/
+	public static boolean isSimilarHelper(TreeNode thrmRoot, TreeNode inputRoot, Hashtable<String, String> relations, ProofTree t){
+		if(thrmRoot == null){
+			if(inputRoot == null){
+				System.out.println("Shouldn't print first");
+				return true;
+			}
+			System.out.println("Failing because roots didn't match");
+			return false;
+		}
+		if(thrmRoot.myLeft != null && thrmRoot.myRight != null){
+			System.out.println("This should print");
+			if(!(thrmRoot.myItem.equals(inputRoot.myItem))){
+				System.out.println("I'm failing here");
+				return false;
+			}
+		} else{
+			String key = (String) thrmRoot.myItem;
+			String value = t.printInOrder(inputRoot);
+			System.out.println("the key is: " + key + "\nthe value is: " + value);
+			if(relations.get(key) == null){
+				System.out.println("I added the pair to the table");
+				//Key is not already in the table
+				relations.put(key, value);
+			} else{
+				String check =relations.get(key);
+				if (!(check.equals(value))){
+					System.out.println("I fail here");
+					return false;
+				}
+			}
+		}
+		boolean right = true;
+		boolean left = true;
+		if(thrmRoot.myLeft != null){
+			left = isSimilarHelper(thrmRoot.myLeft, inputRoot.myLeft, relations, t);
+		}
+		if(thrmRoot.myRight != null){
+			right = isSimilarHelper(thrmRoot.myRight, inputRoot.myRight, relations, t);
+		}
+		if(left==false || right == false){
+			return false;
+		} else
+		return true;
+	}
 	
 	
 	

@@ -226,4 +226,35 @@ public class ProofTreeTest {
 		assertTrue(t1.checkRightST(t2));
 	}
 	
+	@Test
+	public void testIsSubtree(){
+		
+		ProofTree t1 = new ProofTree();
+		ProofTree t2 = new ProofTree();
+		assertTrue(t1.isSimilar(t2));
+		
+		t1 = ProofTree.createATree("(q=>q)");
+		t2 = ProofTree.createATree("(q=>q)");
+		assertTrue(t1.isSimilar(t2));
+		
+		t2 = ProofTree.createATree("((a|b)=>(a|b))");
+		assertTrue(t1.isSimilar(t2));
+		
+		t2 = ProofTree.createATree("((q=>q)=>(q=>q))");
+		t2.print();
+		assertTrue(t1.isSimilar(t2));
+		
+		t2 = ProofTree.createATree("(a=>(q=>q))");
+		assertFalse(t1.isSimilar(t2));
+		
+		t1 = ProofTree.createATree("(~p=>(~q=>~(p|q)))");
+		t2 = ProofTree.createATree("(~a=>(~b=>~(a|b)))");
+		assertTrue(t1.isSimilar(t2));
+		
+		t1 = ProofTree.createATree("(b=>q)");
+		t2 = ProofTree.createATree("(z=>z)");
+		assertFalse(t1.isSimilar(t2));
+		
+		
+	}
 }

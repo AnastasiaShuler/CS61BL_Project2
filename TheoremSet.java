@@ -15,12 +15,8 @@ public class TheoremSet {
 	
 	
 	public boolean theoremChecker(String thrmName, String input){
-	}
-	
-	public boolean TheoremChecker(String thrmName, String input, TreeNode thrmRoot, TreeNode inputRoot){
-		Hashtable<String, String> variableMatch = new Hashtable<String, String>();
-		Expression thrmExpr = new Expression(thrmName);
-		Expression inputExpr = new Expression(input);
-		return false;
+		Expression thrm = new Expression(thrmName);
+		Expression check = new Expression(input);
+		return thrm.myTree.isSimilar(check.myTree);
 	}
 }
