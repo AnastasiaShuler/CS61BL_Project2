@@ -41,7 +41,7 @@ public class FormatTest extends TestCase {
 		assertTrue(c.checkFormat(ex3));
 	}
 
-	public void testCheckExpressions(){
+	public void testCheckExpressions () {
 		Format check = new Format();
 
 		//checks null input
@@ -49,41 +49,133 @@ public class FormatTest extends TestCase {
 		//assertFalse(check.expressionValidity(a));
 
 		//checks expression with a length of one
-		Expression b = new Expression("p");
-		assertTrue(check.expressionValidity(b));
-		//expressions with a length of one can only be variables
-		Expression c = new Expression("8");
-		assertFalse(check.expressionValidity(c));
-		//checks expression with a length of 2
-		Expression d = new Expression ("~p");
-		assertTrue(check.expressionValidity(d));
-		//expressions with a length of 2 can only be in the format: '~variable'
-		Expression e = new Expression ("89");
-		assertFalse(check.expressionValidity(e));
-		Expression f = new Expression ("~8");
-		assertFalse(check.expressionValidity(f));
-		Expression g = new Expression("~~");
-		assertFalse(check.expressionValidity(g));
-		Expression h = new Expression("8t");
-		assertFalse(check.expressionValidity(h));
-		Expression i = new Expression ("t~");
-		assertFalse(check.expressionValidity(i));
-		Expression j = new Expression ("(p=>q)");
-		assertTrue(check.expressionValidity(j));
-		Expression k = new Expression ("(p=>q=>p)");
+		String b = new String("p");
+		try {
+			check.expressionValidity(b);
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		//Strings with a length of one can only be variables
+		String c = new String("8");
+		try {
+			check.expressionValidity(c);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		//checks String with a length of 2
+		String d = new String ("~p");
+		try {
+			check.expressionValidity(d);
+		//Strings with a length of 2 can only be in the format: '~variable'
+		}
+		catch (IllegalLineException e) {
+			fail();
+		}
+		
+		String z = new String ("89");
+		try {
+			check.expressionValidity(z);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String f = new String ("~8");
+		try {
+			check.expressionValidity(f);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String g = new String("~~");
+		try {
+			check.expressionValidity(g);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String h = new String("8t");
+		try {
+			check.expressionValidity(h);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String i = new String ("t~");
+		try {
+			check.expressionValidity(i);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		String j = new String ("(p=>q)");
+		try {
+			check.expressionValidity(j);
+		}
+		catch (IllegalLineException e) {
+			fail();
+		}
+		
+		String k = new String ("(p=>q=>p)");
 		//cant have more than one implies per parens
-		assertTrue(check.expressionValidity(k));
-		Expression l = new Expression ("(p=>)q");
+		try {
+			check.expressionValidity(k);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String l = new String ("(p=>)q");
 		//We match up parens, but never check that there IS a closing paren
 		//in the right spot
 		//Only things that may follow a paren: => or )
-		assertFalse(check.expressionValidity(l));
-		Expression m = new Expression("(p=>(q))");
-		assertFalse(check.expressionValidity(m));
-		Expression n = new Expression("(p(=>q))");
-		assertFalse(check.expressionValidity(n));
-		Expression o = new Expression("(p= >q)");
-		assertFalse(check.expressionValidity(o));
+		try {
+			check.expressionValidity(l);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String m = new String("(p=>(q))");
+		try {
+			check.expressionValidity(m);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+	
+ 		String n = new String("(p(=>q))");
+ 		try {
+ 			check.expressionValidity(n);
+ 			fail();
+ 		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+ 		
+		String o = new String("(p= >q)");
+		try {
+			check.expressionValidity(o);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
 	}
-
 }
