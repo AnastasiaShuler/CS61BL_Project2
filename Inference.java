@@ -1,4 +1,3 @@
-
 import java.util.Hashtable;
 /**
  *  Inference
@@ -28,6 +27,13 @@ public class Inference {
 		//text[0] will be mp;
 		String line1 = text[1];				//Get LineNumber 1
 		String line2 = text[2];				//Get LineNumber 2
+		
+		//check valid line references
+		if(!LineNumber.isValidReference(line1, Proof.line.getCurrent()) || 
+				!LineNumber.isValidReference(line2, Proof.line.getCurrent())) {
+			return false;
+		}
+		
 		String inference = text[3];			//Get inference
 		ProofTree E1 = Proof.exprs.get(line1).myTree;	//get the tree of line1
 		Proof.exprs.get(line2);
@@ -74,6 +80,14 @@ public class Inference {
 		//text[0] will be "mt"
 		String line1 = text[1];					//Get lineNumber 1
 		String line2 = text[2];					//Get lineNumber 2
+		
+		//check valid line references
+		if(!LineNumber.isValidReference(line1, Proof.line.getCurrent()) || 
+				!LineNumber.isValidReference(line2, Proof.line.getCurrent())) {
+			return false;
+		}
+		
+		
 		String inference = text[3];				//Get inference string
 		inference = inference.replaceAll("\\(", "");
 		inference = inference.replaceAll("\\)", "");
@@ -119,6 +133,12 @@ public class Inference {
 		String[] text = input.split("\\s");	//Split along spaces
 		//text[0] contains "ic"
 		String line = text[1];				//Get LineNumber
+		
+		//check valid line references
+		if(!LineNumber.isValidReference(line, Proof.line.getCurrent())) {
+			return false;
+		}
+		
 		String inference = text[2];			//Get inference
 		String E1 = Proof.exprs.get(line).myString;	//Get string of line
 		E1 = E1.replaceAll("\\)", "");
@@ -145,6 +165,13 @@ public class Inference {
 		//text[0] contains "co"
 		String line1 = text[1];				//Get the first lineNumber
 		String line2 = text[2];				//Get the second lineNumber
+		
+		//check valid line references
+		if(!LineNumber.isValidReference(line1, Proof.line.getCurrent()) || 
+				!LineNumber.isValidReference(line2, Proof.line.getCurrent())) {
+			return false;
+		}
+		
 		String inference = text[3];			//get the inference
 		ProofTree E1 = Proof.exprs.get(line1).myTree;
 		ProofTree E2 = Proof.exprs.get(line2).myTree;
