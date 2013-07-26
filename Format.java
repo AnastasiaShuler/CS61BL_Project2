@@ -2,8 +2,9 @@ import java.util.Stack;
  
 public class Format {
  
-    Stack charStack = new Stack ();
- 
+    Stack<Character> charStack;
+ String specialChars = "()|&~=>";
+	
     /*
      * checkFormat checks user input for overall validity. 
      * For example, input beginning with "mp" must have
@@ -59,13 +60,13 @@ public class Format {
         return false;
     }
  
- 
- 
     public boolean expressionValidity (String expr) throws IllegalLineException {
+    	
+    	charStack = new Stack<Character> ();
         
         /* expressionValidity checks the expression section of user input for validity. */
  
-        if (expr == null || expr.length() == 0){
+        if (expr == null || expr.length() == 0) {
             //checks an empty input
             throw new IllegalLineException ("You must extend the proof with " +
                                             "an expression, or mp, ic, co, show, assume, or a theorem name " +
@@ -89,17 +90,26 @@ public class Format {
                 throw new IllegalLineException("Two-character input must consist " +
                                                 "of only ~ and a variable.");
             }
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+        }
+        for (int k = 0; k < expr.length(); k++) {
+        	//check for characters that don't belong
+        	if (specialChars.contains(expr.substring(k, k+1)) == false) {
+            	if (Character.isLetter(expr.charAt(k)) == false) {
+        		throw new IllegalLineException("There are invalid characters in your input.");
+            	}
+        	}
+            //checks that all parentheses are matched through a stack
+            if (expr.charAt(k) == '(') {
+                charStack.push(expr.charAt(k));
+            } 
+            
+            if (expr.charAt(k) == ')') {
+                charStack.pop();
+            }   
+        }
+        
+        if (charStack.isEmpty() == false) {
+            throw new IllegalLineException("Your parentheses are unmatched."); 
         } else {
             return expressionValidityHelper(expr);
         }
@@ -107,79 +117,68 @@ public class Format {
  
  
     public boolean expressionValidityHelper(String expr) throws IllegalLineException {
- 
-        //DO WE NEED THIS NULL CHECK?!!!!!!!!!!!
- 
-            //checks if expression has an opening parenthesis at the second to last index or the very end 
-            if (expr.charAt(expr.length() - 1) == '(' || expr.charAt(expr.length() - 2) == '('){
-                throw new IllegalLineException("Your expression has a ( in an invalid place - " +
-                                                "too late in the expression.");
- 
- 
-            }
- 
-            //checks if expression has a closing parenthesis in the first or second index
-            if (expr.charAt(0) == ')' || expr.charAt(1) == ')'){
-                return false;
-            }
- 
-            for (int k = 0; k < expr.length(); k++){
+    	//only one =>, &, or | may be seen per "parentheses level"
+    	int impliesSeen = 0;
+    	int andSeen = 0;
+    	int orSeen = 0;
+    	int parenLevel = 0;
+    	
+    	for (int k = 0; k < expr.length(); k++){
                 //checks that we don't have a the following: ()
-                if (expr.charAt(k) == '(' && (k + 1 < expr.length() && expr.charAt(k+1) == ')')){
+                if (expr.charAt(k) == '(' && expr.charAt(k+1) == ')') {
                     throw new IllegalLineException("You cannot enter an opening and closing " +
                                                     "parentheses consecutively.");
                 }
- 
-                //checks that all parentheses are matched
+                
+                //increment parenLevel if you see an opening parentheses.
                 if (expr.charAt(k) == '(') {
-                    charStack.push(expr.charAt(k));
-                } else if (expr.charAt(k) == ')'){
-                    charStack.pop();
-                }   
- 
- 
-                if (k == expr.length() - 1 && !expr.isEmpty()) {
-                    throw new IllegalLineException("Your parentheses are unmatched.");
+                	parenLevel++;
                 }
- 
- 
+                
+                if (expr.charAt(k) == ')') {
+                	parenLevel--;
+                }
+         
                 //checks conditions when you encounter variables
-                if (Character.isLetter(expr.charAt(k))){
-                    if (k-1 >= 0){
-                        //the possible predecessors of a variable include: ~, (, =>
-                        if (expr.charAt(k-1) != '~' || expr.charAt(k-1) != '(' 
- 
- 
- 
- 
-                                || (k-2 < 0 || (expr.charAt(k-1) != '>' && expr.charAt(k-2) != '='))){
-                            throw new IllegalLineException("The only elements that may precede "+
-                                                           "a variable are =>, (, and ~.");
-                        }
-                    }
- 
-                    if (k+1 < expr.length()){
-                        if ((k+2 >= expr.length() || (expr.charAt(k+1) != '=' && expr.charAt(k+2) != '>'))
- 
-                                || expr.charAt(k+1) != ')'){
-                            throw new IllegalLineException("The only elements that may follow "+
-                                                            "a variable are =>, (, and ~.");
-                        }
-                    }
+                //can't have single char in parens, e.g. (p)
+                else if (Character.isLetter(expr.charAt(k))) {
+                	if (specialChars.contains(expr.substring(k+1, k+2)) == false
+                	 || specialChars.contains(expr.substring(k-1, k)) == false) {
+                		throw new IllegalLineException("Variables must be surrounded by other special characters.");
+                	}
+                		
+                	if (expr.charAt(k+1) == ')' && expr.charAt(k-1) == '(') {
+                		throw new IllegalLineException("You cannot enter a single single character surrounded " +
+                										"by parentheses.");
+
+                	}
                 }
  
                 //checks conditions when you encounter '&' or '|'
+                //preceeding: ), letter, 
+                //following: (, letter, ~
+                //
  
-                if (expr.charAt(k) == '&' || expr.charAt(k) == '|'){
-                    if (k-1 >= 0){
-                        if (Character.isLetter(expr.charAt(k-1)) == false || expr.charAt(k-1) != ')'){
+                else if (expr.charAt(k) == '&' || expr.charAt(k) == '|') {
+                	if (expr.charAt(k) == '&') {
+                		andSeen++;
+                	}
+                	if (expr.charAt(k) == '|') {
+                		orSeen++;
+                	}
+                	if ((andSeen > parenLevel) || (orSeen > parenLevel)) {
+                		throw new IllegalLineException("Incorrect number of &s or |s.");
+                	}
+                    if (k-1 >= 0) {
+                        if (Character.isLetter(expr.charAt(k-1)) == false || expr.charAt(k-1) != ')') {
                             throw new IllegalLineException("The only elements that may precede " + 
                                                             "& or | are a variable or a ).");
                         }
                     }
  
-                    if (k+1 < expr.length()){
-                        if (expr.charAt(k+1) != '(' || Character.isLetter(expr.charAt(k+1)) == false){
+                    if (k+1 < expr.length()) {
+                        if (expr.charAt(k+1) != '(' || Character.isLetter(expr.charAt(k+1)) == false
+                         || expr.charAt(k+1) != '~') {
                             throw new IllegalLineException("The only elements that may follow " + 
                                                             "& or | are a variable or a (.");
  
@@ -188,73 +187,76 @@ public class Format {
                 }
  
                 //checks condition when you encounter '~'
- 
-                if (expr.charAt(k) == '~'){
-                    if (k-1 >= 0){
+                //preceeding: &, |, (, ~
+                //following: letter, ~,  (, >
+                else if (expr.charAt(k) == '~'){
+                    if (k > 0) {
  
                         if (expr.charAt(k-1) != '(' || expr.charAt(k-1) != '&' || expr.charAt(k-1) != '|'
- 
-                            || expr.charAt(k-1) != '~') {
-                            //CHECK THIS
- 
+                         || expr.charAt(k-1) != '~' || expr.charAt(k-1) != '>') {
  
                             throw new IllegalLineException("The only elements that may precede " +
-                                                           "~ are (, &, ~. and |.");
+                                                           "~ are (, &, ~, >, and |.");
                         }
                     }
  
                     if (k+1 < expr.length()){
-                        if (expr.charAt(k+1) != '~' || Character.isLetter(expr.charAt(k+1)) == false){
- 
+                        if (expr.charAt(k+1) != '~' || Character.isLetter(expr.charAt(k+1)) == false
+                         || expr.charAt(k+1) != '(' || expr.charAt(k+1) != '>') {
                             throw new IllegalLineException("The only elements that may follow " +
-                                                            "a ~ are ~, or a variable.");
+                                                            "a ~ are ~, (, >, or a variable.");
                         }
                     }
                 }
  
                 //checks condition when you encounter '=>'
-                if (k+1 < expr.length() && (expr.charAt(k) == '=' && expr.charAt(k+1) == '>')){
+                //only one => per paren pair
+                
+                else if (k+1 < expr.length() && (expr.charAt(k) == '=' && expr.charAt(k+1) == '>')){
+                	
+                	impliesSeen++;
+                	
+                	if (impliesSeen > parenLevel) {
+                		throw new IllegalLineException("Only one => may be used inside a pair of parentheses.");
+                	}
+                	
                     if (k-1 >= 0){
-                        if (expr.charAt(k-1) != ')' || Character.isLetter(expr.charAt(k+1)) == false){
- 
-                            throw new IllegalLineException("The only elements that may precede " +
-                                                        "=> are a variable or ).");
+                        if (expr.charAt(k-1) != ')') {
+                        	if (Character.isLetter(expr.charAt(k-1)) == false) {
+	                            throw new IllegalLineException("The only elements that may precede " +
+	                                                        "=> are a variable or ).");
+                        	}
                         }
                     }
- 
-                    if (k+2 < expr.length()){
-                        if (expr.charAt(k+2) != '(' || Character.isLetter(expr.charAt(k+2)) == false){
+                    
+                    if (k+2 < expr.length()) {
+                        if (expr.charAt(k+1) != '(' || Character.isLetter(expr.charAt(k+1)) == false
+                         || expr.charAt(k+1) != '~') {
                             throw new IllegalLineException("The only elements that may follow " +
-                                                            "=> are a variable or (.");
+                                                            "=> are a variable, ~, or (.");
                         }
                     }
- 
-
- 
                 }
-
-                
-                
+ 
                 //cases for ')' - must be followed by =, ), or be at the end of the expression
                 //')' or a letter may precede ')'
                 if (expr.charAt(k) == ')') {
-                    if (expr.charAt(k+1) != '=' || expr.charAt(k+1) != ')'
-                     || k != expr.length()-1) {
-                        throw new IllegalLineException("The only elements that may follow "+
-                                                        "a ) are => or another ); otherwise," +
-                                                        "you must be at the end of the expression.");
-                    }
-                    if (Character.isLetter(expr.charAt(k-1)) == false || expr.charAt(k-1) != ')') {
-                        throw new IllegalLineException("The only elements that may precede "
-                                                    + "a ) are a variable, or another ); otherwise, " +
-                                                    "you must be at the end of the expression.");
-                    }
-                }
-                if (expr.charAt(k) == '(') {
+                	if (k+1 == expr.length() || expr.charAt(k+1) != '=' || expr.charAt(k+1) != ')') {
+                		throw new IllegalLineException("The only elements that may follow "+
+	                                                   "a ) are => or another ); otherwise," +
+	                                                   "you must be at the end of the expression.");
+	                	}
+	                }
+		            if (Character.isLetter(expr.charAt(k-1)) == false || expr.charAt(k-1) != ')') {
+	                    throw new IllegalLineException("The only elements that may precede "
+	                    							+ "a ) are a variable or another ).");
+	                    }
+	                }
+               // 
                     //check recursion depth???
-                    return expressionValidityHelper(expr.substring(k+1, expr.length()));
-                }
+                   // return expressionValidityHelper(expr.substring(k+1, expr.length()));
+    	
             }
-            return true;
+    	return true;
         }
     }
