@@ -13,4 +13,5 @@ assume p
 co 3.2.4.1 3.2.1 (p=>q)
 co 3.2.4 3.2.3 p
 ic 3.2 ((q=>p)=>p)
+thrmTest (a=>a)
 ic 3 (((p=>q)=>q)=>((q=>p)=>p))

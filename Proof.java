@@ -6,7 +6,7 @@ import java.util.*;
 public class Proof {
 	//instance variables
 	boolean beginProof, finishProof, firstShow;
-	LineNumber line;
+	static LineNumber line;
 	ArrayList<Step> soFar;
 	Hashtable<String, Expression> exprs;
 	Hashtable<String, String> inputs;
@@ -41,61 +41,63 @@ public class Proof {
 		//Another call to a syntax checker
 		
 		String[] parts = x.split("\\s"); //Split the input around spaces
+		
 		//evaluating inferences
-		Boolean  validAssumption= true;
-		if(parts[0].equals("mp")) { // something about modus ponens
-			validAssumption = Inference.mp(x, exprs);
+		Boolean  validInference = true;
+		//mp inference
+		if(parts[0].equals("mp")){
+			validInference = Inference.mp(x, exprs);
 		}
+		//mt inference
 		else if(parts[0].equals("mt")) {
-			validAssumption= Inference.mt(x, exprs);
+			validInference= Inference.mt(x, exprs);
 		}
+		//ic inference
 		else if(parts[0].equals("ic")) {
-			validAssumption= Inference.ic(x, exprs);
+			validInference= Inference.ic(x, exprs);
 		}
 		else if(parts[0].equals("co")) {
-			validAssumption = Inference.co(x, exprs);
+			validInference = Inference.co(x, exprs);
 		}
-		//evaluating reasons
+		//assume statement
 		else if(parts[0].equals("assume")) {
 			String prevLine = line.getPrevious();	//get previous line number
 			String previousLine = inputs.get(prevLine);	//get previous line input
-			try{
-				Inference.assume(x, previousLine,exprs);
-			} catch(IllegalInferenceException exc){
-				line.prev();	//Need to decrement the line number;
-				//Now throw the exception again
-				throw new IllegalInferenceException(exc.getMessage());
-			}
+			Inference.assume(x, previousLine,exprs);
 			exprs.put(line.getCurrent(), new Expression(parts[1]));
 		}
+		//show statement 
 		else if(parts[0].equals("show")) {
 			if(firstShow){
-				beginProof = false;
-				firstShow = false;
+				beginProof = firstShow = false;
 			} else{
-			beginProof = true;
+				beginProof = true;
 			}
 			line.setBeginProof(beginProof);
 			String lineNum = line.getCurrent();
 			exprs.put(lineNum, new Expression(parts[1]));
 		}
-		//misc stuff
+		//repeat statement
 		else if(parts[0].equals("repeat")) {
-			//something about repeat
-			String lineNum = line.getCurrent();
-			Expression expr = exprs.get(parts[1]);
-			exprs.put(lineNum, expr);
+			String lineNum = line.getCurrent();		//find the current line number
+			Expression expr = exprs.get(parts[1]); 	//get the Expression to be repeated
+			exprs.put(lineNum, expr);				//add to the exprs table
 		}
+		//print statement
 		else if(parts[0].equals("print")) {
 			String lineNum = line.getCurrent();
 			exprs.put(lineNum, new Expression(parts[0]));
+			line.prev();
 			//System.out.println(toString());
 		}
+		//Must be a theorem or invalid if nothing else got it
 		else{
 			String theoremName = parts[0];
-			//myTheorems.get(theoremName);
+			String inputExpr = parts[1];
+			myTheorems.theoremChecker(theoremName, inputExpr);
+			
 		}
-		if(validAssumption){
+		if(validInference){
 			exprs.put(line.getCurrent(), new Expression(parts[parts.length -1]));
 			
 		} else{

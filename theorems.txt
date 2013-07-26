@@ -1,1 +1,1 @@
-not-or-creation (~p=>(~q=>~(p|q)))
+thrmTest (a=>b)

@@ -234,7 +234,7 @@ public class ProofTree {
 	 *  @return boolean Result of the equality check.
 	 **/
 	public static boolean isEqual(TreeNode root, TreeNode rootToCheck){
-		if(rootToCheck.myItem == null) return false;
+		if(rootToCheck == null) return false;
 		if(!(root.myItem.equals(rootToCheck.myItem))){
 			return false;
 		}
@@ -258,6 +258,9 @@ public class ProofTree {
 	 *  @return Boolean Result of the check.
 	 **/
 	public boolean checkRoot(Object obj){
+		if(myRoot == null){
+			return false;
+		}
 		return myRoot.myItem.equals(obj);
 	}
 	
@@ -269,7 +272,7 @@ public class ProofTree {
 	 **/
 	public boolean checkLeft(ProofTree t){
 		if(myRoot == null || myRoot.myLeft == null) return false;
-		if(t.myRoot == null) return false;
+		if(t == null || t.myRoot == null) return false;
 		return ProofTree.isEqual(myRoot.myLeft, t.myRoot);
 	}
 	
@@ -283,7 +286,7 @@ public class ProofTree {
 		if(myRoot == null || myRoot.myRight == null){
 			return false;
 		}
-		if(t.myRoot == null) return false;
+		if(t == null || t.myRoot == null) return false;
 		return ProofTree.isEqual(myRoot.myRight, t.myRoot);
 	}
 	
@@ -294,6 +297,8 @@ public class ProofTree {
 	 *  @return Boolean Result of the check.
 	 **/
 	public boolean checkRightST(ProofTree t){
+		if(myRoot == null || myRoot.myRight == null) return false;
+		if(t.myRoot == null) return false;
 		return ProofTree.isEqual(myRoot.myRight, t.myRoot.myRight);
 	}
 	
@@ -328,6 +333,7 @@ public class ProofTree {
 	 *  @return Boolean Result of the similarity check.
 	 **/
 	public boolean isSimilar(ProofTree t) throws IllegalInferenceException{
+		if(myRoot == null && t.myRoot != null) return false;
 		Hashtable<String, String> ht= new Hashtable<String, String>();
 		boolean result = isSimilarHelper(myRoot, t.myRoot, ht, t);
 		if(!result) return false;

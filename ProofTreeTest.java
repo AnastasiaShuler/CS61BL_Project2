@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+
 public class ProofTreeTest {
 
 	@Test
@@ -66,6 +67,10 @@ public class ProofTreeTest {
 		t = ProofTree.createATree(expr);
 		t.print();
 				
+		//Test multiple ~'s
+		expr = "~~a";
+		t = ProofTree.createATree(expr);
+		t.print();
 	}
 	
 	/**
@@ -150,11 +155,11 @@ public class ProofTreeTest {
 		assertFalse(t2.equals(t1));
 	}
 	
-	@Test
 	/**
 	 *  testCheckLeft() Test the checkLeft() method of ProofTree.
 	 *  Checks if 
 	 **/
+	@Test
 	public void testCheckLeft(){
 		//Test most simple case
 		ProofTree t1 = ProofTree.createATree("(a=>b)");
@@ -183,32 +188,131 @@ public class ProofTreeTest {
 		t1 = new ProofTree();
 		assertFalse(t1.checkLeft(t2));
 		assertFalse(t2.checkLeft(t1));
+		
+		//check what happens if null is passed in
+		assertFalse(t2.checkLeft(null));
 	}
 	
 	@Test
+	/**
+	 *  testCheckRight() Tests the checkRight() method of ProofTree.
+	 **/
 	public void testCheckRight(){
+		//Test a simple case
 		ProofTree t1 = ProofTree.createATree("~(a|b)");
-		t1.print();
 		ProofTree t2 = ProofTree.createATree("(a|b)");
-		t2.print();
 		assertTrue(t1.checkRight(t2));
+		
+		//Another simple case
+		t1 = ProofTree.createATree("(a=>b)");
+		t2 = ProofTree.createATree("b");
+		assertTrue(t1.checkRight(t2));
+		assertFalse(t2.checkRight(t1));
+		
+		//and another
+		t1 = ProofTree.createATree("~a");
+		t2 = ProofTree.createATree("a");
+		assertTrue(t1.checkRight(t2));
+		assertFalse(t2.checkRight(t1));
+		
+		//Test larger tree
+		t1 = ProofTree.createATree("(a=>(p|q))");
+		t2 = ProofTree.createATree("(p|q)");
+		assertTrue(t1.checkRight(t2));
+		assertFalse(t2.checkRight(t1));
+		
+		//another tree
+		t1 = ProofTree.createATree("((a|b)=>(c&d))");
+		t2 = ProofTree.createATree("(c&d)");
+		assertTrue(t1.checkRight(t2));
+		assertFalse(t2.checkRight(t1));
+		
+		//check an empty tree
+		t1 = ProofTree.createATree("a");
+		t2 = new ProofTree();
+		assertFalse(t1.checkRight(t2));
+		assertFalse(t2.checkRight(t2));
 	}
+	
+	/**
+	 *  testCheckRoot() Tests the checkRoot() method of ProofTree.
+	 **/
 	@Test
 	public void testCheckRoot(){
+		//Test a right-only tree
 		ProofTree t1 = ProofTree.createATree("~q");
-		t1.print();
 		assertTrue(t1.checkRoot("~"));
+		
+		//Test a root-only tree
+		t1 = ProofTree.createATree("a");
+		assertTrue(t1.checkRoot("a"));
+		
+		//Test a simple tree
+		t1 = ProofTree.createATree("(a=>b)");
+		assertTrue(t1.checkRoot("=>"));
+		
+		//Test an empty tree
+		t1 = new ProofTree();
+		assertFalse(t1.checkRoot("=>"));
+		
+		//Tests that should fail
+		t1 = ProofTree.createATree("(a=>b)");
+		assertFalse(t1.checkRoot("a"));
+		assertFalse(t1.checkRoot("b"));
+		assertFalse(t1.checkRoot(""));
+		assertFalse(t1.checkRoot(null));
+		assertFalse(t1.checkRoot("asdf"));
+	}
+	
+	/**
+	 *  testCheckRightST() Tests the checkRightST() method of the ProofTree class
+	 **/
+	@Test
+	public void testCheckRightST(){
+		//Test a simple tree
+		ProofTree t1 = ProofTree.createATree("~q");
+		ProofTree t2 = ProofTree.createATree("(a=>q)");
+		assertTrue(t1.checkRightST(t2));
+		assertTrue(t2.checkRightST(t1));
+		
+		//Test a more complex tree
+		t1 = ProofTree.createATree("((a|b)=>(c&d))");
+		t2 = ProofTree.createATree("((a=>b)=>(c&d))");
+		assertTrue(t1.checkRightST(t2));
+		assertTrue(t2.checkRightST(t1));
+		
+		//Test some empty trees
+		t1 = new ProofTree();
+		assertFalse(t1.checkRightST(t2));
+		assertFalse(t2.checkRightST(t1));
+		
+		//Test another tree
+		t1 = ProofTree.createATree("(a=>(p|q))");
+		t2 = ProofTree.createATree("((a=>d)=>(p|q))");
+		assertTrue(t1.checkRightST(t2));
+		assertTrue(t2.checkRightST(t1));
+			
+		//Another tree
+		t1 = ProofTree.createATree("(~a=>(~b=>~(b|b)))");
+		t2 = ProofTree.createATree("~(~b=>~(b|b))");
+		assertTrue(t1.checkRightST(t2));
+		assertTrue(t2.checkRightST(t1));
+		
+		//Some that should fail
+		t2 = ProofTree.createATree("a");
+		assertFalse(t2.checkRightST(t1));
+		assertFalse(t1.checkRightST(t2));
+		
+		t1 = ProofTree.createATree("~q");
+		assertFalse(t2.checkRightST(t1));
+		assertFalse(t1.checkRightST(t2));
 		
 	}
 	
 	@Test
-	public void testCheckRightST(){
-		ProofTree t1 = ProofTree.createATree("~q");
-		ProofTree t2 = ProofTree.createATree("(a=>q)");
-		assertTrue(t1.checkRightST(t2));
-	}
-	
-	@Test
+	/**
+	 *  testIsSubtree() Tests the isSubtree() method of ProofTree.
+	 **/
 	public void testIsSubtree(){
 		
 		ProofTree t1 = new ProofTree();
@@ -266,6 +370,13 @@ public class ProofTreeTest {
 			assertFalse(true);
 		} catch(IllegalInferenceException exc){
 			System.out.println(exc.getMessage());
+			assertTrue(true);
+		}
+		
+		t1 = new ProofTree();
+		try{
+			assertFalse(t1.isSimilar(t2));
+		} catch (IllegalInferenceException exc){
 			assertTrue(true);
 		}
 		

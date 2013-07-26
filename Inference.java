@@ -180,6 +180,7 @@ public class Inference {
 		if(!(possAssum.equals(assumption))){
 			possAssum = "~" + usrInput[1];
 			if(!(possAssum.equals(assumption))){
+				Proof.line.prev();
 				throw new IllegalInferenceException("*** Illegal assumption");
 			}
 		}

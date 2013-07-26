@@ -46,12 +46,12 @@ public class TheoremSet {
 	 *  @param thrmName Name of the given theorem.
 	 *  @param input The line of input utilizing the theorem.
 	 **/
-	public boolean theoremChecker(String thrmName, String input) throws IllegalInferenceException{
+	public boolean theoremChecker(String thrmName, String inputExpr) throws IllegalInferenceException{
 		Expression thrm = myTheorems.get(thrmName);
 		if(thrm == null){
 			throw new IllegalInferenceException("*** Bad theorem name");
 		}
-		Expression check = new Expression(input);
+		Expression check = new Expression(inputExpr);
 		return thrm.myTree.isSimilar(check.myTree);
 	}
 }
