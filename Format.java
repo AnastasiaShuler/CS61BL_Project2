@@ -118,7 +118,7 @@ public class Format {
 				}
 
 
-				//checks conditions when you encounter variables
+							//checks conditions when you encounter variables
 				if (Character.isLetter(expr.charAt(k))){
 					if (k-1 >= 0){
 						//checks possible characters that precede the current character
