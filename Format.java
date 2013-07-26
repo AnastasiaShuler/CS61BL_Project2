@@ -124,75 +124,88 @@ public class Format {
 				}
 
 
-				//checks conditions when you encounter variables
+				//checks surrounding characters when encountering variables
 				if (Character.isLetter(expr.charAt(k))){
 					if (k-1 >= 0){
-						//the possible predecessors of a variable include: ~, (, =>
-						if (expr.charAt(k-1) != '~' || expr.charAt(k-1) != '(' 
-								|| (k-2 < 0 || (expr.charAt(k-1) != '>' && expr.charAt(k-2) != '='))){
-							throw new IllegalLineException("The only elements that may precede "+
-														   "a variable are =>, (, and ~.");
+						//checks possible characters that precede the current character
+						if (expr.charAt(k-1) != '|' 
+								|| expr.charAt(k-1) != '&'
+								|| expr.charAt(k-1) != '~'
+								|| expr.charAt(k-1) != '('
+								//double check if we want to keep this paren check because we are substringing
+								|| (expr.charAt(k-1) != '>' && k-2 >= 0 && expr.charAt(k-2) != '=')){
+							throw new IllegalLineException ("There is an invalid character preceding the variable."); 
 						}
-					}
-
 					if (k+1 < expr.length()){
-						if ((k+2 >= expr.length() || (expr.charAt(k+1) != '=' && expr.charAt(k+2) != '>'))
-								|| expr.charAt(k+1) != ')'){
-							throw new IllegalLineException("The only elements that may follow "+
-															"a variable are =>, (, and ~.");
+						if (expr.charAt(k+1) != '|' 
+								|| expr.charAt(k+1) != '&'
+								|| expr.charAt(k+1) != ')'
+								|| (expr.charAt(k+1) != '=' && k+2 < expr.length() && expr.charAt(k+2) != '>')){
+							throw new IllegalLineException ("There is an invalid character following the variable.");
 						}
 					}
-				}
 
-				//checks conditions when you encounter '&' or '|'
+					
+				//checks surrounding characters when encountering '&' or '|'
 				if (expr.charAt(k) == '&' || expr.charAt(k) == '|'){
 					if (k-1 >= 0){
-						if (Character.isLetter(expr.charAt(k-1)) == false || expr.charAt(k-1) != ')'){
-							throw new IllegalLineException("The only elements that may precede " + 
-															"& or | are a variable or a ).");
+						if (!Character.isLetter(expr.charAt(k-1)) 
+								|| expr.charAt(k-1) != ')'){
+							throw new IllegalLineException ("There is an invalid character preceding & or |.");
 						}
 					}
-
 					if (k+1 < expr.length()){
-						if (expr.charAt(k+1) != '(' || Character.isLetter(expr.charAt(k+1)) == false){
-							throw new IllegalLineException("The only elements that may follow " + 
-															"& or | are a variable or a (.");
+						if (Character.isLetter(expr.charAt(k+1))
+								|| expr.charAt(k+1) != '~'
+								|| expr.charAt(k+1) != '('){
+							throw new IllegalLineException ("There is an invalid character following & or |");
 						}
 					}
-				}
 
-				//checks condition when you encounter '~'
+					
+				//checks surrounding characters when encountering '~'
 				if (expr.charAt(k) == '~'){
 					if (k-1 >= 0){
-						if (expr.charAt(k-1) != '(' || expr.charAt(k-1) != '&' || expr.charAt(k-1) != '|'
-							|| expr.charAt(k-1) != '~') {
-							//CHECK THIS
-							throw new IllegalLineException("The only elements that may precede " +
-														   "~ are (, &, ~. and |.");
+						//checks possible characters that precede the current character
+						if (expr.charAt(k-1) != '|' 
+								|| expr.charAt(k-1) != '&'
+								|| expr.charAt(k-1) != '~'
+								|| expr.charAt(k-1) != '('
+								//double check if we want to keep this paren check because we are substringing
+								|| (expr.charAt(k-1) != '>' && k-2 >= 0 && expr.charAt(k-2) != '=')){
+							throw new IllegalLineException ("There is an invalid character preceding ~."); 
+						}
+					if (k+1 < expr.length()){
+						if (!Character.isLetter(expr.charAt(k+1)) 
+								|| expr.charAt(k+1) != '~'){
+							throw new IllegalLineException ("There is an invalid character following ~.");
 						}
 					}
 
-					if (k+1 < expr.length()){
-						if (expr.charAt(k+1) != '~' || Character.isLetter(expr.charAt(k+1)) == false){
-							throw new IllegalLineException("The only elements that may follow " +
-															"a ~ are ~, or a variable.");
+					
+				//checks condition when encountering the '=' of '=>'
+				if (expr.charAt(k) == '='){
+					if (k-1 >= 0){
+						if (!Character.isLetter(expr.charAt(k-1))
+								|| expr.charAt(k-1) != ')'){
+							throw new IllegalLineException ("There is an invalid character preceding =.");
 						}
+					}
+					if (expr.charAt(k+1) != '>'){
+						throw new IllegalLineException ("> must always follow =.");
 					}
 				}
-
-				//checks condition when you encounter '=>'
-				if (k+1 < expr.length() && (expr.charAt(k) == '=' && expr.charAt(k+1) == '>')){
-					if (k-1 >= 0){
-						if (expr.charAt(k-1) != ')' || Character.isLetter(expr.charAt(k+1)) == false){
-							throw new IllegalLineException("The only elements that may precede " +
-									   					"=> are a variable or ).");
-						}
+				
+				//checks condition when encountering the '>' of '=>'
+				if (expr.charAt(k) == '>'){
+					if (expr.charAt(k-1) != '='){
+						throw new IllegalLineException ("= must always precede >.");
 					}
-
-					if (k+2 < expr.length()){
-						if (expr.charAt(k+2) != '(' || Character.isLetter(expr.charAt(k+2)) == false){
-							throw new IllegalLineException("The only elements that may follow " +
-															"=> are a variable or (.");
+					if (k+1 < expr.length()){
+						if (!Character.isLetter(expr.charAt(k+1)) 
+								|| expr.charAt(k+1) != '~'
+								|| expr.charAt(k+1) != '('){
+							throw new IllegalLineException ("There is an invalid character following >.");
 						}
 					}
 				}
