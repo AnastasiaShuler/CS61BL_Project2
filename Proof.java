@@ -7,12 +7,8 @@ public class Proof {
 	//instance variables
 	boolean beginProof, finishProof, firstShow;
 	static LineNumber line;
-	ArrayList<Step> soFar;
-=======
-	LineNumber line;
 	ArrayList<String> soFar;
->>>>>>> a5ce51d009cfbf6e2a05995674770adbeb5643ba
-	Hashtable<String, Expression> exprs;
+	static Hashtable<String, Expression> exprs;
 	Hashtable<String, String> inputs;
 	TheoremSet myTheorems;
 	
@@ -37,7 +33,10 @@ public class Proof {
 	public void extendProof (String x) throws IllegalLineException, IllegalInferenceException {
 		//This will replace all groups of spaces with a single space
 		x = x.trim().replaceAll(" +", " ");
+		System.out.println(x);
+		String[] parts = x.split("\\s"); //Split the input around spaces
 		inputs.put(line.getCurrent(), x);
+		exprs.put(line.getCurrent(), new Expression(parts[parts.length -1]));
 		
 		//add the line to the arraylist
 		if(soFar.size() == 0 || line.getCurrent() != soFar.get(soFar.size() - 1)) {
@@ -50,30 +49,29 @@ public class Proof {
 		}
 		//Another call to a syntax checker
 		
-		String[] parts = x.split("\\s"); //Split the input around spaces
 		
 		//evaluating inferences
 		Boolean  validInference = true;
 		//mp inference
 		if(parts[0].equals("mp")){
-			validInference = Inference.mp(x, exprs);
+			validInference = Inference.mp(x);
 		}
 		//mt inference
 		else if(parts[0].equals("mt")) {
-			validInference= Inference.mt(x, exprs);
+			validInference= Inference.mt(x);
 		}
 		//ic inference
 		else if(parts[0].equals("ic")) {
-			validInference= Inference.ic(x, exprs);
+			validInference= Inference.ic(x);
 		}
 		else if(parts[0].equals("co")) {
-			validInference = Inference.co(x, exprs);
+			validInference = Inference.co(x);
 		}
 		//assume statement
 		else if(parts[0].equals("assume")) {
 			String prevLine = line.getPrevious();	//get previous line number
 			String previousLine = inputs.get(prevLine);	//get previous line input
-			Inference.assume(x, previousLine,exprs);
+			Inference.assume(x, previousLine);
 			exprs.put(line.getCurrent(), new Expression(parts[1]));
 		}
 		//show statement 
@@ -98,7 +96,7 @@ public class Proof {
 			String lineNum = line.getCurrent();
 			exprs.put(lineNum, new Expression(parts[0]));
 			line.prev();
-			//System.out.println(toString());
+			System.out.println(toString());
 		}
 		//Must be a theorem or invalid if nothing else got it
 		else{
@@ -107,24 +105,15 @@ public class Proof {
 			myTheorems.theoremChecker(theoremName, inputExpr);
 			
 		}
+		
+		//Throw an exception if we have a bad inference
 		if(validInference){
 			exprs.put(line.getCurrent(), new Expression(parts[parts.length -1]));
-			
 		} else{
 			line.prev();
 			throw new IllegalInferenceException("*** Bad inference");
 		}
-			
-			/*
-			//once you've checked that the syntax and logic is right, 
-			//add the step to the array of steps completed so far
-			Step newStep = new Step(line.next(), x);
-			soFar.add(newStep);
-			*/
-			
-			//You've passed all of the tests. be Printed.
 	}
-
 
 	public String toString ( ) {
 		String result = "";

@@ -346,6 +346,8 @@ public class ProofTree {
 				if(ht.get(keys[i]).equals(ht.get(keys[j]))){
 					//Two keys have the same value
 					//Throw exception: *** Bad theorem application : a=b, c=b
+					System.out.println("I got to here");
+					Proof.line.prev();
 					throw new IllegalInferenceException("*** Bad theorem application: "  + 
 							keys[i] + "=" + ht.get(keys[i]) + ", " + keys[j] + "=" + ht.get(keys[j]));
 				}
@@ -385,6 +387,7 @@ public class ProofTree {
 			} else{
 				String check = relations.get(key);
 				if (!(check.equals(value))){
+					Proof.line.prev();
 					throw new IllegalInferenceException("*** Bad theorem application: " + 
 							key + "=" + relations.get(key) + "," + key + "=" + value);
 				}

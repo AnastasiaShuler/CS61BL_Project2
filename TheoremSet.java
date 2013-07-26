@@ -49,6 +49,7 @@ public class TheoremSet {
 	public boolean theoremChecker(String thrmName, String inputExpr) throws IllegalInferenceException{
 		Expression thrm = myTheorems.get(thrmName);
 		if(thrm == null){
+			Proof.line.prev();
 			throw new IllegalInferenceException("*** Bad theorem name");
 		}
 		Expression check = new Expression(inputExpr);

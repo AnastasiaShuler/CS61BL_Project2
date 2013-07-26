@@ -109,6 +109,8 @@ public class LineNumber {
 	 *  prev() Decrements the line number;
 	 **/
 	public String prev(){
+		if(numbers.size() == 1){
+		}
 		Integer newNum = numbers.get(numbers.size()-1) - 1;
 		numbers.set(numbers.size()-1, newNum);
 		return this.toString();
