@@ -24,14 +24,6 @@ public class ProofTreeTest {
 	}
 	
 	/**
-	 *  testPrintInOrder() Tests the printInOrder() method of the ProofTree class.
-	 **/
-	@Test
-	public void testPrintInOrder(){
-		
-	}
-	
-	/**
 	 *  testCreateATree() Tests the createATree() method of the ProofTree class.
 	 **/
 	@Test
@@ -43,6 +35,7 @@ public class ProofTreeTest {
 		t.print();
 		System.out.println();
 		System.out.println();
+		
 		//Test more complex expression: has ~ operator
 		expr =  "(p=>(~p=>q))";
 		t = ProofTree.createATree(expr);
@@ -52,6 +45,7 @@ public class ProofTreeTest {
 		System.out.println(t.printInOrder(t.myRoot));
 		System.out.println();
 		System.out.println();
+		
 		//test more complex expression: has & and |
 		expr = "(((p&q)=>a)=>(b|c))";
 		t = ProofTree.createATree(expr);
@@ -60,40 +54,96 @@ public class ProofTreeTest {
 		System.out.println();
 		System.out.println();
 		System.out.println();
+		
 		//Test most complex expression: has ~, &, and |
 		expr = "((~a=>q)=>((b=>q)=>((a|b)=>q)))";
 		t = ProofTree.createATree(expr);
 		System.out.println("Tree for ((~a=>q)=>((b=>q)=>((a|b)=>q)))");
 		t.print();
 		
+		//Test a single character expression
 		expr = "a";
 		t = ProofTree.createATree(expr);
 		t.print();
 				
 	}
 	
+	/**
+	 *  testPrintInOrder() Tests the printInOrder() method of the ProofTree class.
+	 **/
+	@Test
+	public void testPrintInOrder(){
+		//Test the most simple tree
+		ProofTree t = ProofTree.createATree("a");
+		String s = t.printInOrder(t.myRoot);
+		assertEquals(s, "a");
+		
+		//test an empty tree
+		t = ProofTree.createATree("");
+		s = t.printInOrder(t.myRoot);
+		assertEquals(s, "");
+		
+		//test a simple 3 node tree
+		t = ProofTree.createATree("(a=>a)");
+		s = t.printInOrder(t.myRoot);
+		assertEquals(s, "a=>a");
+		
+		//Test a tree with more left children
+		t = ProofTree.createATree("((a|b)=>q)");
+		s = t.printInOrder(t.myRoot);
+		assertEquals(s, "a|b=>q");
+		
+		//Test a tree with more right children
+		t = ProofTree.createATree("(a=>(a|b))");
+		s = t.printInOrder(t.myRoot);
+		assertEquals(s, "a=>a|b");
+		
+		//Test a balanced deeper tree
+		t = ProofTree.createATree("((a|b)=>(c&d))");
+		s = t.printInOrder(t.myRoot);
+		assertEquals(s, "a|b=>c&d");
+		
+		//Test a deeper tree
+		t = ProofTree.createATree("((~a=>q)=>((b=>q)=>((a|b)=>q)))");
+		s = t.printInOrder(t.myRoot);
+		assertEquals(s, "~a=>q=>b=>q=>a|b=>q");
+		
+		//Test a right only tree
+		t = ProofTree.createATree("~a");
+		s = t.printInOrder(t.myRoot);
+		assertEquals(s, "~a");
+	}
+	
+	/**
+	 *  testEquals() Tests the equals method of ProofTree class.
+	 **/
 	@Test
 	public void testEquals(){
+		//Test basic trees
 		String expr = "(a=>b)";
 		ProofTree t1 = ProofTree.createATree(expr);
 		ProofTree t2 = ProofTree.createATree(expr);
 		assertEquals(t1, t2);
 		assertEquals(t2, t1);
 		
+		//Test more complicated trees
 		expr = "((a|b)=>((~c&d)|b))";
 		t1 = ProofTree.createATree(expr);
 		t2 = ProofTree.createATree(expr);
 		assertEquals(t1, t2);
 		assertEquals(t2, t1);
 		
+		//Test empty trees;
 		t1 = new ProofTree();
 		t2 = new ProofTree();
 		assertEquals(t1, t2);
 		
+		//Test an empty tree against a nonempty tree
 		t2 = ProofTree.createATree(expr);
 		assertFalse(t1.equals(t2));
 		assertFalse(t2.equals(t1));
 		
+		//Test two non-equal trees
 		expr = "(a=>b)";
 		t1 = ProofTree.createATree(expr);
 		assertFalse(t1.equals(t2));
@@ -101,17 +151,38 @@ public class ProofTreeTest {
 	}
 	
 	@Test
+	/**
+	 *  testCheckLeft() Test the checkLeft() method of ProofTree.
+	 *  Checks if 
+	 **/
 	public void testCheckLeft(){
-		ProofTree t1 = ProofTree.createATree("(~a=>(~b=>~(b|b)))");
-		t1.print();
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		ProofTree t2 = ProofTree.createATree("~a");
-		t2.print();
+		//Test most simple case
+		ProofTree t1 = ProofTree.createATree("(a=>b)");
+		ProofTree t2 = ProofTree.createATree("a");
 		assertTrue(t1.checkLeft(t2));
-		System.out.println("This is my output " + t2.printInOrder(t2.myRoot));
-		System.out.println("This is my output " + t1.printInOrder(t1.myRoot));
+		assertFalse(t2.checkLeft(t1));
+		
+		//Test a more complicated tree
+		t1 = ProofTree.createATree("(~a=>(~b=>~(b|b)))");
+		t2 = ProofTree.createATree("~a");
+		assertTrue(t1.checkLeft(t2));
+		assertFalse(t2.checkLeft(t1));
+		
+		//Test another tree
+		t1 = ProofTree.createATree("((a|b)=>b)");
+		t2 = ProofTree.createATree("(a|b)");
+		assertTrue(t1.checkLeft(t2));
+		assertFalse(t2.checkLeft(t1));
+		
+		//Test a tree with no left subtree
+		t1 = ProofTree.createATree("~a");
+		assertFalse(t1.checkLeft(t2));
+		assertFalse(t2.checkLeft(t1));
+		
+		//check an empty tree;
+		t1 = new ProofTree();
+		assertFalse(t1.checkLeft(t2));
+		assertFalse(t2.checkLeft(t1));
 	}
 	
 	@Test

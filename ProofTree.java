@@ -234,6 +234,7 @@ public class ProofTree {
 	 *  @return boolean Result of the equality check.
 	 **/
 	public static boolean isEqual(TreeNode root, TreeNode rootToCheck){
+		if(rootToCheck.myItem == null) return false;
 		if(!(root.myItem.equals(rootToCheck.myItem))){
 			return false;
 		}
@@ -267,6 +268,8 @@ public class ProofTree {
 	 *  @return Boolean Result of the check.
 	 **/
 	public boolean checkLeft(ProofTree t){
+		if(myRoot == null || myRoot.myLeft == null) return false;
+		if(t.myRoot == null) return false;
 		return ProofTree.isEqual(myRoot.myLeft, t.myRoot);
 	}
 	
@@ -277,6 +280,10 @@ public class ProofTree {
 	 *  @return Boolean Result of the check.
 	 **/
 	public boolean checkRight(ProofTree t){
+		if(myRoot == null || myRoot.myRight == null){
+			return false;
+		}
+		if(t.myRoot == null) return false;
 		return ProofTree.isEqual(myRoot.myRight, t.myRoot);
 	}
 	

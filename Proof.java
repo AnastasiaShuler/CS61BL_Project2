@@ -31,7 +31,7 @@ public class Proof {
 	
 	public void extendProof (String x) throws IllegalLineException, IllegalInferenceException {
 		//This will replace all groups of spaces with a single space
-		//String after = before.trim().replaceAll(" +", " ");
+		x = x.trim().replaceAll(" +", " ");
 		System.out.println(x);
 		inputs.put(line.getCurrent(), x);
 		ParenCheck pc = new ParenCheck();
