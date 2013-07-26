@@ -174,6 +174,24 @@ public class Format {
 						}
 					}
 				}
+				/*				if (expr.charAt(k) == '~'){
+					if (k-1 >= 0){
+						//checks possible characters that precede the current character
+						if (expr.charAt(k-1) != '|' 
+								|| expr.charAt(k-1) != '&'
+								|| expr.charAt(k-1) != '~'
+								|| expr.charAt(k-1) != '('
+								//double check if we want to keep this paren check because we are substringing
+								|| (expr.charAt(k-1) != '>' && k-2 >= 0 && expr.charAt(k-2) != '=')){
+							throw new IllegalLineException ("There is an invalid character preceeding ~."); 
+						}
+					if (k+1 < expr.length()){
+						if (!Character.isLetter(expr.charAt(k+1)) 
+								|| expr.charAt(k+1) != '~'){
+							throw new IllegalLineException ("There is an invalid character following ~.");
+						}
+					}*/
+
 
 				//checks condition when you encounter '=>'
 				if (k+1 < expr.length() && (expr.charAt(k) == '=' && expr.charAt(k+1) == '>')){
