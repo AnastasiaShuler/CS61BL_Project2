@@ -121,23 +121,24 @@ public class Format {
 				//checks conditions when you encounter variables
 				if (Character.isLetter(expr.charAt(k))){
 					if (k-1 >= 0){
-						//the possible predecessors of a variable include: ~, (, =>
-						if (expr.charAt(k-1) != '~' || expr.charAt(k-1) != '(' 
-								|| (k-2 < 0 || (expr.charAt(k-1) != '>' && expr.charAt(k-2) != '='))){
-							throw new IllegalLineException("The only elements that may precede "+
-														   "a variable are =>, (, and ~.");
+						//checks possible characters that precede the current character
+						if (expr.charAt(k-1) != '|' 
+								|| expr.charAt(k-1) != '&'
+								|| expr.charAt(k-1) != '~'
+								|| expr.charAt(k-1) != '('
+								//double check if we want to keep this paren check because we are substringing
+								|| (expr.charAt(k-1) != '>' && k-2 >= 0 && expr.charAt(k-2) != '=')){
+							throw new IllegalLineException ("There is an invalid character preceeding the variable."); 
 						}
-					}
-
 					if (k+1 < expr.length()){
-						if ((k+2 >= expr.length() || (expr.charAt(k+1) != '=' && expr.charAt(k+2) != '>'))
-								|| expr.charAt(k+1) != ')'){
-							throw new IllegalLineException("The only elements that may follow "+
-															"a variable are =>, (, and ~.");
+						if (expr.charAt(k+1) != '|' 
+								|| expr.charAt(k+1) != '&'
+								|| expr.charAt(k+1) != ')'
+								|| (expr.charAt(k+1) != '=' && k+2 < expr.length() && expr.charAt(k+2) != '>')){
+							throw new IllegalLineException ("There is an invalid character following the variable.");
 						}
 					}
-				}
-
+					
 				//checks conditions when you encounter '&' or '|'
 				if (expr.charAt(k) == '&' || expr.charAt(k) == '|'){
 					if (k-1 >= 0){
