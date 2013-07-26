@@ -8,6 +8,10 @@ public class Proof {
 	boolean beginProof, finishProof, firstShow;
 	static LineNumber line;
 	ArrayList<Step> soFar;
+=======
+	LineNumber line;
+	ArrayList<String> soFar;
+>>>>>>> a5ce51d009cfbf6e2a05995674770adbeb5643ba
 	Hashtable<String, Expression> exprs;
 	Hashtable<String, String> inputs;
 	TheoremSet myTheorems;
@@ -18,6 +22,7 @@ public class Proof {
 		beginProof = true;
 		finishProof = false;
 		line = new LineNumber(beginProof, finishProof);
+		soFar = new ArrayList<String>();
 		inputs = new Hashtable<String, String>();
 		exprs = new Hashtable<String, Expression>();
 		firstShow = true;
@@ -32,8 +37,13 @@ public class Proof {
 	public void extendProof (String x) throws IllegalLineException, IllegalInferenceException {
 		//This will replace all groups of spaces with a single space
 		x = x.trim().replaceAll(" +", " ");
-		System.out.println(x);
 		inputs.put(line.getCurrent(), x);
+		
+		//add the line to the arraylist
+		if(soFar.size() == 0 || line.getCurrent() != soFar.get(soFar.size() - 1)) {
+			soFar.add(line.getCurrent());
+		}
+		
 		ParenCheck pc = new ParenCheck();
 		if(!(pc.checkParens(x))){
 			throw new IllegalLineException("Your parenthesis don't match up");
@@ -117,14 +127,23 @@ public class Proof {
 
 
 	public String toString ( ) {
+		String result = "";
+		Iterator<String> iter = soFar.iterator();
+		while(iter.hasNext()) {
+			String current = iter.next();
+			result = result + current + " " + inputs.get(current) + "\n";
+		}
+		return result;
+		/*
 		String result = "print\n";
 		Iterator<Step> iter = soFar.iterator();
 		while(iter.hasNext()) {
 			result = result + iter.next().getLineNumber().toString() + " " + iter.next().getInput() + "\n";
 		}
-		return result;
+		return result;*/
 	}
 	
+	/*
 	//gets the step from a given line number
 	public Step getStep(LineNumber line) {
 		for(int i = 0; i < soFar.size(); i++) {
@@ -135,18 +154,15 @@ public class Proof {
 		//TO DO: might want to throw an error here if the line number they want doesn't exist, instead of returning null
 		return null;
 
-	}
+	}*/
 	
+
 	/*
 	public static void main(String[] args) {
 		Proof test = new Proof(null);
-		test.extendProof("show (p=>q)");
-		test.extendProof("show (p=>q)");
-		test.extendProof("show ((p=>q)=>q)");
-		test.extendProof("assume ((p=>q)=>q)");
+		test.extendProof("show (((p=>q)=>q)=>((q=>p)=>p))");
 		test.extendProof("print");
-	}
-	*/
+	}*/
 
 	public boolean isComplete ( ) {
 		if(line.getCurrent().equals("1")){
