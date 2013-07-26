@@ -10,7 +10,13 @@ public class Format {
 	 * four sections (mp, line number, line number, expression).
 	 */
 
-	public boolean checkFormat (String [ ] parts) {
+	public boolean checkFormat (String wholeInput) {
+		/* This method implements a preliminary "sanity check" on the overall 
+		 * format of user input. If checkFormat(string) returns true, then call
+		 * expressionValidity(expressionString) to check the validity of 
+		 * solely the expression part of user input.
+		 */
+		String [ ] parts = wholeInput.split(" ");
 
 		if (parts.length == 1) {
 			/*
@@ -53,28 +59,28 @@ public class Format {
 		return false;
 	}
 
-	/* expressionValidity checks the expression section of user input for validity. */
+	public boolean expressionValidity (String expr) throws IllegalLineException {
+		
+		/* expressionValidity checks the expression section of user input for validity. */
 
-	public boolean expressionValidity (Expression e) throws IllegalLineException {
-
-		if (e.myString == null || e.myString.length() == 0){
+		if (expr == null || expr.length() == 0){
 			//checks an empty input
 			throw new IllegalLineException ("You must extend the proof with " +
 											"an expression, or mp, ic, co, show, assume, or a theorem name " +
 											"followed by an expression.");
 
-		} if (e.myString.length() == 1) {
-			//if an expression has a length of 1, the only valid e.myStringession is a single variable
-			if (Character.isLetter(e.myString.charAt(0))){
+		} if (expr.length() == 1) {
+			//if an expression has a length of 1, the only valid expression is a single variable
+			if (Character.isLetter(expr.charAt(0))){
 				return true;
 			} else {
 				throw new IllegalLineException("Single-character input must consist " +
 												"of only one variable.");
 			}
 
-		} if (e.myString.length() == 2) {
-			//if an expression has a length of 2, the only valid e.myStringession is ~variable
-			if (e.myString.charAt(0) == '~' && Character.isLetter(e.myString.charAt(1))){
+		} if (expr.length() == 2) {
+			//if an expression has a length of 2, the only valid expression is ~variable
+			if (expr.charAt(0) == '~' && Character.isLetter(expr.charAt(1))){
 				return true;
 			} else {
 				throw new IllegalLineException("Two-character input must consist " +
@@ -82,7 +88,7 @@ public class Format {
 			}
 
 		} else {
-			return expressionValidityHelper(e.myString);
+			return expressionValidityHelper(expr);
 		}
 	}
 
@@ -118,27 +124,26 @@ public class Format {
 				}
 
 
-							//checks conditions when you encounter variables
+				//checks conditions when you encounter variables
 				if (Character.isLetter(expr.charAt(k))){
 					if (k-1 >= 0){
-						//checks possible characters that precede the current character
-						if (expr.charAt(k-1) != '|' 
-								|| expr.charAt(k-1) != '&'
-								|| expr.charAt(k-1) != '~'
-								|| expr.charAt(k-1) != '('
-								//double check if we want to keep this paren check because we are substringing
-								|| (expr.charAt(k-1) != '>' && k-2 >= 0 && expr.charAt(k-2) != '=')){
-							throw new IllegalLineException ("There is an invalid character preceeding the variable."); 
-						}
-					if (k+1 < expr.length()){
-						if (expr.charAt(k+1) != '|' 
-								|| expr.charAt(k+1) != '&'
-								|| expr.charAt(k+1) != ')'
-								|| (expr.charAt(k+1) != '=' && k+2 < expr.length() && expr.charAt(k+2) != '>')){
-							throw new IllegalLineException ("There is an invalid character following the variable.");
+						//the possible predecessors of a variable include: ~, (, =>
+						if (expr.charAt(k-1) != '~' || expr.charAt(k-1) != '(' 
+								|| (k-2 < 0 || (expr.charAt(k-1) != '>' && expr.charAt(k-2) != '='))){
+							throw new IllegalLineException("The only elements that may precede "+
+														   "a variable are =>, (, and ~.");
 						}
 					}
-					
+
+					if (k+1 < expr.length()){
+						if ((k+2 >= expr.length() || (expr.charAt(k+1) != '=' && expr.charAt(k+2) != '>'))
+								|| expr.charAt(k+1) != ')'){
+							throw new IllegalLineException("The only elements that may follow "+
+															"a variable are =>, (, and ~.");
+						}
+					}
+				}
+
 				//checks conditions when you encounter '&' or '|'
 				if (expr.charAt(k) == '&' || expr.charAt(k) == '|'){
 					if (k-1 >= 0){
@@ -174,24 +179,6 @@ public class Format {
 						}
 					}
 				}
-				/*				if (expr.charAt(k) == '~'){
-					if (k-1 >= 0){
-						//checks possible characters that precede the current character
-						if (expr.charAt(k-1) != '|' 
-								|| expr.charAt(k-1) != '&'
-								|| expr.charAt(k-1) != '~'
-								|| expr.charAt(k-1) != '('
-								//double check if we want to keep this paren check because we are substringing
-								|| (expr.charAt(k-1) != '>' && k-2 >= 0 && expr.charAt(k-2) != '=')){
-							throw new IllegalLineException ("There is an invalid character preceeding ~."); 
-						}
-					if (k+1 < expr.length()){
-						if (!Character.isLetter(expr.charAt(k+1)) 
-								|| expr.charAt(k+1) != '~'){
-							throw new IllegalLineException ("There is an invalid character following ~.");
-						}
-					}*/
-
 
 				//checks condition when you encounter '=>'
 				if (k+1 < expr.length() && (expr.charAt(k) == '=' && expr.charAt(k+1) == '>')){
@@ -232,5 +219,5 @@ public class Format {
 				}
 			}
 			return true;
-		} 
+		}
 	}
