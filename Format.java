@@ -61,6 +61,7 @@ public class Format {
     public boolean expressionValidity (String expr) throws IllegalLineException {
     	
     	charStack = new Stack<Character> ();
+    	expr = expr.trim();
         
         /* expressionValidity checks the expression section of user input for validity. */
     	
@@ -264,6 +265,11 @@ public class Format {
                 //cases for ')' - must be followed by =, ), or be at the end of the expression
                 //')' or a letter may precede ')'
                 if (expr.charAt(k) == ')') {
+                	
+                	impliesSeen =- 1;
+                	andSeen -= 1;
+                	orSeen -= 1;
+                	
                 	if (k-1 > 0) {
 			            if (Character.isLetter(expr.charAt(k-1)) == false && expr.charAt(k-1) != ')') {
 		                    throw new IllegalLineException("The only elements that may precede "
@@ -271,8 +277,9 @@ public class Format {
 		                    }
                 	}
                 	if (k+1 < expr.length()) {
-	                	if (expr.charAt(k+1) != '=' && expr.charAt(k+1) != ')') {
-	                		throw new IllegalLineException("The only elements that may follow a ) are => or another ); "+
+	                	if (expr.charAt(k+1) != '=' && expr.charAt(k+1) != ')' 
+	                	 && expr.charAt(k+1) != '&' && expr.charAt(k+1) != '|') {
+	                		throw new IllegalLineException("The only elements that may follow a ) are =>, &, | or another ); "+
 	                									   "otherwise, you must be at the end of the expression.");
 		                	}
 		                }
@@ -284,7 +291,7 @@ public class Format {
     
 		public static void main(String[] args) throws IllegalLineException {
 			 Format myFormat = new Format();
-			 String d = new String ("((~p&~q)=>~(p|q))");
+			 String d = new String ("((p=>q)))");
 			 myFormat.expressionValidity(d);
 		 }
     }
