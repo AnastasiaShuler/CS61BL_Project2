@@ -60,7 +60,7 @@ public class Format {
  
     public boolean expressionValidity (String expr) throws IllegalLineException {
     	
-    	charStack = new Stack<Character> ();
+    	int parenBalanced = 0;
     	expr = expr.trim();
         
         /* expressionValidity checks the expression section of user input for validity. */
@@ -104,14 +104,14 @@ public class Format {
 	 
 	            //checks that all parentheses are matched through a stack
 	            if (expr.charAt(k) == '(') {
-	                charStack.push(expr.charAt(k));
+	                parenBalanced++;
 	            } 
 	            if (expr.charAt(k) == ')') {
-	                charStack.pop();
+	            	parenBalanced--;
 	            }   
 	        } // end for loop
 	        
-	        if (charStack.isEmpty() == false) {
+	        if (parenBalanced != 0) {
 	            throw new IllegalLineException ("Your parentheses are unmatched."); 
 	        } 
 	        
@@ -132,6 +132,7 @@ public class Format {
     	int andSeen = 0;
     	int orSeen = 0;
     	int parenLevel = 0;
+    	int operatorsSeen = 0;
     	
     	//boolean trueState = false;
     	
@@ -181,9 +182,11 @@ public class Format {
                 //checks conditions when you encounter '&' or '|'
                 //preceeding: ), letter, 
                 //following: (, letter, ~
-                //
  
                 if (expr.charAt(k) == '&' || expr.charAt(k) == '|') {
+                	
+                	operatorsSeen++;
+                	
                 	if (expr.charAt(k) == '&') {
                 		andSeen++;
                 	}
@@ -236,10 +239,10 @@ public class Format {
                 //only one => per paren pair
                 //preceeding: ), letter
                 //following: (, letter, ~
-                
-                
+
                if (k+1 < expr.length() && ((expr.charAt(k) == '=' || expr.charAt(k+1) == '>'))){
-                	
+            	   
+                	operatorsSeen++;
                 	impliesSeen++;
                 	
                 	if (impliesSeen > parenLevel) {
@@ -266,8 +269,16 @@ public class Format {
                 //')' or a letter may precede ')'
                 if (expr.charAt(k) == ')') {
                 	
-                	impliesSeen =- 1;
+                	operatorsSeen--;
+                	//if (parenLevel - impliesSeen > 1) {
+                	//	throw;
+                	//}
+                	impliesSeen -= 1;
+                	//if (parenLevel - andSeen > 1) {
+                	//	throw;
+                	//}
                 	andSeen -= 1;
+                	//if (parenLevel - orSeen > 1)
                 	orSeen -= 1;
                 	
                 	if (k-1 > 0) {
@@ -284,14 +295,16 @@ public class Format {
 		                	}
 		                }
                 	}
-
-	          }
-    	return true;
-        }
+	          	}
+    	if (operatorsSeen != 0) {
+    		throw new IllegalLineException("Illegal number of =>s, |s, or &s.");
+    	}
+    		return true;
+    }
     
 		public static void main(String[] args) throws IllegalLineException {
 			 Format myFormat = new Format();
-			 String d = new String ("((p=>q)))");
+			 String d = new String ("((~p&~q)=>~(p|q))");
 			 myFormat.expressionValidity(d);
 		 }
     }
