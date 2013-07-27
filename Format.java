@@ -11,7 +11,7 @@ public class Format {
      * four sections (mp, line number, line number, expression).
      */
  
-    public boolean checkFormat (String wholeInput) {
+public boolean checkFormat (String wholeInput) throws IllegalLineException {
         /* This method implements a preliminary "sanity check" on the overall 
          * format of user input. If checkFormat(string) returns true, then call
          * expressionValidity(expressionString) to check the validity of 
@@ -21,9 +21,11 @@ public class Format {
  
         if (parts.length == 1) {
             /*
-             * if only 1 "part," then let it be checked by Expression.
+             * if only 1 "part," then print is the only valid expression
              */
-            return true;
+            if(parts[0] != "print") {
+                throw new IllegalLineException("*** bad expression:" + parts[0]);
+            }
         }
  
         if (parts.length > 1) {
@@ -32,32 +34,37 @@ public class Format {
              * the first part must be a keyword.
              */
  
-            if (parts[0].equals("mp") || parts[0].equals("co")) {
+            if (parts[0].equals("mp") || parts[0].equals("co") || parts[0].equals("mt")) {
                 /*
                  * These two keywords have the same format of
-                 * "mp/co" [line number] [line number] [expression],
+                 * "mp/co/mt" [line number] [line number] [expression],
                  * so we can compound these into one check
                  */
-                if (parts.length == 4) {
-                    return true;
+                if (parts.length != 4) {
+                    throw new IllegalLineException("*** bad inference format");
                 }
             }
  
-            if (parts[0].equals("ic")) {
-                if (parts.length == 3) {
-                    return true;
+            else if (parts[0].equals("ic") || parts[0].equals("repeat")) {
+                if (parts.length != 3) {
+                    throw new IllegalLineException("*** not enough arguments");
                 }
             }
  
-            if (parts[0].equals("show") || parts[0].equals("assume") || parts[0] instanceof String) {
-                if (parts.length == 2) {
-                    return true;
+            else { //if (parts[0].equals("show") || parts[0].equals("assume") || parts[0] instanceof String) {
+                if (parts.length != 2) {
+                    throw new IllegalLineException("*** not enough arguments");
                 }
             }
         }
-        return false;
-    }
- 
+        
+        //once you've checked that there are the right number of arguments, send it to the expression checker
+        if(parts[0] != "print") {
+            return expressionValidity(parts[parts.length - 1]);
+        }
+        
+        return true;
+    } 
     public boolean expressionValidity (String expr) throws IllegalLineException {
     	
     	int parenBalanced = 0;
