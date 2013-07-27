@@ -212,10 +212,9 @@ public class FormatTest extends TestCase {
 		String r = "((a=>b)=>((b=>c)=>(a=>c)))";
 		try {
 			check.expressionValidity(r);
-			fail();
 		}
 		catch (IllegalLineException e) {
-			assert true;
+			fail();
 		}
 		
 		String s = "mp(p=>q)";
@@ -239,6 +238,178 @@ public class FormatTest extends TestCase {
 		String u = "ab";
 		try {
 			check.expressionValidity(u);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String v = "(p=>(p=>q))";
+		try {
+			check.expressionValidity(v);
+		}
+		catch (IllegalLineException e) {
+			fail();
+		}
+		
+		String w = "";
+		try {
+			check.expressionValidity(w);
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String x = "(p)";
+		try {
+			check.expressionValidity(x);
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String ab = "(ab=>cd)";
+		try {
+			check.expressionValidity(ab);
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String ac = "((a=>b)=>(b=>a))";
+		try {
+			check.expressionValidity(ac);
+		}
+		catch (IllegalLineException e) {
+			System.out.println(e.getMessage());
+			fail();
+		}
+		
+		/*String ad = null;
+		try {
+			check.expressionValidity(ad);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}*/
+		
+		String ae = "(p=>=>q)";
+		try {
+			check.expressionValidity(ae);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		/*String af = "((p=>q))";
+		try {
+			check.expressionValidity(af);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String ag = "((p=>q)))";
+		try {
+			check.expressionValidity(ag);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}*/
+		
+		String ah = "(p)=>(q)";
+		try {
+			check.expressionValidity(ah);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String ai = "((p)=>(q))";
+		try {
+			check.expressionValidity(ai);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String aj = "((p=>)q)";
+		try {
+			check.expressionValidity(aj);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String ak = "(~~p=>p)";
+		try {
+			check.expressionValidity(ak);
+		}
+		catch (IllegalLineException e) {
+			fail();			
+		}
+		
+		String al = "((~p&~q)=>~(p|q))";
+		try {
+			check.expressionValidity(al);
+		}
+		catch (IllegalLineException e) {
+			fail();
+		}
+		
+		String am = " ~p   ";
+		try {
+			check.expressionValidity(am);
+		}
+		catch (IllegalLineException e) {
+			fail();
+		}
+		
+		String an = "(p=>q))";
+		try {
+			check.expressionValidity(an);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String ao = "(a=>(b=>(a&b)))";
+		try {
+			check.expressionValidity(ao);
+		}
+		catch (IllegalLineException e) {
+			fail();
+		}
+		
+		String ap = "((((r|s)=>(x|~y))&(~(r|s)=>(x|~y)))=>(x|~y))";
+		try {
+			check.expressionValidity(ap);
+		}
+		catch (IllegalLineException e) {
+			System.out.println(e.getMessage());
+			fail();
+		}
+		
+		String ar = "mp1.2.1 1.2.3(p=>q)";
+		try {
+			check.expressionValidity(ar);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String as = "^";
+		try {
+			check.expressionValidity(as);
 			fail();
 		}
 		catch (IllegalLineException e) {
