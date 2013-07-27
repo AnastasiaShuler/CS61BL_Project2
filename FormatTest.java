@@ -74,6 +74,7 @@ public class FormatTest extends TestCase {
 		//Strings with a length of 2 can only be in the format: '~variable'
 		}
 		catch (IllegalLineException e) {
+			System.out.println(e.getMessage());
 			fail();
 		}
 		
@@ -121,16 +122,28 @@ public class FormatTest extends TestCase {
 		catch (IllegalLineException e) {
 			assert true;
 		}
+	
 		String j = new String ("(p=>q)");
 		try {
 			check.expressionValidity(j);
 		}
 		catch (IllegalLineException e) {
+			System.out.println(e.getMessage());
 			fail();
 		}
 		
+        String y = "~(p=>q)";
+        try {
+        	check.expressionValidity(y);
+        }
+		catch (IllegalLineException e) {
+			System.out.println(e.getMessage());
+			fail();
+			assert true;
+		}
+       
 		String k = new String ("(p=>q=>p)");
-		//cant have more than one implies per parens
+		//can't have more than one implies per parens
 		try {
 			check.expressionValidity(k);
 			fail();
@@ -172,6 +185,60 @@ public class FormatTest extends TestCase {
 		String o = new String("(p= >q)");
 		try {
 			check.expressionValidity(o);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String p = "((~p&~q)=>~(p|q))";
+		try {
+			check.expressionValidity(p);
+		}
+		catch (IllegalLineException e) {
+			System.out.println(e.getMessage());
+			fail();
+		}
+		
+		String q = "(a=>(b=>(a&b)))";
+		try {
+			check.expressionValidity(q);
+		}
+		catch (IllegalLineException e) {
+			System.out.println(e.getMessage());
+			fail();
+		}
+		
+		String r = "((a=>b)=>((b=>c)=>(a=>c)))";
+		try {
+			check.expressionValidity(r);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String s = "mp(p=>q)";
+		try {
+			check.expressionValidity(s);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String t = "(((((p)))))";
+		try {
+			check.expressionValidity(t);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String u = "ab";
+		try {
+			check.expressionValidity(u);
 			fail();
 		}
 		catch (IllegalLineException e) {
