@@ -11,6 +11,7 @@ public class Proof {
 	static Hashtable<String, Expression> exprs;
 	Hashtable<String, String> inputs;
 	TheoremSet myTheorems;
+	
 
 	/**
 	 *  Proof() Initiates a Proof object.
@@ -51,8 +52,8 @@ public class Proof {
 		try {
 			check.checkFormat(x);
 			//This will replace all groups of spaces with a single space
-			x = x.trim().replaceAll(" +", " ");
-			System.out.println(x);
+			//x = x.trim().replaceAll(" +", " ");
+			//System.out.println(x);
 			String[] parts = x.split("\\s"); //Split the input around spaces
 			
 			//Add the input to Hashtables inputs and exprs
@@ -63,6 +64,8 @@ public class Proof {
 			if(soFar.size() == 0 || line.getCurrent() != soFar.get(soFar.size() - 1)) {
 				soFar.add(line.getCurrent());
 			}
+			
+			//evaluate(x, parts);
 			
 			//evaluating inferences
 			Boolean  validInference = true;
@@ -120,10 +123,26 @@ public class Proof {
 			}
 		}
 		catch(IllegalLineException e) {
-			line.decrement();
+			line.prev();
+			throw new IllegalLineException(e.getMessage());
+		}
+		
+		catch(IllegalInferenceException e) {
 			throw new IllegalLineException(e.getMessage());
 		}
 	}
+	
+	/*
+	public void evaluate (String x, String[] parts) throws IllegalInferenceException {
+		try {
+
+		}
+		
+		catch(IllegalInferenceException e) {
+			line.prev();
+			throw new IllegalLineException(e.getMessage());
+		}
+	}*/
 
 	public String toString ( ) {
 		String result = "";
@@ -136,7 +155,7 @@ public class Proof {
 	}
 
 	public boolean isComplete ( ) {
-		if(line.getCurrent().equals("1")){
+		if(line.getCurrent().equals("1") || line.getLastNum() <= 1){
 			return false;
 		}
 		else if(line.size() == 1){
@@ -145,6 +164,7 @@ public class Proof {
 			String check = exprs.get("1").myString;
 			String input = exprs.get(line.getCurrent()).myString;
 			return (check.equals(input));
+			
 		} else{
 			//check that it matches the first line with same
 			//number of subproofs
@@ -158,4 +178,6 @@ public class Proof {
 			 return false;
 		}
 	}
+	
 }
+
