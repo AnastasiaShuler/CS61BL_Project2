@@ -38,7 +38,6 @@ public class FormatTest extends TestCase {
 		
 		try { a.checkFormat("antsy 3.4 7.9 (a=>(a=>b))"); fail(); }
 		catch(IllegalLineException e) { assertTrue(true); }
-		
 	}
 
 	public void testShowAssume() {
@@ -85,7 +84,6 @@ public class FormatTest extends TestCase {
 		//checks null input
 		//Expression a = new Expression(null);
 		//assertFalse(check.expressionValidity(a));
-
 		
 		//VALID
 		//checks expression with a length of one
@@ -132,7 +130,7 @@ public class FormatTest extends TestCase {
 		//INVALID
 		//Strings with a length of one can only be variables
 		try { check.expressionValidity("8"); fail(); }
-		catch (IllegalLineException e) { assertTrue(true); }
+		catch (IllegalLineExcepiton e) { assertTrue(true); }
 		
 		try { check.expressionValidity("89"); fail(); }
 		catch (IllegalLineException e) { assertTrue(true); }
