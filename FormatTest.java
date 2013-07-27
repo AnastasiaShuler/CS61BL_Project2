@@ -38,6 +38,7 @@ public class FormatTest extends TestCase {
 		
 		try { a.checkFormat("antsy 3.4 7.9 (a=>(a=>b))"); fail(); }
 		catch(IllegalLineException e) { assertTrue(true); }
+		
 	}
 
 	public void testShowAssume() {
@@ -49,6 +50,22 @@ public class FormatTest extends TestCase {
 		
 		try { a.checkFormat("assume (p=>q)"); }
 		catch(IllegalLineException e) { assertTrue(false); }
+	}
+	
+	public void testCompleteInput() {
+		Format a = new Format();
+		
+		//Right number of args and valid expression
+		try { a.checkFormat("co 2.1.3 2.3.3 ((~p&~q)=>~(p|q))"); }
+		catch(IllegalLineException e) { fail(); }
+		
+		//Right number of args but invalid expression
+		try { a.checkFormat("co 2.1.3 2.3.3 (p=>)q"); fail(); }
+		catch(IllegalLineException e) { assertTrue(true); }
+		
+		//Wrong number of args but invalid expression
+		try { a.checkFormat("co 2.1.3 ((~p&~q)=>~(p|q))"); fail(); }
+		catch(IllegalLineException e) { assertTrue(true); }
 	}
 
 	public void testTheoremName() {
@@ -208,4 +225,3 @@ public class FormatTest extends TestCase {
 		catch (IllegalLineException e) { assertTrue(true); }
 	}
 }
-
