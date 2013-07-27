@@ -1,4 +1,5 @@
 import java.util.Hashtable;
+
 /**
  *  Inference
  *  Contains methods to check the validity of inferences
@@ -21,20 +22,19 @@ public class Inference {
 	 *	@param Proof.exprs Hashtable<String,Expression> object.
 	 *	@return Boolean True if the inference is valid.
 	 **/
-	public static boolean mp(String input){
+	public static boolean mp(String input) throws IllegalInferenceException{
 		//Input is of the form: mp [line#] [line#] [inference]
 		String[] text = input.split("\\s");	//Split the input along spaces
 		//text[0] will be mp;
 		String line1 = text[1];				//Get LineNumber 1
 		String line2 = text[2];				//Get LineNumber 2
-		
-		//check valid line references
+		String inference = text[3];			//Get inference
+		//check line references for validity
 		if(!LineNumber.isValidReference(line1, Proof.line.getCurrent()) || 
 				!LineNumber.isValidReference(line2, Proof.line.getCurrent())) {
-			return false;
+			Proof.line.prev();
+			throw new IllegalInferenceException("*** Inacessable line number");
 		}
-		
-		String inference = text[3];			//Get inference
 		ProofTree E1 = Proof.exprs.get(line1).myTree;	//get the tree of line1
 		Proof.exprs.get(line2);
 		ProofTree E2 = Proof.exprs.get(line2).myTree;	//get the tree of line2
@@ -42,7 +42,8 @@ public class Inference {
 		//Check that E2 is of the form (E1=>E2)
 		if(!(E1.checkLeft(E2))){
 			if(!(E2.checkLeft(E1))){
-				return false;
+				Proof.line.prev();
+				throw new IllegalInferenceException("*** Bad mp inference");
 			} else{
 				//Switch the two expressions
 				ProofTree temp = E1;
@@ -55,11 +56,9 @@ public class Inference {
 		inference = inference.replaceAll("\\(", "");
 		inference = inference.replaceAll("\\)", "");
 		String checkInference = E1.rightIs();
-		System.out.println(checkInference);
-		System.out.println(inference);
 		if(!(checkInference.equals(inference))){
-			System.out.println("I failed because my inference doesn't match");
-			return false;
+			Proof.line.prev();
+			throw new IllegalInferenceException("*** Bad mp inferencce");
 		}
 		return true;
 	}
@@ -75,21 +74,19 @@ public class Inference {
 	 *  @param Proof.exprs Hashtable<String,Expression> object.
 	 *  @return Boolean Result of the check.
 	 **/
-	public static boolean mt(String input){
+	public static boolean mt(String input) throws IllegalInferenceException{
 		String[] text = input.split("\\s");		//Split the input along spaces
 		//text[0] will be "mt"
 		String line1 = text[1];					//Get lineNumber 1
 		String line2 = text[2];					//Get lineNumber 2
-		
+		String inference = text[3];				//Get inference string
 		//check valid line references
 		if(!LineNumber.isValidReference(line1, Proof.line.getCurrent()) || 
 				!LineNumber.isValidReference(line2, Proof.line.getCurrent())) {
-			return false;
+			Proof.line.prev();
+			throw new IllegalInferenceException("*** Inaccessable line number");
 		}
-		
-		
-		String inference = text[3];				//Get inference string
-		inference = inference.replaceAll("\\(", "");
+		inference = inference.replaceAll("\\(", "");	//remove the ()'s from inference
 		inference = inference.replaceAll("\\)", "");
 		ProofTree E2 = Proof.exprs.get(line1).myTree;	//Get the tree of line1
 		ProofTree E1 = Proof.exprs.get(line2).myTree;	//Get the tree of line2
@@ -97,7 +94,8 @@ public class Inference {
 		if(!(E2.checkRoot("~"))){
 			if(!(E1.checkRoot("~"))){
 				//Neither root was '~'; invalid usage
-				return false;
+				Proof.line.prev();
+				throw new IllegalInferenceException("*** Bad mt inference");
 			}else{
 				//Switch the two inputs
 				ProofTree temp = E1;
@@ -109,12 +107,14 @@ public class Inference {
 		//Check that right s.t. of E2 is same as right s.t. of E1
 		//Satisfies E2 and E1=>E2
 		if(!(E2.checkRightST(E1))){
-			return false;
+			Proof.line.prev();
+			throw new IllegalInferenceException("*** Bad mt inference");
 		}
 		String checkE1 = E1.leftIs();
 		checkE1 = "~"+checkE1;
 		if(!(checkE1.equals(inference))){
-			return false;
+			Proof.line.prev();
+			throw new IllegalInferenceException("*** Bad mt inference");
 		}
 		return true;
 	}
@@ -129,17 +129,16 @@ public class Inference {
 	 *  @param Proof.exprs Hashtable<String,Expression> object
 	 *  @return Boolen Result of the check
 	 **/
-	public static boolean ic(String input){
+	public static boolean ic(String input) throws IllegalInferenceException{
 		String[] text = input.split("\\s");	//Split along spaces
 		//text[0] contains "ic"
 		String line = text[1];				//Get LineNumber
-		
+		String inference = text[2];			//Get inference
 		//check valid line references
 		if(!LineNumber.isValidReference(line, Proof.line.getCurrent())) {
-			return false;
+			Proof.line.prev();
+			throw new IllegalInferenceException("*** Inaccessable line number");
 		}
-		
-		String inference = text[2];			//Get inference
 		String E1 = Proof.exprs.get(line).myString;	//Get string of line
 		E1 = E1.replaceAll("\\)", "");
 		E1 = E1.replaceAll("\\(", "");		//Remove the () from E1
@@ -147,7 +146,11 @@ public class Inference {
 		ProofTree t1 = ProofTree.createATree(inference);
 		String right = t1.rightIs();		//right is a string of _only_ the right subtree
 		//return true if E1 is the same as the right side of the inference.
-		return E1.equals(right);			
+		if(!(E1.equals(right))){
+			Proof.line.prev();
+			throw new IllegalInferenceException("*** Bad ic inference");
+		}
+		return true;
 	}
 	
 	/**
@@ -160,26 +163,27 @@ public class Inference {
 	 *  @param input String of user input that calls the co() method.
 	 *  @return Boolean Result of the check.
 	 **/
-	public static boolean co(String input){
+	public static boolean co(String input) throws IllegalInferenceException{
 		String[] text = input.split("\\s");	//Split along spaces
 		//text[0] contains "co"
 		String line1 = text[1];				//Get the first lineNumber
 		String line2 = text[2];				//Get the second lineNumber
-		
+		String inference = text[3];			//get the inference
 		//check valid line references
 		if(!LineNumber.isValidReference(line1, Proof.line.getCurrent()) || 
 				!LineNumber.isValidReference(line2, Proof.line.getCurrent())) {
-			return false;
+			Proof.line.prev();
+			throw new IllegalInferenceException("*** Inaccessable line number");
 		}
 		
-		String inference = text[3];			//get the inference
 		ProofTree E1 = Proof.exprs.get(line1).myTree;
 		ProofTree E2 = Proof.exprs.get(line2).myTree;
 		//Check to make sure one tree have a root of ~
 		if(!(E1.checkRoot("~"))){
 			if(!(E2.checkRoot("~"))){
 				//neither tree has a root of ~
-				return false;
+				Proof.line.prev();
+				throw new IllegalInferenceException("*** Bad co inference");
 			}
 			//Switch the two inputs
 			ProofTree temp = E1;
@@ -188,7 +192,11 @@ public class Inference {
 		}
 		//Check to make sure the right sides of the tree are the same
 		//Will check that two expressions are of the form E and ~E
-		return E1.checkRight(E2);
+		if(!(E1.checkRight(E2))){
+			Proof.line.prev();
+			throw new IllegalInferenceException("*** Bad co inferencec");
+		}
+		return true;
 		
 	}
 	

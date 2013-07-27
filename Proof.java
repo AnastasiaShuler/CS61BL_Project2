@@ -13,8 +13,12 @@ public class Proof {
 	TheoremSet myTheorems;
 	
 
+	/**
+	 *  Proof() Initiates a Proof object.
+	 *  
+	 *  @param theorems The TheoremSet object that contains the user's theorems.
+	 **/
 	public Proof (TheoremSet theorems) {
-		//Need to figure out what to do with theorems
 		beginProof = true;
 		finishProof = false;
 		line = new LineNumber(beginProof, finishProof);
@@ -25,30 +29,37 @@ public class Proof {
 		myTheorems = theorems;
 	}
 
+	/**
+	 *  nextLineNumber() Returns the next line number in the iteration.
+	 *  Makes a call the next() method of the LineNumber class.
+	 *  
+	 *  @return lineNum String representation of the next line number.
+	 **/
 	public String nextLineNumber(){
 		String lineNum = line.next();
 		return lineNum;
 	}
 	
+	/**
+	 *  extendProof() Processes user input to check for legality.
+	 *  Throws IllegalLineException, IllegalInferenceException.
+	 *  Makes extensive calls to other classes' methods, namely the Interface class.
+	 *  
+	 *  @param x String of user input
+	 **/
 	public void extendProof (String x) throws IllegalLineException, IllegalInferenceException {
 		//This will replace all groups of spaces with a single space
 		x = x.trim().replaceAll(" +", " ");
 		System.out.println(x);
 		String[] parts = x.split("\\s"); //Split the input around spaces
+		//Add the input to Hashtables inputs and exprs
 		inputs.put(line.getCurrent(), x);
 		exprs.put(line.getCurrent(), new Expression(parts[parts.length -1]));
 		
-		//add the line to the arraylist
+		//add the line to the arraylist; used for the 'print' command
 		if(soFar.size() == 0 || line.getCurrent() != soFar.get(soFar.size() - 1)) {
 			soFar.add(line.getCurrent());
 		}
-		
-		ParenCheck pc = new ParenCheck();
-		if(!(pc.checkParens(x))){
-			throw new IllegalLineException("Your parenthesis don't match up");
-		}
-		//Another call to a syntax checker
-		
 		
 		//evaluating inferences
 		Boolean  validInference = true;
@@ -105,14 +116,6 @@ public class Proof {
 			myTheorems.theoremChecker(theoremName, inputExpr);
 			
 		}
-		
-		//Throw an exception if we have a bad inference
-		if(validInference){
-			exprs.put(line.getCurrent(), new Expression(parts[parts.length -1]));
-		} else{
-			line.prev();
-			throw new IllegalInferenceException("*** Bad inference");
-		}
 	}
 
 	public String toString ( ) {
@@ -123,35 +126,7 @@ public class Proof {
 			result = result + current + " " + inputs.get(current) + "\n";
 		}
 		return result;
-		/*
-		String result = "print\n";
-		Iterator<Step> iter = soFar.iterator();
-		while(iter.hasNext()) {
-			result = result + iter.next().getLineNumber().toString() + " " + iter.next().getInput() + "\n";
-		}
-		return result;*/
 	}
-	
-	/*
-	//gets the step from a given line number
-	public Step getStep(LineNumber line) {
-		for(int i = 0; i < soFar.size(); i++) {
-			if(soFar.get(i).getLineNumber().equals(line)) {
-				return soFar.get(i);
-			}
-		}
-		//TO DO: might want to throw an error here if the line number they want doesn't exist, instead of returning null
-		return null;
-
-	}*/
-	
-
-	/*
-	public static void main(String[] args) {
-		Proof test = new Proof(null);
-		test.extendProof("show (((p=>q)=>q)=>((q=>p)=>p))");
-		test.extendProof("print");
-	}*/
 
 	public boolean isComplete ( ) {
 		if(line.getCurrent().equals("1")){
@@ -176,19 +151,6 @@ public class Proof {
 			 }
 			 return false;
 		}
-		/*
-		if(soFar.size() == 1 && soFar.get(0) == null && soFar.get(1) == null) { //only one line of proof has been done
-			return false;
-		}
-		else {
-			Expression startExpression = soFar.get(0).getExpression();
-			Expression endExpression = soFar.get(soFar.size()-1).getExpression();
-			if(startExpression.equals(endExpression)) {
-				return true;
-			}
-			else return false;
-		}
-		*/
 	}
 	
 }
