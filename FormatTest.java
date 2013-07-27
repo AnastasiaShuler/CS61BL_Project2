@@ -2,44 +2,43 @@ import junit.framework.TestCase;
 
 public class FormatTest extends TestCase {
 
-	public void testSingleExprs() {
-		Format a = new Format();
-		String ex1 = "(p=>q)";
-		assertTrue(a.checkFormat(ex1));
-	}
-
-	public void testKeywords () {
-		Format a = new Format();
-		String ex1 = "mp 2.1.3 2.3.3 (p=>q)";
-		assertTrue(a.checkFormat(ex1));
-		String ex2 = "co 1 5.1 ~p";
-		assertTrue(a.checkFormat(ex2));
-		String ex3 = "ic 3.4 7.9 (a=>(a=>b))";
-		assertFalse(a.checkFormat(ex3));
-		String ex4 = "ic3.4 7.9 (a=>(a=>b))";
-		assertFalse(a.checkFormat(ex4));
-		String ex5 = "antsy 3.4 7.9 (a=>(a=>b))";
-		assertFalse(a.checkFormat(ex5));
-	}
-
-	public void testShowAssume() {
-		Format b = new Format();
-		String ex1 = "show ~q" ;
-		assertTrue(b.checkFormat(ex1));
-		String ex2 = "assume (p=>q)";
-		assertTrue(b.checkFormat(ex2));
-	}
-
-	public void testTheoremName() {
-		Format c = new Format();
-		String ex1 = "patsy (~p=>q)";
-		assertTrue(c.checkFormat(ex1));
-		String ex2 = "Beavis (p=>q)";
-		assertTrue(c.checkFormat(ex2));
-		String ex3 = "Beavis(p=>q)";
-		//technically not true, but since only one part, this case is checked by Expression.
-		assertTrue(c.checkFormat(ex3));
-	}
+	    public void testKeywords () {
+	        Format a = new Format();
+	        //all these should pass (and not hit the assertTrue(false) statement)
+	        try { a.checkFormat("mp 2.1.3 2.3.3 (p=>q)"); fail();}
+	        catch (IllegalLineException e) { assertTrue(false); }
+	        
+	        try { a.checkFormat("co 2.1.3 2.3.3 (p=>q)"); fail();}
+	        catch (IllegalLineException e) { assertTrue(false); }
+	        
+	        try { a.checkFormat("ic 3.4 (a=>(a=>b))"); fail();}
+	        catch(IllegalLineException e) { assertTrue(false); }
+	        
+	        try { a.checkFormat("show (p=>q)"); }
+	        catch(IllegalLineException e) { assertTrue(false); }
+	        
+	        try { a.checkFormat("assume (p=>q)"); }
+	        catch(IllegalLineException e) { assertTrue(false); }
+	        
+	        try { a.checkFormat("print"); }
+	        catch(IllegalLineException e) { assertTrue(false); }
+	        
+	        //all these should fail
+	        try { a.checkFormat("mp 2.1.3 2.3.3"); assertTrue(false); }
+	        catch(IllegalLineException e) { assertTrue(true); }
+	        
+	        try { a.checkFormat("mt 2.1.3"); assertTrue(false); }
+	        catch(IllegalLineException e) { assertTrue(true); }
+	        
+	        try { a.checkFormat("asfd"); assertTrue(false); }
+	        catch(IllegalLineException e) { assertTrue(true); }
+	        
+	        try { a.checkFormat("ic3.4 7.9 (a=>(a=>b))"); assertTrue(false); }
+	        catch(IllegalLineException e) { assertTrue(true); }
+	        
+	        try { a.checkFormat("antsy 3.4 7.9 (a=>(a=>b))"); assertTrue(false); }
+	        catch(IllegalLineException e) { assertTrue(true); }
+	    }
 
 	public void testCheckExpressions () {
 		Format check = new Format();
@@ -74,7 +73,6 @@ public class FormatTest extends TestCase {
 		//Strings with a length of 2 can only be in the format: '~variable'
 		}
 		catch (IllegalLineException e) {
-			System.out.println(e.getMessage());
 			fail();
 		}
 		
@@ -128,7 +126,6 @@ public class FormatTest extends TestCase {
 			check.expressionValidity(j);
 		}
 		catch (IllegalLineException e) {
-			System.out.println(e.getMessage());
 			fail();
 		}
 		
@@ -137,7 +134,6 @@ public class FormatTest extends TestCase {
         	check.expressionValidity(y);
         }
 		catch (IllegalLineException e) {
-			System.out.println(e.getMessage());
 			fail();
 			assert true;
 		}
@@ -196,7 +192,6 @@ public class FormatTest extends TestCase {
 			check.expressionValidity(p);
 		}
 		catch (IllegalLineException e) {
-			System.out.println(e.getMessage());
 			fail();
 		}
 		
@@ -205,7 +200,6 @@ public class FormatTest extends TestCase {
 			check.expressionValidity(q);
 		}
 		catch (IllegalLineException e) {
-			System.out.println(e.getMessage());
 			fail();
 		}
 		
@@ -281,7 +275,6 @@ public class FormatTest extends TestCase {
 			check.expressionValidity(ac);
 		}
 		catch (IllegalLineException e) {
-			System.out.println(e.getMessage());
 			fail();
 		}
 		
@@ -303,7 +296,7 @@ public class FormatTest extends TestCase {
 			assert true;
 		}
 		
-		/*String af = "((p=>q))";
+		String af = "((p=>q))";
 		try {
 			check.expressionValidity(af);
 			fail();
@@ -319,7 +312,7 @@ public class FormatTest extends TestCase {
 		}
 		catch (IllegalLineException e) {
 			assert true;
-		}*/
+		}
 		
 		String ah = "(p)=>(q)";
 		try {
@@ -394,7 +387,6 @@ public class FormatTest extends TestCase {
 			check.expressionValidity(ap);
 		}
 		catch (IllegalLineException e) {
-			System.out.println(e.getMessage());
 			fail();
 		}
 		
@@ -410,6 +402,24 @@ public class FormatTest extends TestCase {
 		String as = "^";
 		try {
 			check.expressionValidity(as);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String at = "(((p&q)=>(p|q))&&(p=>q))";
+		try {
+			check.expressionValidity(at);
+			fail();
+		}
+		catch (IllegalLineException e) {
+			assert true;
+		}
+		
+		String au = "(((p=>q)&(q=>|p))=>(r|q))";
+		try {
+			check.expressionValidity(au);
 			fail();
 		}
 		catch (IllegalLineException e) {
