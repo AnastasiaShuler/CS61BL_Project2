@@ -121,6 +121,7 @@ public class Proof {
 			}
 		}
 		catch(IllegalLineException e) {
+			line.decrement();
 			throw new IllegalLineException(e.getMessage());
 		}
 	}
@@ -161,5 +162,3 @@ public class Proof {
 	}
 	
 }
-
-
