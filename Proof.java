@@ -11,7 +11,6 @@ public class Proof {
 	static Hashtable<String, Expression> exprs;
 	Hashtable<String, String> inputs;
 	TheoremSet myTheorems;
-	
 
 	/**
 	 *  Proof() Initiates a Proof object.
@@ -146,7 +145,6 @@ public class Proof {
 			String check = exprs.get("1").myString;
 			String input = exprs.get(line.getCurrent()).myString;
 			return (check.equals(input));
-			
 		} else{
 			//check that it matches the first line with same
 			//number of subproofs
@@ -160,5 +158,4 @@ public class Proof {
 			 return false;
 		}
 	}
-	
 }
