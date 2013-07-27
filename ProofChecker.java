@@ -3,9 +3,9 @@ import java.util.*;
 
 public class ProofChecker {
 
-    private InputSource lines;		// source for steps in the proof
+    private InputSource lines;    	// source for steps in the proof
     private TheoremSet myTheorems;	// theorem repository
-    public static boolean iAmDebugging = true;
+    public static boolean iAmDebugging = false;
     
     // The first command-line argument, if specified, is the name of
     // a file of theorems (name/expression pairs).
@@ -53,16 +53,12 @@ public class ProofChecker {
         }
         ProofChecker checker = new ProofChecker (args);
         Proof soFar = new Proof (checker.myTheorems);
+            
         boolean done = false;
         while (!done) {
             System.out.print (soFar.nextLineNumber ( ) + "\t");
             try {
                 String line = checker.lines.readLine ( );
-                // no more lines in the file (or the user typed ctrl+d)
-                if (line == null) {
-                    System.err.println ("Not enough lines in the proof");
-                    System.exit (1);
-                }
                 soFar.extendProof (line);
                 done = soFar.isComplete ( );
             } catch (IllegalLineException e) {
