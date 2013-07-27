@@ -315,10 +315,4 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
     	}
     		return true;
     }
-    
-		public static void main(String[] args) throws IllegalLineException {
-			 Format myFormat = new Format();
-			 String d = new String ("((~p&~q)=>~(p|q))");
-			 myFormat.expressionValidity(d);
-		 }
-    }
+}
