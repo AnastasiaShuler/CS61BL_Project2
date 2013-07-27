@@ -246,7 +246,6 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
                 //only one => per paren pair
                 //preceeding: ), letter
                 //following: (, letter, ~
-
                if (k+1 < expr.length() && ((expr.charAt(k) == '=' || expr.charAt(k+1) == '>'))){
                 	operatorsSeen++;
                 	impliesSeen++;
