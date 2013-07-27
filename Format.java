@@ -248,7 +248,6 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
                 //following: (, letter, ~
 
                if (k+1 < expr.length() && ((expr.charAt(k) == '=' || expr.charAt(k+1) == '>'))){
-            	   
                 	operatorsSeen++;
                 	impliesSeen++;
                 	
@@ -272,6 +271,14 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
                     }
                 }
  
+               //case for encountering letter
+               //may not be followed by another letter!
+               if (Character.isLetter(expr.charAt(k))) {
+            	   if (Character.isLetter(expr.charAt(k+1))) {
+            		   throw new IllegalLineException("Each variable may be only one character.");
+            	   }
+               }
+               
                 //cases for ')' - must be followed by =, ), or be at the end of the expression
                 //')' or a letter may precede ')'
                 if (expr.charAt(k) == ')') {
