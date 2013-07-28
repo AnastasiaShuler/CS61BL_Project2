@@ -63,7 +63,6 @@ public class Proof {
 			if(soFar.size() == 0 || line.getCurrent() != soFar.get(soFar.size() - 1)) {
 				soFar.add(line.getCurrent());
 			}
-			//evaluate(x, parts);
 			
 			//check for valid line numbers in references
 			String inf = parts[0];
@@ -156,9 +155,8 @@ public class Proof {
 	 **/
 	public String toString ( ) {
 		String result = "";
-		Iterator<String> iter = soFar.iterator();
-		while(iter.hasNext()) {
-			String current = iter.next();
+		for(int i = 0; i < soFar.size() - 1; i ++) {
+			String current = soFar.get(i);
 			result = result + current + " " + inputs.get(current) + "\n";
 		}
 		return result;
@@ -197,4 +195,3 @@ public class Proof {
 	}
 	
 }
-
