@@ -178,11 +178,16 @@ public class Proof {
      *  @return boolean Result of the completion check.
      **/
     public boolean isComplete ( ) {
-        if(line.getCurrent().equals("1") || line.getLastNum() < 1){
+        String userInput = inputs.get(line.getCurrent());
+    	String[] parts = userInput.split(" ");
+    	
+        if(line.getCurrent().equals("1") || line.getLastNum() == 1 ||
+        		line.getCurrent().equals("0") || 
+        		line.getCurrent().equals("2") && parts[0].equals("repeat")){
             return false;
         }
+
         else if(line.size() == 1){
-            
             //Check that the it matches the first line.
             String check = exprs.get("1").myString;
             String input = exprs.get(line.getCurrent()).myString;
@@ -203,5 +208,3 @@ public class Proof {
     }
     
 }
-
-
