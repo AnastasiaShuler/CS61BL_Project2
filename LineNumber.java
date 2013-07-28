@@ -135,59 +135,43 @@ public class LineNumber {
 	/**
 	 *  isValidReference() Checks if a given line number can be referenced.
 	 *  Ensures lines are only referenced inside their own subproof.
+	 *  Criteria for valid line numbers:
+	 *  	-cannot access line number of greater depth or yourself
+	 *  	-if depth matches, all digits up to the last digit must match
+	 *  		-last digit must always be less than corresponding digit in
+	 *  			currLine
+	 *  	-if depth of refLine is less than that of currLine, all digits
+	 *  		must match until the last digit;
+	 *  		-last digit must always be less than corresponding digit in
+	 *  			currLine
 	 *  
 	 *  @param refLine Line being referenced.
 	 *  @param currLine Current line number of the proof.
 	 *  @return boolean Result of the validitity check.
 	 **/
 	public static boolean isValidReference(String refLine, String currLine) {
-		try {
-			//Separate first digit of each line number
-			int firstrefNum = Integer.parseInt(refLine.substring(0, 1));
-			int firstcurrNum = Integer.parseInt(currLine.substring(0, 1));
-			//If they aren't the same, it's an illegal reference
-			if(firstrefNum != firstcurrNum) {
-				if(firstrefNum > firstcurrNum || refLine.length() != 1) {
-					return false;
-				}
-			}
-			
-			if(refLine.length() == currLine.length()) {
-				for(int i = 0; i < currLine.length() - 1; i+= 2) {
-					int refCurrNum = Integer.parseInt(refLine.substring(i, i + 1));
-					int currCurrNum = Integer.parseInt(currLine.substring(i, i + 1));
-					if(refCurrNum != currCurrNum) {
-						return false;
-					}
-				}
-			}
-			
-			if(refLine.length() > currLine.length()) {
+		//Cannot access line from deeper subproof or yourself
+		if(refLine.length() > currLine.length() || refLine.equals(currLine)){
+			return false;
+		}
+		for(int i=0; i<refLine.length()-2; i+=2){
+			//check that it matches up until the last number
+			if(refLine.charAt(i) != currLine.charAt(i)){
 				return false;
 			}
-			
-			if(refLine.length() < currLine.length()) {
-				for(int i = 0; i < refLine.length() - 1; i+= 2) {
-					int refCurrNum = Integer.parseInt(refLine.substring(i, i + 1));
-					int currCurrNum = Integer.parseInt(currLine.substring(i, i + 1));
-					if(refCurrNum > currCurrNum) {
-						return false;
-					}
-				}
-			}
-	
-			int refLastNum = Integer.parseInt(refLine.substring(refLine.length() - 1));
-			int currLastNum = Integer.parseInt(currLine.substring(currLine.length() - 1));;
-			if(currLastNum < refLastNum) {
-				return false;
-			}
-			
-			return true;
-	  }
-	catch (NumberFormatException e) {
-		System.out.println("Error in line number");
-	}
-	return false;
+		}
+		//Check that the last digit of the refLine is less than
+		//or equal to matching currLine number.
+		try{
+			int k = refLine.length()-1;
+			Integer x = Integer.parseInt(refLine.substring(k));
+			Integer y = Integer.parseInt(currLine.substring(k, k+1));
+			if(x >y) return false;
+		} catch(NumberFormatException exc){
+			//If one of the characters was not an integer
+			return false;
+		}
+		return true;
 	}
 }
 

@@ -333,10 +333,14 @@ public class ProofTree {
 	 *  @return Boolean Result of the similarity check.
 	 **/
 	public boolean isSimilar(ProofTree t) throws IllegalInferenceException{
-		if(myRoot == null && t.myRoot != null) return false;
+		if(myRoot == null && t.myRoot != null){
+			throw new IllegalInferenceException("*** Bad theorem application");
+		}
 		Hashtable<String, String> ht= new Hashtable<String, String>();
 		boolean result = isSimilarHelper(myRoot, t.myRoot, ht, t);
-		if(!result) return false;
+		if(!result){
+			throw new IllegalInferenceException("*** Bad theorem application");
+		}
 		//Need to check that each value in hashtable is different
 		//ie: a->b and c->b is an invalid relationship
 		Set<String> keySet = ht.keySet();

@@ -5,13 +5,17 @@ public class Format {
     Stack<Character> charStack;
 	String specialChars = "()|&~=>";
 	
+	public Format(){
+		charStack = new Stack<Character>();
+	}
     /*
      * checkFormat checks user input for overall validity. 
      * For example, input beginning with "mp" must have
      * four sections (mp, line number, line number, expression).
      */
- 
-public boolean checkFormat (String wholeInput) throws IllegalLineException {
+
+	public boolean checkFormat (String wholeInput) throws IllegalLineException {
+	
         /* This method implements a preliminary "sanity check" on the overall 
          * format of user input. If checkFormat(string) returns true, then call
          * expressionValidity(expressionString) to check the validity of 
@@ -24,7 +28,7 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
              * if only 1 "part," then print is the only valid expression
              */
             if(!(parts[0].equals("print"))) {
-                throw new IllegalLineException("*** bad expression:" + parts[0]);
+                throw new IllegalLineException("*** bad expression: " + parts[0]);
             }
         }
  
@@ -80,20 +84,22 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
     	int parenBalanced = 0;
     	expr = expr.trim();
         
+    	if(expr.matches("\\(~.\\)")){
+    		throw new IllegalLineException("*** Bad expression: " + expr);
+    	}
         /* expressionValidity checks the expression section of user input for validity. */
-    	
     	for (int i=0; i<expr.length(); i++) {
         	//check for characters that don't belong
     		boolean isSpecialChar = specialChars.contains(String.valueOf(expr.charAt(i)));
     		boolean isLetter = Character.isLetter(expr.charAt(i));
         	if (isSpecialChar == false && isLetter == false) {
-        		throw new IllegalLineException("There is at least one invalid character in your input.");
+        		throw new IllegalLineException("*** There is at least one invalid character in your input.");
             }
     	}
  
         if (expr == null || expr.length() == 0) {
             //checks an empty input
-            throw new IllegalLineException ("You must extend the proof with an expression. " +
+            throw new IllegalLineException ("*** You must extend the proof with an expression. " +
                                             "Alternately, you may reason with mp, ic, co, show, assume, " +
                                             "or a theorem name followed by an expression.");
         }
@@ -103,7 +109,7 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
             if (Character.isLetter(expr.charAt(0))) {
                 return true;
             } else {
-                throw new IllegalLineException ("Single-character input must consist of only one variable.");
+                throw new IllegalLineException ("*** Single-character input must consist of only one variable.");
             }
         }
         
@@ -112,7 +118,7 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
             if (expr.charAt(0) == '~' && Character.isLetter(expr.charAt(1))) {
                 return true;
             } else {
-                throw new IllegalLineException("Two-character input must consist of only ~ and a variable.");
+                throw new IllegalLineException("*** Two-character input must consist of only ~ and a variable.");
             }
         }
         
@@ -129,12 +135,12 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
 	        } // end for loop
 	        
 	        if (parenBalanced != 0) {
-	            throw new IllegalLineException ("Your parentheses are unmatched."); 
+	            throw new IllegalLineException ("*** Your parentheses are unmatched."); 
 	        } 
 	        
 	        if (expr.charAt(0) != '(') {
 	        	if (expr.charAt(0) != '~') {
-	        		throw new IllegalLineException ("Expressions may begin only with ~ or (.");
+	        		throw new IllegalLineException ("***Expressions may begin only with ~ or (.");
 	        	}
 	        }
 	        return expressionValidityHelper(expr);
@@ -156,9 +162,13 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
     	int operatorsSeen = 0;
     	
     	//boolean trueState = false;
+    	if(expr.charAt(0) == '('){
+	    	boolean parens = parenCheck(expr);
+	    	if(!parens) throw new IllegalLineException("*** Expression not parenthesized correctly");
+    	}
+
     	
     	for (int k = 0; k < expr.length(); k++) {
-                
                 //increment parenLevel if you see an opening parentheses.
                 if (expr.charAt(k) == '(') {
                 	parenLevel++;
@@ -174,13 +184,13 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
                 if (expr.charAt(k) == '(' ) {
                 	if ((k-1>0) && expr.charAt(k-1) != '(' && expr.charAt(k-1) != '>' && expr.charAt(k-1) != '&'
                 		&& expr.charAt(k-1) != '|' && expr.charAt(k-1) != '~') {
-	                    throw new IllegalLineException("Only (, =>, &, |, and ~ may precede " +
+	                    throw new IllegalLineException("*** Only (, =>, &, |, and ~ may precede " +
 	                                                    "an opening parentheses.");
                 	}
 
                 	if (expr.charAt(k+1) != '~' && Character.isLetter(expr.charAt(k+1)) == false 
                 		&& expr.charAt(k+1) != '(') {
-                		throw new IllegalLineException("Only a letter or ~ may follow an opening parentheses.");
+                		throw new IllegalLineException("*** Only a letter or ~ may follow an opening parentheses.");
                 	}
                 }
                 
@@ -188,13 +198,13 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
                 //checks conditions when you encounter variables
                 //can't have single char in parens, e.g. (p)
                 if (Character.isLetter(expr.charAt(k))) {
-                	if (specialChars.contains(expr.substring(k+1, k+2)) == false
+                	if ((k < expr.length() - 3) && specialChars.contains(expr.substring(k+1, k+2)) == false
                 	 && specialChars.contains(expr.substring(k-1, k)) == false) {
-                		throw new IllegalLineException("Variables must be surrounded by other special characters.");
+                		throw new IllegalLineException("*** Variables must be surrounded by other special characters.");
                 	}
                 		
-                	if (expr.charAt(k+1) == ')' && expr.charAt(k-1) == '(') {
-                		throw new IllegalLineException("You cannot enter a single character surrounded " +
+                	if ((k< (expr.length() - 1)) && expr.charAt(k+1) == ')' && expr.charAt(k-1) == '(') {
+                		throw new IllegalLineException("*** You cannot enter a single character surrounded " +
                 										"by parentheses.");
 
                 	}
@@ -215,12 +225,12 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
                 		orSeen++;
                 	}
                 	if ((andSeen > parenLevel) || (orSeen > parenLevel)) {
-                		throw new IllegalLineException ("Incorrect number of &s or |s you may only " +
+                		throw new IllegalLineException ("*** Incorrect number of &s or |s you may only " +
                 				"have one & or | per pair of parentheses.");
                 	}
                 	if (k-1 >= 0) {
                         if (Character.isLetter(expr.charAt(k-1)) == false && expr.charAt(k-1) != ')') {
-                            throw new IllegalLineException("The only elements that may precede " + 
+                            throw new IllegalLineException("*** The only elements that may precede " + 
                                                             "& or | are a variable or a ).");
                         }
                     }
@@ -228,7 +238,7 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
                     if (k+1 <= expr.length()) {
                         if (expr.charAt(k+1) != '(' && Character.isLetter(expr.charAt(k+1)) == false
                          && expr.charAt(k+1) != '~') {
-                            throw new IllegalLineException("The only elements that may follow " + 
+                            throw new IllegalLineException("*** The only elements that may follow " + 
                                                             "& or | are a variable or a (.");
  
                         }
@@ -242,7 +252,7 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
                     if (k > 0) {
                         if (expr.charAt(k-1) != '(' && expr.charAt(k-1) != '&' && expr.charAt(k-1) != '|'
                          && expr.charAt(k-1) != '~' && expr.charAt(k-1) != '>') {
-                            throw new IllegalLineException("The only elements that may precede " +
+                            throw new IllegalLineException("*** The only elements that may precede " +
                                                            "~ are (, &, ~, >, and |.");
                         }
                     }
@@ -250,7 +260,7 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
                     if (k+1 < expr.length()) {
                         if (expr.charAt(k+1) != '~' && Character.isLetter(expr.charAt(k+1)) == false
                          && expr.charAt(k+1) != '(') {
-                            throw new IllegalLineException("The only elements that may follow " +
+                            throw new IllegalLineException("*** The only elements that may follow " +
                                                             "a ~ are ~, (, or a variable.");
                         }
                     }
@@ -265,12 +275,12 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
                 	impliesSeen++;
                 	
                 	if (impliesSeen > parenLevel) {
-                		throw new IllegalLineException("Only one => may be used inside a pair of parentheses.");
+                		throw new IllegalLineException("*** Only one => may be used inside a pair of parentheses.");
                 	}
                 	
                     if (k-1 >= 0) {
                         if (expr.charAt(k-1) != ')' && (Character.isLetter(expr.charAt(k-1)) == false)) {
-	                            throw new IllegalLineException("The only elements that may precede " +
+	                            throw new IllegalLineException("*** The only elements that may precede " +
 	                                                        "=> are a variable or ).");
                         }
                     }
@@ -278,7 +288,7 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
                     if (k+2 < expr.length()) {
                         if (expr.charAt(k+2) != '(' && Character.isLetter(expr.charAt(k+2)) == false
                          && expr.charAt(k+2) != '~') {
-                            throw new IllegalLineException("The only elements that may follow " +
+                            throw new IllegalLineException("*** The only elements that may follow " +
                                                             "=> are a variable, ~, or (.");
                         }
                     }
@@ -287,8 +297,8 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
                //case for encountering letter
                //may not be followed by another letter!
                if (Character.isLetter(expr.charAt(k))) {
-            	   if (Character.isLetter(expr.charAt(k+1))) {
-            		   throw new IllegalLineException("Each variable may be only one character.");
+            	   if ( (k < expr.length() -1) && Character.isLetter(expr.charAt(k+1))) {
+            		   throw new IllegalLineException("*** Each variable may be only one character.");
             	   }
                }
                
@@ -310,14 +320,14 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
                 	
                 	if (k-1 > 0) {
 			            if (Character.isLetter(expr.charAt(k-1)) == false && expr.charAt(k-1) != ')') {
-		                    throw new IllegalLineException("The only elements that may precede "
+		                    throw new IllegalLineException("*** The only elements that may precede "
 		                    							+ "a ) are a variable or another ).");
 		                    }
                 	}
                 	if (k+1 < expr.length()) {
 	                	if (expr.charAt(k+1) != '=' && expr.charAt(k+1) != ')' 
 	                	 && expr.charAt(k+1) != '&' && expr.charAt(k+1) != '|') {
-	                		throw new IllegalLineException("The only elements that may follow a ) are =>, &, | or another ); "+
+	                		throw new IllegalLineException("*** The only elements that may follow a ) are =>, &, | or another ); "+
 	                									   "otherwise, you must be at the end of the expression.");
 		                	}
 		                }
@@ -328,4 +338,20 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
     	}
     		return true;
     }
+	
+	private boolean parenCheck(String expr){
+    	//Check parens using a stack
+    	for(int i=0; i<expr.length(); i++){
+    		if(expr.charAt(i) == '('){
+    			charStack.push('(');
+    		} else if(expr.charAt(i) == ')'){
+    			charStack.pop();
+    		}
+    		if(charStack.isEmpty() && i != expr.length()-1){
+    			return false;
+    		}
+    	}
+    	if(!(charStack.isEmpty())) return false;
+    	return true;
+	}
 }

@@ -1,4 +1,5 @@
 show ((a=>q)=>((b=>q)=>((a|b)=>q)))
+assume a=>q
 assume (a=>q)
 show ((b=>q)=>((a|b)=>q))
 assume b
@@ -8,7 +9,9 @@ assume (a&b)
 assume q
 assume (a|b)
 show q
+assume (~q)
 assume ~q
+mt 2.2.2.1 2 a
 mt 3.2.1 2 a
 mt 3.2.2.1 2 a
 mt 3.2.2.1 2 ~a
@@ -21,7 +24,8 @@ mq 3.2.2.3 3.2.2.5 ~(a|b)
 mp 3.2.2.3 3.2.2.5 ~(a|b)
 co 3.2.2.6 3.2.1 ((a=>q)=>((b=>q)=>((a|b)=>q)))
 co 3.2.2.6 3.2.1 q
-ic 3.2.2 ((a|b)=>q)
+ic 3.2.2.8 ((a|b)=>q)
+ic  3.2.2 ((a|b)=>q)
 ic 3.2 ((b=>q)=>((a|b)=>q))
 ic 3 ((a=>q)=>((b=>q)=>((a|b)=>q)))
 

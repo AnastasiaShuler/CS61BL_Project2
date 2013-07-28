@@ -320,9 +320,9 @@ public class ProofTreeTest {
 	
 	@Test
 	/**
-	 *  testIsSubtree() Tests the isSubtree() method of ProofTree.
+	 *  testIsSimilar() Tests the isSubtree() method of ProofTree.
 	 **/
-	public void testIsSubtree(){
+	public void testIsSimilar(){
 		
 		ProofTree t1 = new ProofTree();
 		ProofTree t2 = new ProofTree();
@@ -386,6 +386,18 @@ public class ProofTreeTest {
 		try{
 			assertFalse(t1.isSimilar(t2));
 		} catch (IllegalInferenceException exc){
+			assertTrue(true);
+		}
+		
+		System.out.println("I'm here");
+		t1 = ProofTree.createATree("((~a&~b)=>~(a|b))");
+		t2 = ProofTree.createATree("((~p&q)=>~(p|q))");
+		t1.print();
+		t2.print();
+		try{
+			assertFalse(t1.isSimilar(t2));
+			fail();
+		} catch(IllegalInferenceException exc){
 			assertTrue(true);
 		}
 		
