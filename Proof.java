@@ -52,7 +52,7 @@ public class Proof {
 		try {
 			check.checkFormat(x);
 			//This will replace all groups of spaces with a single space
-			//x = x.trim().replaceAll(" +", " ");
+			x = x.trim().replaceAll(" +", " ");
 			//System.out.println(x);
 			String[] parts = x.split("\\s"); //Split the input around spaces
 			
@@ -64,8 +64,24 @@ public class Proof {
 			if(soFar.size() == 0 || line.getCurrent() != soFar.get(soFar.size() - 1)) {
 				soFar.add(line.getCurrent());
 			}
-			
 			//evaluate(x, parts);
+			
+			//check for valid line numbers in references
+			String inf = parts[0];
+			if(inf.equals("mp") || inf.equals("mt") || inf.equals("co")){
+				String line1 = parts[1];
+				String line2 = parts[2];
+				if(! LineNumber.isValidReference(line1, line.getCurrent()) ||
+						 ! LineNumber.isValidReference(line2, line.getCurrent())){
+							throw new IllegalInferenceException("*** Inaccessable line number");
+						}
+			} else if(inf.equals("ic")){
+				String line1 = parts[1];
+				if(! LineNumber.isValidReference(line1, line.getCurrent())){
+					throw new IllegalInferenceException("*** Inaccessable line number");
+				}
+			}
+			
 			
 			//evaluating inferences
 			Boolean  validInference = true;
@@ -74,7 +90,7 @@ public class Proof {
 				validInference = Inference.mp(x);
 			}
 			//mt inference
-			else if(parts[0].equals("mt")) {
+			else if(parts[0].equals("mt")){
 				validInference= Inference.mt(x);
 			}
 			//ic inference
@@ -132,18 +148,6 @@ public class Proof {
 		}
 	}
 	
-	/*
-	public void evaluate (String x, String[] parts) throws IllegalInferenceException {
-		try {
-
-		}
-		
-		catch(IllegalInferenceException e) {
-			line.prev();
-			throw new IllegalLineException(e.getMessage());
-		}
-	}*/
-
 	public String toString ( ) {
 		String result = "";
 		Iterator<String> iter = soFar.iterator();
@@ -155,7 +159,7 @@ public class Proof {
 	}
 
 	public boolean isComplete ( ) {
-		if(line.getCurrent().equals("1") || line.getLastNum() <= 1){
+		if(line.getCurrent().equals("1")){ // || line.getLastNum() <= 1){
 			return false;
 		}
 		else if(line.size() == 1){

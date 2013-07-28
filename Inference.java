@@ -30,11 +30,6 @@ public class Inference {
 		String line2 = text[2];				//Get LineNumber 2
 		String inference = text[3];			//Get inference
 		//check line references for validity
-		if(!LineNumber.isValidReference(line1, Proof.line.getCurrent()) || 
-				!LineNumber.isValidReference(line2, Proof.line.getCurrent())) {
-			Proof.line.prev();
-			throw new IllegalInferenceException("*** Inacessable line number");
-		}
 		ProofTree E1 = Proof.exprs.get(line1).myTree;	//get the tree of line1
 		Proof.exprs.get(line2);
 		ProofTree E2 = Proof.exprs.get(line2).myTree;	//get the tree of line2
@@ -81,11 +76,13 @@ public class Inference {
 		String line2 = text[2];					//Get lineNumber 2
 		String inference = text[3];				//Get inference string
 		//check valid line references
+		/*
 		if(!LineNumber.isValidReference(line1, Proof.line.getCurrent()) || 
 				!LineNumber.isValidReference(line2, Proof.line.getCurrent())) {
 			Proof.line.prev();
 			throw new IllegalInferenceException("*** Inaccessable line number");
 		}
+		*/
 		inference = inference.replaceAll("\\(", "");	//remove the ()'s from inference
 		inference = inference.replaceAll("\\)", "");
 		ProofTree E2 = Proof.exprs.get(line1).myTree;	//Get the tree of line1
@@ -135,10 +132,12 @@ public class Inference {
 		String line = text[1];				//Get LineNumber
 		String inference = text[2];			//Get inference
 		//check valid line references
+		/*
 		if(!LineNumber.isValidReference(line, Proof.line.getCurrent())) {
 			Proof.line.prev();
 			throw new IllegalInferenceException("*** Inaccessable line number");
 		}
+		*/
 		String E1 = Proof.exprs.get(line).myString;	//Get string of line
 		E1 = E1.replaceAll("\\)", "");
 		E1 = E1.replaceAll("\\(", "");		//Remove the () from E1
@@ -170,11 +169,13 @@ public class Inference {
 		String line2 = text[2];				//Get the second lineNumber
 		String inference = text[3];			//get the inference
 		//check valid line references
+		/*
 		if(!LineNumber.isValidReference(line1, Proof.line.getCurrent()) || 
 				!LineNumber.isValidReference(line2, Proof.line.getCurrent())) {
 			Proof.line.prev();
 			throw new IllegalInferenceException("*** Inaccessable line number");
 		}
+		*/
 		
 		ProofTree E1 = Proof.exprs.get(line1).myTree;
 		ProofTree E2 = Proof.exprs.get(line2).myTree;

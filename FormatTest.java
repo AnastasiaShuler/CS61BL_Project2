@@ -130,7 +130,7 @@ public class FormatTest extends TestCase {
 		//INVALID
 		//Strings with a length of one can only be variables
 		try { check.expressionValidity("8"); fail(); }
-		catch (IllegalLineExcepiton e) { assertTrue(true); }
+		catch (IllegalLineException e) { assertTrue(true); }
 		
 		try { check.expressionValidity("89"); fail(); }
 		catch (IllegalLineException e) { assertTrue(true); }
