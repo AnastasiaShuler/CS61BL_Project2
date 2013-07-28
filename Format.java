@@ -23,7 +23,7 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
             /*
              * if only 1 "part," then print is the only valid expression
              */
-            if(parts[0] != "print") {
+            if(!(parts[0].equals("print"))) {
                 throw new IllegalLineException("*** bad expression:" + parts[0]);
             }
         }
@@ -59,7 +59,7 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
         }
         
         //once you've checked that there are the right number of arguments, send it to the expression checker
-        if(parts[0] != "print") {
+        if(!(parts[0].equals("print"))) {
             return expressionValidity(parts[parts.length - 1]);
         }
         
