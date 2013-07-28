@@ -159,7 +159,7 @@ public class Proof {
 	}
 
 	public boolean isComplete ( ) {
-		if(line.getCurrent().equals("1")){ // || line.getLastNum() <= 1){
+		if(line.getCurrent().equals("1") || line.getLastNum() <= 1){
 			return false;
 		}
 		else if(line.size() == 1){
