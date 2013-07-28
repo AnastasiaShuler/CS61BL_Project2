@@ -105,9 +105,9 @@ public class LineNumber {
 		return numbers.size();
 	}
 	
-	public void decrement() {
-		Integer lastNum = numbers.get(numbers.size() - 1);
-		numbers.set(numbers.size()-1, new Integer(lastNum - 1));
+	public int getLastNum() {
+		int lastIndex = numbers.size()-1;
+		return numbers.get(lastIndex);
 	}
 	
 	/**
