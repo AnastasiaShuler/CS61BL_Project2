@@ -55,14 +55,22 @@ public class Proof {
 			check.checkFormat(x);
 			String[] parts = x.split("\\s"); //Split the input around spaces
 			
+			
 			//Add the input to Hashtables inputs and exprs
 			inputs.put(line.getCurrent(), x);
 			exprs.put(line.getCurrent(), new Expression(parts[parts.length -1]));
 			
+			/*
 			//add the line to the arraylist; used for the 'print' command
 			if(soFar.size() == 0 || line.getCurrent() != soFar.get(soFar.size() - 1)) {
 				soFar.add(line.getCurrent());
 			}
+			*/
+			
+			if(soFar.isEmpty() || !(line.getCurrent().equals(soFar.get(soFar.size() -1)))){
+				soFar.add(line.getCurrent());
+			}
+			//evaluate(x, parts);
 			
 			//check for valid line numbers in references
 			String inf = parts[0];
@@ -127,9 +135,9 @@ public class Proof {
 			//print statement
 			else if(parts[0].equals("print")) {
 				String lineNum = line.getCurrent();
-				exprs.put(lineNum, new Expression(parts[0]));
+				//exprs.put(lineNum, new Expression(parts[0]));
 				line.prev();
-				System.out.println(toString());
+				System.out.print(toString());
 			}
 			//Must be a theorem or invalid if nothing else got it
 			else{
@@ -155,9 +163,9 @@ public class Proof {
 	 **/
 	public String toString ( ) {
 		String result = "";
-		for(int i = 0; i < soFar.size() - 1; i ++) {
+		for(int i=0; i<soFar.size() -1; i++){
 			String current = soFar.get(i);
-			result = result + current + " " + inputs.get(current) + "\n";
+			result += current + "\t" + inputs.get(current) + "\n";
 		}
 		return result;
 	}
@@ -170,7 +178,7 @@ public class Proof {
 	 *  @return boolean Result of the completion check.
 	 **/
 	public boolean isComplete ( ) {
-		if(line.getCurrent().equals("1") || line.getLastNum() <= 1){
+		if(line.getCurrent().equals("1") || line.getLastNum() < 1){
 			return false;
 		}
 		else if(line.size() == 1){
@@ -195,3 +203,4 @@ public class Proof {
 	}
 	
 }
+
