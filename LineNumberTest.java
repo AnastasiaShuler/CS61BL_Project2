@@ -13,7 +13,7 @@ public class LineNumberTest extends TestCase {
 		line.setBeginProof(true);
 		assertEquals("2.1", line.next());
 		assertEquals("2.2", line.next());
-		line.decrement();
+		//line.decrement();
 		assertEquals("2.1", line.getCurrent());
 		assertEquals("2.2", line.next());
 		line.setBeginProof(true);

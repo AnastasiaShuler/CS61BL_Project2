@@ -36,24 +36,30 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
  
             if (parts[0].equals("mp") || parts[0].equals("co") || parts[0].equals("mt")) {
                 /*
-                 * These two keywords have the same format of
+                 * These three keywords have the same format of
                  * "mp/co/mt" [line number] [line number] [expression],
                  * so we can compound these into one check
                  */
-                if (parts.length != 4) {
-                    throw new IllegalLineException("*** bad inference format");
+                if (parts.length < 4) {
+                    throw new IllegalLineException("*** not enough arguments for the infernece");
+                } else if(parts.length > 4){
+                	throw new IllegalLineException("*** too many arguments for the inference");
                 }
             }
  
             else if (parts[0].equals("ic") || parts[0].equals("repeat")) {
-                if (parts.length != 3) {
+                if (parts.length < 3) {
                     throw new IllegalLineException("*** not enough arguments");
+                } else if( parts.length > 3){
+                	throw new IllegalLineException("*** too many arguments for an ic clause");
                 }
             }
  
             else { //if (parts[0].equals("show") || parts[0].equals("assume") || parts[0] instanceof String) {
-                if (parts.length != 2) {
-                    throw new IllegalLineException("*** not enough arguments");
+                if (parts.length >2) {
+                    throw new IllegalLineException("*** too many arguments");
+                } else if(parts.length < 2){
+                	throw new IllegalLineException("*** Not enough arguments");
                 }
             }
         }
@@ -65,6 +71,10 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
         
         return true;
     } 
+
+	/**
+	 *  expressionValidity();
+	 **/
     public boolean expressionValidity (String expr) throws IllegalLineException {
     	
     	int parenBalanced = 0;
@@ -132,7 +142,11 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
        return true;
     }
  
-    public boolean expressionValidityHelper(String expr) throws IllegalLineException {
+    
+    /**
+     *  expressionValidityHelper()
+     **/
+	public boolean expressionValidityHelper(String expr) throws IllegalLineException {
     	
     	//only one =>, &, or | may be seen per "parentheses level"
     	int impliesSeen = 0;
@@ -310,7 +324,7 @@ public boolean checkFormat (String wholeInput) throws IllegalLineException {
                 	}
 	          	}
     	if (operatorsSeen != 0) {
-    		throw new IllegalLineException("Illegal number of =>s, |s, or &s.");
+    		throw new IllegalLineException("*** Illegal number of =>s, |s, or &s.");
     	}
     		return true;
     }

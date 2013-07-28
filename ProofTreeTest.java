@@ -7,11 +7,12 @@
  **/
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 
 public class ProofTreeTest {
+	Proof p = new Proof(null);
+	String s  = p.line.next();
 
 	@Test
 	/**
@@ -70,6 +71,14 @@ public class ProofTreeTest {
 		//Test multiple ~'s
 		expr = "~~a";
 		t = ProofTree.createATree(expr);
+		t.print();
+		
+		expr = "((a=>(b=>c))=>((a=>b)=>(a=>c)))";
+		t = ProofTree.createATree(expr);
+		t.print();
+		
+		expr = "((a=>(b=>c))=>((a=>b)=>(a=>c)))";
+		t = ProofTree.createATree("((a=>(b=>c))=>((a=>b)=>(a=>c)))");
 		t.print();
 	}
 	

@@ -171,7 +171,7 @@ public class ProofTree {
 	        for (int k=1; k<proof.length()-1; k++) {
 	        	if(proof.charAt(k) == ')'){
 	        		nesting --; //Decrements the nesting count for ')'
-	        		k++; //Increments k to the next character
+	        		continue;
 	        	}
 	        	if(proof.charAt(k) == '('){
 	        		nesting ++ ; //increments the nesting count for'('
@@ -346,7 +346,6 @@ public class ProofTree {
 				if(ht.get(keys[i]).equals(ht.get(keys[j]))){
 					//Two keys have the same value
 					//Throw exception: *** Bad theorem application : a=b, c=b
-					System.out.println("I got to here");
 					Proof.line.prev();
 					throw new IllegalInferenceException("*** Bad theorem application: "  + 
 							keys[i] + "=" + ht.get(keys[i]) + ", " + keys[j] + "=" + ht.get(keys[j]));

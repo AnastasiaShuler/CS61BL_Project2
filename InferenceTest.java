@@ -486,5 +486,22 @@ public class InferenceTest {
 		} catch(IllegalInferenceException exc){
 			assertTrue(true);
 		}
+		
+		input = "assume (a=>(b=>c))";
+		prevInput = "show ((a=>(b=>c))=>((a=>b)=>(a=>c)))";
+		currLine = "2";
+		prevLine = "1";
+		steps.put(prevLine, prevInput);
+		steps.put(currLine, input);
+		p.exprs.put(currLine, new Expression(input));
+		p.exprs.put(prevLine, new Expression(prevInput));
+		try{
+			assertTrue(Inference.assume(input, prevInput));
+			fail();
+		} catch(IllegalInferenceException exc){
+			assertTrue(true);
+		}
 	}
+	
+	
 }

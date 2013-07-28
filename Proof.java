@@ -49,11 +49,11 @@ public class Proof {
 	 **/
 	public void extendProof (String x) throws IllegalLineException, IllegalInferenceException {
 		Format check = new Format();
+			x = x.trim().replaceAll(" +", " ");
+			System.out.println(x);
 		try {
 			check.checkFormat(x);
 			//This will replace all groups of spaces with a single space
-			x = x.trim().replaceAll(" +", " ");
-			//System.out.println(x);
 			String[] parts = x.split("\\s"); //Split the input around spaces
 			
 			//Add the input to Hashtables inputs and exprs
@@ -73,11 +73,13 @@ public class Proof {
 				String line2 = parts[2];
 				if(! LineNumber.isValidReference(line1, line.getCurrent()) ||
 						 ! LineNumber.isValidReference(line2, line.getCurrent())){
-							throw new IllegalInferenceException("*** Inaccessable line number");
-						}
+					line.prev();
+					throw new IllegalInferenceException("*** Inaccessable line number");
+				}
 			} else if(inf.equals("ic")){
 				String line1 = parts[1];
 				if(! LineNumber.isValidReference(line1, line.getCurrent())){
+					line.prev();
 					throw new IllegalInferenceException("*** Inaccessable line number");
 				}
 			}
