@@ -65,12 +65,15 @@ public class Proof {
 			if(soFar.size() == 0 || line.getCurrent() != soFar.get(soFar.size() - 1)) {
 				soFar.add(line.getCurrent());
 			}
+<<<<<<< HEAD
 			*/
 			
 			if(soFar.isEmpty() || !(line.getCurrent().equals(soFar.get(soFar.size() -1)))){
 				soFar.add(line.getCurrent());
 			}
 			//evaluate(x, parts);
+=======
+>>>>>>> 44fc9112a985d08c855a0d3572024539152277ff
 			
 			//check for valid line numbers in references
 			String inf = parts[0];
@@ -163,9 +166,15 @@ public class Proof {
 	 **/
 	public String toString ( ) {
 		String result = "";
+<<<<<<< HEAD
 		for(int i=0; i<soFar.size() -1; i++){
 			String current = soFar.get(i);
 			result += current + "\t" + inputs.get(current) + "\n";
+=======
+		for(int i = 0; i < soFar.size() - 1; i ++) {
+			String current = soFar.get(i);
+			result = result + current + " " + inputs.get(current) + "\n";
+>>>>>>> 44fc9112a985d08c855a0d3572024539152277ff
 		}
 		return result;
 	}
@@ -203,4 +212,3 @@ public class Proof {
 	}
 	
 }
-
