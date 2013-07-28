@@ -150,11 +150,16 @@ public class Proof {
 	
 	public String toString ( ) {
 		String result = "";
+		for(int i = 0; i < soFar.size() - 1; i ++) {
+			String current = soFar.get(i);
+			result = result + current + " " + inputs.get(current) + "\n";
+		}
+		/*
 		Iterator<String> iter = soFar.iterator();
 		while(iter.hasNext()) {
 			String current = iter.next();
 			result = result + current + " " + inputs.get(current) + "\n";
-		}
+		}*/
 		return result;
 	}
 
