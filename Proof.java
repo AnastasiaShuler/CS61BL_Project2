@@ -49,11 +49,10 @@ public class Proof {
 	 **/
 	public void extendProof (String x) throws IllegalLineException, IllegalInferenceException {
 		Format check = new Format();
-			x = x.trim().replaceAll(" +", " ");
-			System.out.println(x);
+		//This will replace all groups of spaces with a single space
+		x = x.trim().replaceAll(" +", " ");
 		try {
 			check.checkFormat(x);
-			//This will replace all groups of spaces with a single space
 			String[] parts = x.split("\\s"); //Split the input around spaces
 			
 			//Add the input to Hashtables inputs and exprs
@@ -150,21 +149,28 @@ public class Proof {
 		}
 	}
 	
+	/**
+	 *  toString() Turns the proof into a string.
+	 *  
+	 *  @return String form of the proof.
+	 **/
 	public String toString ( ) {
 		String result = "";
-		for(int i = 0; i < soFar.size() - 1; i ++) {
-			String current = soFar.get(i);
-			result = result + current + " " + inputs.get(current) + "\n";
-		}
-		/*
 		Iterator<String> iter = soFar.iterator();
 		while(iter.hasNext()) {
 			String current = iter.next();
 			result = result + current + " " + inputs.get(current) + "\n";
-		}*/
+		}
 		return result;
 	}
 
+	/**
+	 *  isComplete() Checks if a proof (subproof) has been completed.
+	 *  Checks if the inference made in the current line matches that of the
+	 *  	first line of the proof.
+	 *  
+	 *  @return boolean Result of the completion check.
+	 **/
 	public boolean isComplete ( ) {
 		if(line.getCurrent().equals("1") || line.getLastNum() <= 1){
 			return false;
