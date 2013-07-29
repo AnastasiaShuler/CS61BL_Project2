@@ -13,9 +13,6 @@ public class LineNumberTest extends TestCase {
 		line.setBeginProof(true);
 		assertEquals("2.1", line.next());
 		assertEquals("2.2", line.next());
-		//line.decrement();
-		assertEquals("2.1", line.getCurrent());
-		assertEquals("2.2", line.next());
 		line.setBeginProof(true);
 		assertEquals("2.2.1", line.next());
 		line.setFinishProof(true);
@@ -24,6 +21,53 @@ public class LineNumberTest extends TestCase {
 		line.setFinishProof(true);
 		assertEquals("3", line.next());
 		assertEquals("4", line.next());
+	}
+	
+	public void testPrev() {
+		LineNumber line = new LineNumber(true, false);
+		assertEquals("1", line.next());
+		assertEquals("2", line.next());
+		assertEquals("1", line.prev());
+		assertEquals("2", line.next());
+		line.setBeginProof(true);
+		line.next();
+		assertEquals("2.1", line.prev());
+		line.next();
+		assertEquals("2.1", line.prev());
+		assertEquals("2.2", line.next());
+		assertEquals("2.1", line.prev());
+		assertEquals("2.2", line.next());
+		assertEquals("2.1", line.prev());
+		assertEquals("2.1", line.prev());
+		line.next();
+		line.next();
+		line.next();
+		assertEquals("2.3", line.prev());
+		assertEquals("2.2", line.prev());
+		
+	}
+	
+	public void testGetLastNum() {
+		LineNumber line = new LineNumber(true, false);
+		assertEquals("1", line.next());
+		assertEquals("2", line.next());
+		assertEquals(2, line.getLastNum());
+		line.setBeginProof(true);
+		assertEquals("2.1", line.next());
+		assertEquals("2.2", line.next());
+		assertEquals(2, line.getLastNum());
+		line.setBeginProof(true);
+		assertEquals("2.2.1", line.next());
+		assertEquals(1, line.getLastNum());
+		line.setFinishProof(true);
+		assertEquals("2.3", line.next());
+		assertEquals(3, line.getLastNum());
+		assertEquals("2.4", line.next());
+		assertEquals(4, line.getLastNum());
+		line.setFinishProof(true);
+		assertEquals("3", line.next());
+		assertEquals("4", line.next());
+		assertEquals(4, line.getLastNum());
 	}
 	
 	public void testReferences(){
