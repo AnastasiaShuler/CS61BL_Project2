@@ -7,6 +7,8 @@ Ji-hern Baek        cs61bl-nj
 Katherine Chao      cs61bl-no
 
 Testing:
+LineNumberTest
+The testNext() method tests the incrementation of the index in the array every time next() is called. The line decrementation method, prev(), is also tested for. The addition of an array index (which happens when a new subproof begins) beginning at 1 and the subtraction of the index (which happens when the subproof is finished) is tested for as well. The testReferences() method tests the isValidReference() method in LineNumber, which implements the rules for a legal line reference, such as testing that the line being referenced exists in the proof, that the reference isn't apart of an inner subproof that the current line isn't apart of, and that if the reference is in the same subproof, whether all indexes except for the very last are equal. If any of these are violated, the isValidReference() method will return false.
     
 
 Contributions:
