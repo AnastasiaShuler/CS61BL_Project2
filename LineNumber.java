@@ -114,8 +114,10 @@ public class LineNumber {
 	 *  prev() Decrements the line number;
 	 **/
 	public String prev(){
-		Integer newNum = numbers.get(numbers.size()-1) - 1;
-		numbers.set(numbers.size()-1, newNum);
+		if(this.getLastNum() != 1) {
+			Integer newNum = numbers.get(numbers.size()-1) - 1;
+			numbers.set(numbers.size()-1, newNum);
+		}
 		return this.toString();
 	}
 	
@@ -174,4 +176,3 @@ public class LineNumber {
 		return true;
 	}
 }
-
