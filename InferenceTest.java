@@ -334,6 +334,9 @@ public class InferenceTest {
 		
 	}
 	
+	/**
+	 *  TestCO() Tests the co() method of the Inference class.
+	 **/
 	@Test
 	public void TestCO(){
 		String input = "co 3.2.2.6 3.2.1 q";
@@ -410,6 +413,9 @@ public class InferenceTest {
 		}
 	}
 
+	/**
+	 *  TestAssume() Tests the assume() method of the Infernece class
+	 **/
 	@Test
 	public void TestAssume(){
 		p.line.next(); //Keeps tests from failing b/c Inference.assume decrements line number
@@ -497,9 +503,8 @@ public class InferenceTest {
 		p.exprs.put(prevLine, new Expression(prevInput));
 		try{
 			assertTrue(Inference.assume(input, prevInput));
-			fail();
 		} catch(IllegalInferenceException exc){
-			assertTrue(true);
+			fail();
 		}
 	}
 	

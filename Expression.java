@@ -25,7 +25,7 @@ public class Expression {
 	 *  @param object Object to check for equality
 	 *  @return boolean Result of the equality check.
 	 **/
-	public boolean isEquals(Object obj){
+	public boolean equals(Object obj){
 		if(!(obj instanceof Expression)){
 			return false;	//returns false if obj is not an Expression object
 		}

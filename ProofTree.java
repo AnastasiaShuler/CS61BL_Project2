@@ -34,14 +34,6 @@ import java.util.*;
  *  	TreeNode(obj, parent) Creates a TreeNode with the given object and given parent.
  *  	TreeNode(obj, parent, left, right) Creates a TreeNode with the given object,
  *  		 parent, and children.
- * 
- *  ProofTreeIterator
- *  The ProofTreeIterator class implements the Iterator interface;
- *  Allows for iteration through the proof tree using a preorder traversal;
- *  **METHODS**
- *  	ProofTreeIterator() Initializes an iterator.
- *  	hasNext() Returns true if there more TreeNodes to be traversed.
- *  	next() Returns the next TreeNode in the iteration.
  **/
 
 public class ProofTree {
@@ -60,16 +52,6 @@ public class ProofTree {
 	
 	//Methods
 	/**
-	 *  preOrderIterator() Creates a new preorder iterator.
-	 * 	
-	 * 	@param root TreeNode where to Iterator will start.
-	 *  @return A preOrderIterator for the given ProofTree. 
-	 **/
-	public Iterator<TreeNode> preOrderIterator(){
-		return new PreOrderTreeIterator(myRoot);
-	}
-	
-	/**
 	 *  printInOrder() Prints the ProofTree using an inOrder traversal.
 	 *  The result is of the form "bacd";
 	 *  NOTE: does not print parenthesis
@@ -85,9 +67,6 @@ public class ProofTree {
 		return s ;
 	}
 	
-	public Iterator<TreeNode> ProofTreeIterator(TreeNode x){
-		return new PreOrderTreeIterator(x);
-	}
 	
 	/**
 	 *  print() Prints the tree in a visual format
@@ -484,58 +463,5 @@ public class ProofTree {
 		}
 		
 		//Methods
-	}
-
-	
-	/**
-	 *  PreOrderTreeIterator implements Iterator<TreeNode>
-	 *  Creates an iterator for a ProofTree. Implements a PreOrder traversal.
-	 **/
-	public class PreOrderTreeIterator implements Iterator<TreeNode>{
-		//Instance variables
-		private Stack<TreeNode> nodes;
-		
-		/**
-		 *  ProofTreeIterator() Initializes a new ProofTree iterator.
-		 *  
-		 *  @param x TreeNode to start the iteration from.
-		 **/
-		public PreOrderTreeIterator(TreeNode x){
-			nodes = new Stack<TreeNode>();
-			nodes.push(x);
-		}
-		
-		/**
-		 *  hasNext() returns true if there are more TreeNodes to be returned
-		 *  
-		 *  @return Boolean corresponding to hasNext() state.
-		 **/
-		public boolean hasNext(){
-			return (!(nodes.isEmpty()));
-		}
-		
-		/**
-		 *  next() returns the next TreeNode in the tree.
-		 *  
-		 *  @return toReturn The next TreeNode in the iteration.
-		 **/
-		public TreeNode next(){
-			TreeNode toReturn = nodes.pop();
-			if(toReturn.myRight != null){
-			nodes.push(toReturn.myRight);
-			}
-			if(toReturn.myLeft != null){
-				nodes.push(toReturn.myLeft);
-			}
-			return toReturn;
-		}
-		
-		/**
-		 *  remove() Removes the current element from the tree.
-		 *  Not supported.
-		 **/
-		public void remove(){
-			//May or may not implement.
-		}
 	}
 }

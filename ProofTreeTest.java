@@ -1,11 +1,3 @@
-/**
- *  Created By:
- *  	Anastasia Shuler
- *  	Iris Jang
- *  	Ji-hern Baek
- *  	Katherine Chao
- **/
-
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -166,7 +158,7 @@ public class ProofTreeTest {
 	
 	/**
 	 *  testCheckLeft() Test the checkLeft() method of ProofTree.
-	 *  Checks if 
+	 *  Checks if the left sides of two trees match
 	 **/
 	@Test
 	public void testCheckLeft(){
@@ -400,7 +392,73 @@ public class ProofTreeTest {
 		} catch(IllegalInferenceException exc){
 			assertTrue(true);
 		}
+	}
+	
+	/**
+	 *  testLeftIs() Tests the leftIs method of the ProofTree class.
+	 **/
+	@Test
+	public void testLeftIs(){
+		//Test a random expression
+		String expr = "(p=>((p=>q)=>q))";
+		ProofTree t1 = ProofTree.createATree(expr);
+		assertEquals("p", t1.leftIs());
 		
+		//test an all right tree
+		expr = "~a";
+		t1 = ProofTree.createATree(expr);
+		assertEquals("", t1.leftIs());
 		
+		//test some more random trees
+		expr = "((p=>q)=>q)";
+		t1 = ProofTree.createATree(expr);
+		assertEquals("p=>q", t1.leftIs());
+		
+		expr = "((a=>b)=>((b=>c)=>(a=>c)))";
+		t1 = ProofTree.createATree(expr);
+		assertEquals("a=>b", t1.leftIs());
+		
+		expr = "((b=>c)=>(a=>c))";
+		t1 = ProofTree.createATree(expr);
+		assertEquals("b=>c", t1.leftIs());
+		
+		//test an empty tree
+		expr = "";
+		t1 = ProofTree.createATree(expr);
+		assertEquals("", t1.leftIs());
+	}
+	
+	/**
+	 *  testRightIs() Test the rightIs() method of the ProofTree class.
+	 **/
+	@Test
+	public void testRightIs(){
+		//test an empty tree
+		String expr = "";
+		ProofTree t1 = ProofTree.createATree(expr);
+		assertEquals("", t1.rightIs());
+		
+		//test a random tree
+		expr = "(p=>((p=>q)=>q))";
+		t1 = ProofTree.createATree(expr);
+		assertEquals("p=>q=>q", t1.rightIs());
+		
+		//test an all right tree
+		expr = "~a";
+		t1 = ProofTree.createATree(expr);
+		assertEquals("a", t1.rightIs());
+		
+		//test some more random trees
+		expr = "((p=>q)=>q)";
+		t1 = ProofTree.createATree(expr);
+		assertEquals("q", t1.rightIs());
+		
+		expr = "((a=>b)=>((b=>c)=>(a=>c)))";
+		t1 = ProofTree.createATree(expr);
+		assertEquals("b=>c=>a=>c", t1.rightIs());
+		
+		expr = "((b=>c)=>(a=>c))";
+		t1 = ProofTree.createATree(expr);
+		assertEquals("a=>c", t1.rightIs());
 	}
 }

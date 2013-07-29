@@ -2,94 +2,81 @@ import junit.framework.TestCase;
 
 public class ExpressionTest extends TestCase {
 
-    public void testExpression(){
-        Expression a = new Expression ("p");
-        assertTrue(a.valid);
-        Expression c = new Expression ("(p=>q)");
-        assertTrue(c.valid);
-        Expression d = new Expression ("(p=>(p=>q))");
-        assertTrue(d.valid);
-        Expression e = new Expression ("");
-        //cannot have a null function!
-        assertFalse(e.valid);
-        Expression f = new Expression("(p)");
-        assertFalse(f.valid);
-    }
-    
-    public void testNot ( ) {
-        Expression a = new Expression("~p");
-        assertTrue(a.valid);
-        Expression b = new Expression ("~(p=>q)");
-        assertTrue (b.valid);
-        Expression c = new Expression ("(~p=>q)");
-        assertTrue(c.valid);
-        Expression d = new Expression("(~~p=>p)");
-        assertTrue(d.valid);
-        Expression e = new Expression("((~p&~q)=>~(p|q))");
-        //~ may appear in front of both p and q
-        assertTrue(e.valid);
-    }
-    
-    public void testSpace() {
-      /*
-    	 * Whitespace before and after an expression is ok,
-    	 * but not in the middle of an expression
-    	 */
-    	Expression a = new Expression("~p ");
-    	assertTrue(a.valid);
-    	Expression b = new Expression ("(p =>q)");
-    	assertFalse(b.valid);
-    	Expression c = new Expression ("(p= >q)");
-    	assertFalse(c.valid);
-    	Expression d = new Expression("  (p=>q)   ");
-    	assertTrue(d.valid);
-    	Expression e = new Expression("( p=>q )");
-    	assertFalse(e.valid);
-    }
-    
-    public void testVariables() {
-    	//These may be valid? Check these again
-    	Expression a = new Expression("(p=>p)");
-    	assertFalse(a.valid);
-    	Expression b = new Expression("((p=>p)=>p))");
-    	assertFalse(b.valid);
-    }
-    
-    public void testParens( ) {
-    	/*
-    	 * Checks that the program parses the parentheses 
-    	 * of nested expressions correctly
-    	 */
-    	Expression a = new Expression("(p=>q))");
-    	assertFalse(a.valid);
-    	Expression b = new Expression("((p=>q)=>q)=>((q=>p)=>p))");
-    	assertFalse(b.valid);
-    	Expression c = new Expression("(((p=>q)=>q)=>((q=>p)=>p))");
-    	assertTrue(c.valid);
-    	Expression d = new Expression("((a=>b)=>((b=>c)=>(a=>c)))");
-    	assertFalse(d.valid);
-    	Expression e = new Expression("(a=>(b=>(a&b)))");
-    	assertTrue(e.valid);
-    }
-    
-    public void testPatternMatching ( ) {
-    	/* Check that more complicated expressions 
-    	 * can be pattern-matched to p and q.
-    	 */
-    	Expression a = new Expression("((((r|s)=>(x|~y))&(~(r|s)=>(x|~y)))=>(x|~y))");
-    	//(r|s) can be matched to p, (x|~y) can be matched to q
-    	assertTrue(a.valid);
-    	//check for more edge cases!
-    			
-    }
-    
-    public void testKeywords ( ){
-    	/* Check that mp, co, ic, show, and assume are entered in the right format.
-    	 */
-    	Expression a = new Expression ("mp1.2.1 1.2.3(p=>q)");
-    	//our method splits things by spaces; what if user neglects a space?
-    	assertFalse(a.isValid);
-    	}
-    }
-    //public void testNot() 
+	/**
+	 *  testExpressionInit() Tests the constructor of the Expression class.
+	 *  Prints the myTree field to the screen for a visual check.
+	 *  Checks that the myString field matches the input.
+	 **/
+	public void testExpressionInit(){
+		//Check a basic expression
+		String expr = "(p=>p)";
+		Expression E = new Expression(expr);
+		E.myTree.print();
+		assertEquals(expr, E.myString);
+		
+		//Check an empty expression
+		expr = "";
+		E = new Expression(expr);
+		E.myTree.print();
+		assertEquals(expr, E.myString);
+		
+		//Check a very complicated expression
+		expr= "((a=>(b=>c))=>((a=>b)=>(a=>c)))";
+		E = new Expression(expr);
+		E.myTree.print();
+		assertEquals(expr, E.myString);
+		
+		//Check a ~ expression
+		expr = "~a";
+		E = new Expression(expr);
+		E.myTree.print();
+		assertEquals(expr, E.myString);
+		
+		//check multiple ~'s
+		expr = "~~~~p";
+		E = new Expression(expr);
+		E.myTree.print();
+		assertEquals(expr, E.myString);
+	}
+	
+	/**
+	 *  testEquals() Tests the equals() method of the Expression class.
+	 *  Tests that the equality test returns the correct boolean.
+	 **/
+	public void testEquals(){
+		//check a basic equality
+		String expr = "(p=>p)";
+		Expression E1 = new Expression(expr);
+		Expression E2 = new Expression(expr);
+		assertTrue(E1.equals(E2));
+		assertTrue(E2.equals(E1));
+		
+		//check against an empty Expression
+		E1 = new Expression("");
+		assertFalse(E1.equals(E2));
+		assertFalse(E2.equals(E1));
+		
+		//check two empty Expressions
+		E2 = new Expression("");
+		assertTrue(E1.equals(E2));
+		assertTrue(E2.equals(E1));
+		
+		//check two non empty Expressions that fail
+		E1 = new Expression("(p=>p)");
+		E2 = new Expression("(q=>q)");
+		assertFalse(E1.equals(E2));
+		assertFalse(E2.equals(E1));
+		
+		//check some with ~
+		E1 = new Expression("~a");
+		E2 = new Expression("~a");
+		assertTrue(E1.equals(E2));
+		assertTrue(E2.equals(E1));
+		
+		//check some really weird ones
+		E1 = new Expression("((a=>(b=>c))=>((a=>b)=>(a=>c)))");
+		E2 = new Expression("(p=>((p=>q)=>q))");
+		assertFalse(E1.equals(E2));
+		assertFalse(E2.equals(E1));
+	}
 }
