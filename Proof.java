@@ -170,6 +170,7 @@ public class Proof {
 		return result;
 	}
 
+<<<<<<< HEAD
 	/**
 	 *  isComplete() Checks if a proof (subproof) has been completed.
 	 *  Checks if the inference made in the current line matches that of the
@@ -204,3 +205,43 @@ public class Proof {
 	
 }
 
+=======
+    /**
+     *  isComplete() Checks if a proof (subproof) has been completed.
+     *  Checks if the inference made in the current line matches that of the
+     *      first line of the proof.
+     *  
+     *  @return boolean Result of the completion check.
+     **/
+    public boolean isComplete ( ) {
+        String userInput = inputs.get(line.getCurrent());
+    	String[] parts = userInput.split(" ");
+    	
+        if(line.getCurrent().equals("1") || line.getLastNum() == 1 ||
+        		line.getCurrent().equals("0") || 
+        		line.getCurrent().equals("2") && parts[0].equals("repeat")){
+            return false;
+        }
+
+        else if(line.size() == 1){
+            //Check that the it matches the first line.
+            String check = exprs.get("1").myString;
+            String input = exprs.get(line.getCurrent()).myString;
+            return (check.equals(input));
+            
+        } else{
+            //check that it matches the first line with same
+            //number of subproofs
+            String currentLine = line.getCurrent();
+            String checkLine = currentLine.substring(0, currentLine.length() -2);
+            String input = exprs.get(currentLine).myString;
+            String check = exprs.get(checkLine).myString;
+             if(check.equals(input)){
+                 line.setFinishProof(true);
+             }
+             return false;
+        }
+    }
+    
+}
+>>>>>>> 9f6b4733f24e38722b845efbbd5b055c053f7338
