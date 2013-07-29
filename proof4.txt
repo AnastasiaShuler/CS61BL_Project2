@@ -1,0 +1,6 @@
+show (~~p=>p)
+assume ~~p
+show p
+assume ~p
+co 2 3.1 p
+ic 3 (~~p=>p)

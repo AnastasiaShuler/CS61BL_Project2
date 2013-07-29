@@ -1,0 +1,16 @@
+show ((a=>b)=>((b=>c)=>(a=>c)))
+assume (a=>b)
+show ((b=>c)=>(a=>c))
+assume (b=>c)
+show (a=>c)
+assume a
+show c
+assume ~c
+mt 3.2.2.1 3.1 ~b
+mt 2 3.2.2.2 ~a
+co 3.2.2.3 3.2.1
+co 3.2.2.3 3.2.1 c
+ic 3.2.2.4 (a=>c)
+ic 3.2.2 (a=>c)
+ic 3.2 ((b=>c)=>(a=>c))
+ic 3 ((a=>b)=>((b=>c)=>(a=>c)))

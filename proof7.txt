@@ -1,0 +1,12 @@
+show ((a=>(b=>c))=>((a=>b)=>(a=>c)))
+assume (a=>(b=>c))
+show ((a=>b)=>(a=>c))
+assume (a=>b)
+show (a=>c)
+assume a
+mp 2 3.2.1 (b=>c)
+mp 3.2.1 3.1 b
+mp 3.2.3 3.2.2 c
+ic 3.2.4 (a=>c)
+ic 3.2 ((a=>b)=>(a=>c))
+ic 3 ((a=>(b=>c))=>((a=>b)=>(a=>c)))

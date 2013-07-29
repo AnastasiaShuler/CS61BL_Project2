@@ -1,0 +1,14 @@
+show ((p|q)=>(~p=>q))
+assume (p|q)
+show (~p=>q)
+assume ~p
+show q
+assume ~q
+buildAnd (~p=>(~q=>(~p&~q)))
+mp 3.1 3.2.2 (~q=>(~p&~q))
+mp 3.2.3 3.2.1 (~p&~q)
+demorgan2 ((~p&~q)=>~(p|q))
+mp 3.2.4 3.2.5 ~(p|q)
+co 3.2.6 2 q
+ic 3.2 (~p=>q)
+ic 3 ((p|q)=>(~p=>q))

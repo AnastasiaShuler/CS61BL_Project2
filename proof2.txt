@@ -1,0 +1,30 @@
+show ((a=>q)=>((b=>q)=>((a|b)=>q)))
+assume (a=>q)
+show ((b=>q)=>((a|b)=>q))
+assume b
+assume (b=>q)
+show ((a|b)=>q)
+assume (a&b)
+assume q
+assume (a|b)
+show q
+assume ~q
+mt 3.2.1 2 a
+mt 3.2.2.1 2 a
+mt 3.2.2.1 2 ~a
+mt 3.1 3.2.2.1 ~b
+not-o-creation (~a=>(~b=>~(a|b)))
+not-or-creation (~a=>(~b=>~(b|b)))
+not-or-creation (~a=>(~b=>~(a|b)))
+mp 3.2.2.4 3.2.2.2 (~b=>~(a|b))
+mq 3.2.2.3 3.2.2.5 ~(a|b)
+mp 4.2.2 2 ~(a|b)
+mp 3.2.2.3 3.2.2.5 ~(a|b)
+co 3.2.2.6 3.2.1 ((a=>q)=>((b=>q)=>((a|b)=>q)))
+co 3.2.2.6 3.2.1 q
+ic 3.2.2 ((a|b)=>q)
+ic 3.2 ((b=>q)=>((a|b)=>q))
+mp 3.2.2.6 2 ~q
+ic 3 ((a=>q)=>((b=>q)=>((a|b)=>q)))
+
+
